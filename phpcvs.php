@@ -676,7 +676,12 @@ class CVS_PServer {
 		// is the content of the file.
 		if ($this->FINAL_RESPONSE) {
 			$ContentLength = $this->SOCKET->readLine();
-			$this->FILECONTENTS = $this->SOCKET->read($ContentLength);
+			$CharsToGo = $ContentLength;
+			while($CharsToGo > 0){
+				$Buffer = $this->SOCKET->read($CharsToGo);
+				$this->FILECONTENTS .= $Buffer;
+				$CharsToGo -= strlen($Buffer);
+			} // while
 			$ReadLine = $this->SOCKET->readLine();
 			return true;
 		}
