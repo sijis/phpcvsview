@@ -236,7 +236,7 @@ class phpcvs {
 				
 				// Determine if it is local dir or a subdir.
 				if (strncmp($RecvLN, "M \n", 3) == 0) {
-				    $FileName = fgets($this->SOCKET_HANDLE, 13+strlen($this->CVS_REPOSITORY.$Module));
+				    $FileName = fgets($this->SOCKET_HANDLE, 12+strlen($this->CVS_REPOSITORY.$Module));
 					if (strncmp($FileName, "M RCS file", 10) == 0) {
 						$FileName = fgets($this->SOCKET_HANDLE, 8192);
 						
@@ -311,6 +311,68 @@ class phpcvs {
 		} // End of if ($this->SOCKET_HANDLE > -1)
 		return $Elements;
 	} // End of function RLOGFile();
+	
+	function ViewFile($File, $Revision, $Module="/") {
+		// Here we will export a copy of a given file, returning a series of "Strings".
+		if (strncmp($Module, "/", 1) == 0) {
+		    $Module = substr($Module, 1, strlen($Module)-1);
+		}
+		
+		$SendCMD = "UseUnchanged\nCase\nArgument ".$Module.$File."\nDirectory .\n".$this->CVS_REPOSITORY."\nexpand-modules\n";
+		fputs($this->SOCKET_HANDLE, $SendCMD);
+		
+		$RecvLN = "ABCD";
+		while(strncmp($RecvLN, "ok", 2) != 0){
+			$RecvLN = fgets($this->SOCKET_HANDLE);
+		} // End of while(strncmp($RecvLN, "ok", 2) != 0)
+
+		// Send the checkout command.
+		$SendCMD = "Argument -n\nArgument -l\nArgument -N\nArgument -P\nArgument -r\nArgument ".$Revision."\nArgument ".$Module.$File."\nDirectory .\n".$this->CVS_REPOSITORY."\nco\n";
+		fputs($this->SOCKET_HANDLE, $SendCMD);
+		
+		// Clear out the Return Elements, in preparation for returning the information.
+		$Elements = "";
+		
+		$RecvLN = "";
+		while(strncmp($RecvLN, "ok", 2) != 0){
+			if (strncmp($RecvLN, "Clear-sticky ", 13) == 0) {
+				$RecvLN = fgets($this->SOCKET_HANDLE, 8192);
+			}
+			if (strncmp($RecvLN, "Set-static-directory ", 21) == 0) {
+				$RecvLN = fgets($this->SOCKET_HANDLE, 8192);
+			}
+			if (strncmp($RecvLN, "Mod-time", 8) == 0) {
+			    // We had the Date and time this revision was modified.
+				$Elements["DATETIME"] = substr($RecvLN, 9, strlen($RecvLN)-9);
+				$RecvLN = fgets($this->SOCKET_HANDLE);
+				while(strncmp($RecvLN, "MT", 2) == 0){
+					$RecvLN = fgets($this->SOCKET_HANDLE);
+					if (strncmp($RecvLN, "MT -updated", 11) == 0) {
+					    $RecvLN = "";
+					}
+				} // while
+			}
+			if (strncmp($RecvLN, "Created", 7) == 0) {
+				
+				echo "We are getting the file contents.<br>";
+			
+			    // We are getting the file from the Server.
+				$RecvLN = fgets($this->SOCKET_HANDLE);
+				$RecvLN = fgets($this->SOCKET_HANDLE);
+				$RecvLN = fgets($this->SOCKET_HANDLE);
+				$RecvLN = fgets($this->SOCKET_HANDLE);
+
+				// RecvLN Holds the length of the file as a string
+				$TotalBytes = $RecvLN + 0;
+				echo "Number of bytes = $RecvLN<br>";
+				echo "Number of bytes = $TotalBytes<br>";
+				$Elements["CONTENT"] = fread($this->SOCKET_HANDLE, $TotalBytes);
+			}
+			$RecvLN = fgets($this->SOCKET_HANDLE);			
+		} // End of while(strncmp($RecvLN, "ok", 2) != 0)
+		
+		return $Elements;
+	}
 	
 	function CVSLogon() {
 		// Here we will login to the CVS PServer (or local filesystem if the

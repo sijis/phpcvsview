@@ -8,7 +8,7 @@
  **/
 
 $REPOS = "";
-$CVSROOT = "/cvsroot/d/de/denet";
+$CVSROOT = "/cvsroot/d/de/denet/";
 $PServer = "cvs.sourceforge.net";
 $UserName = "anonymous";
 $Password = "";
@@ -87,8 +87,30 @@ function DisplayFileHistory() {
 		$CVSServer->SendValidResponses();
 		$CVSServer->SendValidRequests();
 		$Elements = $CVSServer->RLOG ($REPOS);
+		
+		
+		$CVSServer->DisconnectTcp();
 	} // End of if ($CVSServer->ConnectTcpAndLogon())
 } // End of function DisplayFileHistory()
+
+function DisplayFile() {
+	global $REPOS, $CVSROOT, $PServer, $UserName, $Password, $FileToView, $FileRev;
+
+	$CVSServer = new phpcvs($CVSROOT, $PServer, $UserName, $Password);
+	
+	if ($CVSServer->ConnectTcpAndLogon()) {
+		$CVSServer->SendRoot();
+		$CVSServer->SendValidResponses();
+		$CVSServer->SendValidRequests();
+		echo "<H1>File Contents for Revision ".$FileRev." of '".$REPOS.$FileToView."'</H1>";
+		$Elements = $CVSServer->ViewFile($FileToView, $FileRev, $REPOS);
+		$FileOut = "";
+		
+		echo "<PRE>".$Elements["CONTENT"]."</PRE>";
+
+		$CVSServer->DisconnectTcp();
+	}
+}
 
 if (isset($_GET["CVSROOT"])) {
     $REPOS = $_GET["CVSROOT"];
@@ -96,19 +118,23 @@ if (isset($_GET["CVSROOT"])) {
 	$REPOS = "/";
 }
 
+$REPOS = str_replace("//", "/", $REPOS);
+
 if (isset($_GET["ShowFile"])) {
     // Here we will show the contents of a file.
+	$FileToView = $_GET["ShowFile"];
+	$FileRev = $_GET["Rev"];
+	DisplayFile();
 } else {
 	if (isset($_GET["ShowHist"])) {
 	    // Here we will show the Revision History of a given file.
-		echo "<H1>Revision History for '".$_GET["CVSROOT"].$_GET["ShowHist"]."'</H1>";
+		echo "<H1>Revision History for '".$REPOS.$_GET["ShowHist"]."'</H1>";
 	} else {
 		// Here we will just show the current file listing.
 		DisplayDirListing();
 	}
 }
 
-$REPOS = str_replace("//", "/", $REPOS);
 
 
 
