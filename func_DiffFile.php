@@ -13,13 +13,7 @@
 
 function DisplayFileDiff($Rev1, $Rev2)
 {
-	global $config, $env;
-
-	// Calculate the path from the $env['script_name'] variable.
-	$env['script_path'] = substr($env['script_name'], 0, strrpos($env['script_name'], "/"));
-	if ($env['script_path'] == "") {
-	    $env['script_path'] = "/";
-	}
+	global $config, $env, $lang;
 
 	// Create our CVS connection object and set the required properties.
 	$CVSServer = new CVS_PServer($env['CVSSettings']['cvsroot'], $env['CVSSettings']['server'], $env['CVSSettings']['username'], $env['CVSSettings']['password']);
@@ -37,7 +31,7 @@ function DisplayFileDiff($Rev1, $Rev2)
 		}
 
 		// Add the quick link navigation bar.
-		echo GetQuickLinkBar($env['mod_path'], "Revision Diff for: ", true, true, "");
+		echo GetQuickLinkBar($lang['rev_diff'], true, true, "");
 		echo "<hr />";
 
 		// Get the DIFF from the server.
@@ -64,7 +58,7 @@ function DisplayFileDiff($Rev1, $Rev2)
 		$FilePatching = array();
 		$FileContents = $CVSServer->FILECONTENTS;
 		if ($FileContents === false) {
-		    echo "<pre>ERROR Getting Revision $Rev1 of file</pre>";
+		    echo $lang['err_get_rev'].'<h3>'. $Rev1 .'</h3>';
 		}
 		$Lines = explode("\n", $FileContents);
 		foreach ($Lines as $Line) 
@@ -93,7 +87,7 @@ function DisplayFileDiff($Rev1, $Rev2)
 				for ($LineCounter = 0; $LineCounter < $InsertLength; $LineCounter++)
 				{
 					$TempLine = array('mode' => "+", 'text' => substr($DiffLines[++$linenumber], 2));
-					InsertIntoArray(&$FilePatching, $TempLine, $InsertLocation[0]+$LineCounter+1);
+					$FilePatching = InsertIntoArray($FilePatching, $TempLine, $InsertLocation[0]+$LineCounter+1);
 					$LineOffset++;
 				}
 			}
@@ -111,7 +105,7 @@ function DisplayFileDiff($Rev1, $Rev2)
 					if ($LineCounter < $NewLineLength) {
 						$linenumber++;
     					$TempLine = array('mode' => "+", 'text' => substr($DiffLines[$linenumber], 2));
-						InsertIntoArray(&$FilePatching, $TempLine, $InsertLocation[0]+$LineCounter+$LineOffset);
+						$FilePatching = InsertIntoArray($FilePatching, $TempLine, $InsertLocation[0]+$LineCounter+$LineOffset);
 						$LineOffset++;
 					}
 					$FilePatching[$InsertLocation[0]-2+$LineCounter+$LineOffset]['mode'] = '-';
@@ -120,7 +114,7 @@ function DisplayFileDiff($Rev1, $Rev2)
 				{
 					$linenumber++;
 					$TempLine = array('mode' => "+", 'text' => substr($DiffLines[$linenumber], 2));
-					InsertIntoArray(&$FilePatching, $TempLine, $InsertLocation[0]+$LineCounter+$LineOffset);
+					$FilePatching = InsertIntoArray($FilePatching, $TempLine, $InsertLocation[0]+$LineCounter+$LineOffset);
 				}
 			}
 			else if (strpos($DiffLines[$linenumber], "d") !== false) 
@@ -162,7 +156,7 @@ function DisplayFileDiff($Rev1, $Rev2)
 
 		$CVSServer->Disconnect();
 	} else {
-		echo "Connection Failed.";
+		echo $lang['err_connect'];
 	}
 	echo GetPageFooter();
 }
