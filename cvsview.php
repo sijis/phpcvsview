@@ -16,31 +16,8 @@
  * phpCVSView Configuration Parameters.
  * 
  **/
+include_once 'config.php';
  
-// The CVSROOT path to access. For sourceforge you need the usual expansion 
-// of the path based on the project name.
-$CVSROOT = "/cvsroot/phpcvsview";
-//$CVSROOT = "/cvsroot/CHASE";
-
-// The hostname (or IP Address) of the server providing the PServer services.
-$PServer = "cvs.sourceforge.net";
-//$PServer = "192.168.0.1";
-
-// The username to pass to the PServer for authentication purposes.
-$UserName = "anonymous";
-
-// The password associated with the username above for authentication process.
-$Password = "";
-
-// The HTMLTitle and HTMLHeading are used purely for the generation of the 
-// resultant web pages.
-$HTMLTitle = "phpCVSView Source Code Library";
-$HTMLHeading = "phpCVSView Source Code Library";
-
-$HTMLTblHdBg  = "#CCCCCC";
-$HTMLTblCell1 = "#FFFFFF";
-$HTMLTblCell2 = "#CCCCEE";
-
 /**
  * 
  * End of phpCVSView Configuration Parameters.
@@ -229,9 +206,9 @@ function DisplayDirListing() {
 			}
 		}
 		
-//		$Output = print_r($CVSServer->FILES, true);
-//		$Output2 = str_replace("\n", "<br>", $Output);
-//		echo "<hr><h1>Files Present</h1><pre>$Output2</pre><br><hr>";
+		$Output = print_r($CVSServer->FILES, true);
+		$Output2 = str_replace("\n", "<br>", $Output);
+		echo "<hr><h1>Files Present</h1><pre>$Output2</pre><br><hr>";
 		
 		$CVSServer->Disconnect();
 		
@@ -394,4 +371,5 @@ else
 		DisplayDirListing();
 	}
 }
+
 ?>
