@@ -11,35 +11,24 @@
  * @copyright 2003-2004 Brian A Cheeseman
  **/
 
-/**
- * 
- * phpCVSView Configuration Parameters.
- * 
- **/
 require_once 'config.php';
 
-global $CVSROOT, $PServer, $UserName, $Password, $HTMLTitle, $HTMLHeading, $HTMLTblHdBg, $HTMLTblCell1, $HTMLTblCell2;
-
-/**
- *  * End of phpCVSView Configuration Parameters.
- * 
- **/
+global $config;
 
 $REPOS = "";
 $ScriptName = $_SERVER['PHP_SELF'];
 $ScriptPath = substr($ScriptName, 0, strrpos($ScriptName, "/"));
+
 if ($ScriptPath == "") {
     $ScriptPath = "/";
 }
-		  
+
 if (isset($_GET["tm"])) {
     $ThemeName = $_GET["tm"];
-}
-else
-{
+} else {
 	$ThemeName = "Default";
 }
- 
+
 require_once "Themes/$ThemeName/theme.php";
 require_once 'phpcvs.php';
 require_once 'phpcvsmime.php';
@@ -49,30 +38,25 @@ require_once 'func_FileHistory.php';
 require_once 'func_FileAnnotation.php';
 require_once 'func_FileView.php';
 
-		
+
 // Check for a module path
 if (isset($_GET["mp"])) {
-    $ModPath = $_GET["mp"];
-} else { // Else of if (isset($_GET["CVSROOT"]))
-	$ModPath = "/";
-} // End of if (isset($_GET["CVSROOT"]))
-$ModPath = str_replace("//", "/", $ModPath);
+    $config['mod_path'] = $_GET["mp"];
+} else {
+	$config['mod_path'] = "/";
+}
+
+$config['mod_path'] = str_replace("//", "/", $config['mod_path']);
 
 if (isset($_GET["fh"])) {
     DisplayFileHistory();
-}
-else
-{
+} else {
 	if (isset($_GET["fa"])) {
-	    DisplayFileAnnotation($ModPath, $_GET["fa"]);
-	}
-	else
-	{
+	    DisplayFileAnnotation($config['mod_path'], $_GET["fa"]);
+	} else {
 		if (isset($_GET["fv"])) {
-		    DisplayFileContents($ModPath, $_GET["dt"]);
-		}
-		else
-		{
+		    DisplayFileContents($config['mod_path'], $_GET["dt"]);
+		} else {
 			DisplayDirListing();
 		}
 	}

@@ -13,41 +13,39 @@
 
 function DisplayFileHistory()
 {
-	global $ModPath, $CVSROOT, $PServer, $UserName, $Password, $ScriptName, 
-	       $HTMLTitle, $HTMLHeading, $HTMLTblHdBg, $HTMLTblCell1, $HTMLTblCell2;
-		   
+	global $config;
+
 	// Calculate the path from the $ScriptName variable.
 	$ScriptPath = substr($ScriptName, 0, strrpos($ScriptName, "/"));
 	if ($ScriptPath == "") {
 	    $ScriptPath = "/";
 	}
-		  
+
 	// Create our CVS connection object and set the required properties.
-	$CVSServer = new CVS_PServer($CVSROOT, $PServer, $UserName, $Password);
-	
+	$CVSServer = new CVS_PServer($config['cvsroot'], $config['pserver'], $config['username'], $config['password']);
+
 	// Start the output process.
-	echo GetPageHeader($HTMLTitle, $HTMLHeading);
-	
+	echo GetPageHeader($config['html_title'], $config['html_header']);
+
 	// Connect to the CVS server.
 	if ($CVSServer->Connect() === true) {
-	
+
 		// Authenticate against the server.
 		$Response = $CVSServer->Authenticate();
 		if ($Response !== true) {
 			return;
 		}
-		
-		// Get a RLOG of the module path specified in $ModPath.
-		$CVSServer->RLog($ModPath);
+
+		// Get a RLOG of the module path specified in $config['mod_path'].
+		$CVSServer->RLog($config['mod_path']);
 
 		$Files = $CVSServer->FILES;
-		
-		// Add the quick link navigation bar.
-		echo GetQuickLinkBar($ModPath, "Revision History for: ", false, true, "");
 
-		foreach ($CVSServer->FILES[0]["Revisions"] as $Revision)
-		{
-			$HREF = str_replace("//", "/", "$ScriptName?mp=$ModPath");
+		// Add the quick link navigation bar.
+		echo GetQuickLinkBar($config['mod_path'], "Revision History for: ", false, true, "");
+
+		foreach ($CVSServer->FILES[0]["Revisions"] as $Revision) {
+			$HREF = str_replace("//", "/", "$ScriptName?mp=".$config['mod_path']);
 			$DateTime = strtotime($Revision["date"]);
 			echo "<hr /><p><a id=\"rd$DateTime\" />\n";
 			echo "<b>Revision</b> ".$Revision["Revision"]." -";
@@ -67,16 +65,14 @@ function DisplayFileHistory()
 			}
 			echo "<b>Log Message:</b></p><pre>".$Revision["LogMessage"]."</pre>\n";
 		}
-		
+
 		echo "<hr />\n";
-		
+
 		$CVSServer->Disconnect();
-	} else { // Else of if ($CVSServer->Connect() === true)
+	} else {
 		echo "Connection Failed.";
-	} // End of if ($CVSServer->Connect() === true)
+	}
 	echo GetPageFooter();
 }
-
-
 
 ?>
