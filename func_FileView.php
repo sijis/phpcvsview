@@ -9,6 +9,9 @@
  * @author Brian A Cheeseman <bcheesem@users.sourceforge.net>
  * @version $Id$
  * @copyright 2003-2005 Brian A Cheeseman
+ * 
+ * Thanks To:
+ * 		Nigel McNie - Suggestion of Caching of source code from repository, hence improving efficiency.
  **/
 
 if ($config['GeSHi']['Enable']) {
