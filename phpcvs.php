@@ -15,14 +15,14 @@ require_once 'Net/Socket.php';
 
 class CVS_PServer {
 
-	var $CVS_REPOSITORY;		// Storage of the CVS Repository file system path.
-	var $CVS_USERNAME;			// Username to use when authenticating with the PServer.
-	var $CVS_PASSWORD;			// Password for the account above.
-	var $CVS_PSERVER;			// Hostname of the server running the PServer.
-	var $CVS_PORT;				// Port number the PServer listener is running on.
-	var $CVS_TIMEOUT;			// Timeout in seconds for all socket operations.
-	var $CVS_VALID_REQUESTS;	// List of valid requests the PServer accepts.
-	var $SOCKET;				// The socket handle for communicating with the PServer.
+	var $CVS_REPOSITORY;				// Storage of the CVS Repository file system path.
+	var $CVS_USERNAME;					// Username to use when authenticating with the PServer.
+	var $CVS_PASSWORD;					// Password for the account above.
+	var $CVS_PSERVER;					// Hostname of the server running the PServer.
+	var $CVS_PORT;						// Port number the PServer listener is running on.
+	var $CVS_TIMEOUT;					// Timeout in seconds for all socket operations.
+	var $CVS_VALID_REQUESTS;			// List of valid requests the PServer accepts.
+	var $SOCKET;						// The socket handle for communicating with the PServer.
 	var $ALLOWED_RESPONSES = array(		// A hashed array of responses that we are capable of 
 										// processing and the contents is the name of the function
 										// to process it through.
@@ -60,14 +60,15 @@ class CVS_PServer {
 		"MT" => "processMT");
 
 	var $ALLOWED_REQUESTS = array();	// A hashed array of requests we are allowed to send.
-	var $FINAL_RESPONSE;		// A state variable for tracking whether the final response 
-								// in a chain of lines was a success or failure.
-	var $STDERR;				// Standard Error output. (Does not mean that an error occured).
-	var $MESSAGE_CONTENT;		// Message contents. (Standard Out)
+	var $FINAL_RESPONSE;				// A state variable for tracking whether the final response 
+										// in a chain of lines was a success or failure.
+	var $STDERR;						// Standard Error output. (Does not mean that an error occured).
+	var $MESSAGE_CONTENT;				// Message contents. (Standard Out)
 	var $FOLDERS = array();				// An array of the folders in the current module.
 	var $FILES = array();				// An array of the files in the current module.
-	var $CURRENT_FOLDER;		// The current folder we are building up.
-	var $CURRENT_FILE;			// The current file we are building up.
+	var $CURRENT_FOLDER;				// The current folder we are building up.
+	var $CURRENT_FILE;					// The current file we are building up.
+	var $ANNOTATION = array();			// An array of the lines in the file which has been annotated.
 	
 	/**
 	* Allowed Response Decoding functions.
@@ -476,6 +477,118 @@ class CVS_PServer {
 		return true;
 	}
 	
+	// ***************************************************************************
+	//     Function: sendDirectory()
+	//       Author: Brian A Cheeseman.
+	//   Parameters: string			- Directory to pass to the directory command.
+	// Return Value: boolean		- Successfully sent.
+	// ***************************************************************************
+	function sendDirectory($Directory)
+	{
+		if ($this->ALLOWED_REQUESTS["Directory"] == true) {
+			if (strncmp($Directory, "/", 1) == 0) {
+			    $Directory = substr($Directory, 1);
+			}
+		    if ($this->SOCKET->write("Directory $Directory\n") == true) {
+				$Line = $this->CVS_REPOSITORY;
+				if ($Directory != ".") {
+				    $Line .= "/" . $Directory;
+				}
+				if ($this->SOCKET->write("$Line\n") != true) {
+				    return false;
+				}
+			}
+			else
+			{
+		        return false;
+		    }
+		}
+		return true;
+	}
+	
+	// ***************************************************************************
+	//     Function: sendStaticDirectory()
+	//       Author: Brian A Cheeseman.
+	//   Parameters: None.
+	// Return Value: boolean		- Successfully sent.
+	// ***************************************************************************
+	function sendStaticDirectory()
+	{
+		if ($this->ALLOWED_REQUESTS["Static-directory"] == true) {
+		    if ($this->SOCKET->write("Static-directory\n") != true) {
+		        return false;
+		    }
+		}
+		return true;
+	}
+	
+	// ***************************************************************************
+	//     Function: sendEntry()
+	//       Author: Brian A Cheeseman.
+	//   Parameters: string			- $Name - Name of the file.
+	//               string			- $Version - Version of the file.
+	//               string			- $Conflict - 
+	//               string			- $Options - Options for the entry line.
+	//               string			- $TagOrDate - Another method of identifying the version.
+	// Return Value: boolean		- Successfully sent.
+	// ***************************************************************************
+	function sendEntry($Name = "", $Version = "", $Conflict = "", $Options = "", $TagOrDate = "")
+	{
+		if ($this->ALLOWED_REQUESTS["Entry"] == true) {
+			if (strrpos($Name, "/") > -1) {
+			    $FName = substr($Name, strrpos($Name, "/")+1);
+			}
+			else
+			{
+				$FName = $Name;
+			}
+		    if ($this->SOCKET->write("Entry /$FName/$Version/$Conflict/$Options/$TagOrDate\n") != true) {
+		        return false;
+		    }
+		}
+		return true;
+	}
+	
+	// ***************************************************************************
+	//     Function: sendUnchanged()
+	//       Author: Brian A Cheeseman.
+	//   Parameters: string			- $Name - Name of the file.
+	// Return Value: boolean		- Successfully sent.
+	// ***************************************************************************
+	function sendUnchanged($Name)
+	{
+		if ($this->ALLOWED_REQUESTS["Unchanged"] == true) {
+			$SlashPos = strrpos($Name, "/");
+			if ($SlashPos !== false) {
+			    $BaseFileName = substr($Name, $SlashPos+1);
+			}
+			else
+			{
+				$BaseFileName = $Name;
+			}
+		    if ($this->SOCKET->write("Unchanged $BaseFileName\n") != true) {
+		        return false;
+		    }
+		}
+		return true;
+	}
+	
+	// ***************************************************************************
+	//     Function: sendAnnotate()
+	//       Author: Brian A Cheeseman.
+	//   Parameters: None.
+	// Return Value: boolean		- Successfully sent.
+	// ***************************************************************************
+	function sendAnnotate()
+	{
+		if ($this->ALLOWED_REQUESTS["annotate"] == true) {
+		    if ($this->SOCKET->write("annotate\n") != true) {
+		        return false;
+		    }
+		}
+		return true;
+	}
+	
 	/**
 	* Helper Methods.
 	**/
@@ -520,6 +633,7 @@ class CVS_PServer {
 		$CurrentDecode = 0;
 		$FileRevision = -1;
 		$CurrentRevision = "";
+		$PreviousRevision = "";
 		$LineProcessed = false;
 		if ($this->FINAL_RESPONSE) {
 			$Responses = explode("\n", $this->MESSAGE_CONTENT);
@@ -554,6 +668,7 @@ class CVS_PServer {
 						$this->FILES[$FileCount]["Name"] = $FileName;
 						$CurrentDecode = 2;
 						$LineProcessed = true;
+						
 					}
 				} 
 				// Lets continue, but only if we have a CurrentDecode type of 2 (ie a file).
@@ -628,6 +743,10 @@ class CVS_PServer {
 					    $CurrentRevision = substr($Line, 9);
 						$this->FILES[$FileCount]["Revisions"]["$CurrentRevision"]["Revision"] = $CurrentRevision;
 						$this->FILES[$FileCount]["Revisions"]["$CurrentRevision"]["LogMessage"] = "";
+						if ($PreviousRevision != "") {
+							$this->FILES[$FileCount]["Revisions"]["$PreviousRevision"]["PrevRevision"] = $CurrentRevision;
+						}
+						$PreviousRevision = $CurrentRevision;
 						$LineProcessed = true;
 					}
 					
@@ -669,6 +788,89 @@ class CVS_PServer {
 				}
 			}
 		}
+	}
+
+	// ***************************************************************************
+	//     Function: Annotate()
+	//       Author: Brian A Cheeseman.
+	//   Parameters: string			- Directory to get the RLog for.
+	// Return Value: boolean		- Were we successful.
+	// ***************************************************************************
+	function Annotate($Name, $Revision = "")
+	{
+		$this->sendCVSROOT();
+		$this->sendValidResponses();
+		$this->sendValidRequests();
+	
+		if (!$this->sendUseUnchanged()) {
+		    return false;
+		}
+		
+		if (!$this->sendArgument("--")) {
+		    return false;
+		}
+		
+		$SlashPos = strrpos($Name, "/");
+		if ($SlashPos > -1) {
+		    $Directory = substr($Name, 0, $SlashPos);
+		}
+		else
+		{
+			$Directory = "/";
+		}
+		
+		if (!$this->sendDirectory($Directory)) {
+		    return false;
+		}
+		
+		if (!$this->sendStaticDirectory()) {
+		    return false;
+		}
+		
+		if (!$this->sendEntry($Name, $Revision)) {
+		    return false;
+		}
+		
+		if (!$this->sendUnchanged($Name)) {
+		    return false;
+		}
+		
+		if (!$this->sendDirectory(".")) {
+		    return false;
+		}
+		
+		if (strncmp($Name, "/", 1) == 0) {
+		    $Arg = substr($Name, 1);
+		}
+		else
+		{
+			$Arg = $Name;
+		}
+		if (!$this->sendArgument($Arg)) {
+		    return false;
+		}
+		
+		if (!$this->sendAnnotate()) {
+		    return false;
+		}
+
+		$this->processResponse();
+
+		if ($this->FINAL_RESPONSE) {
+			$Counter = 0;
+			$Responses = explode("\n", $this->MESSAGE_CONTENT);
+			// Iterate through each line.
+			foreach ($Responses as $Line)
+			{
+				$this->ANNOTATION[$Counter]["Revision"] = strtok($Line, "(");
+				$this->ANNOTATION[$Counter]["Author"] = strtok(" ");
+				$this->ANNOTATION[$Counter]["Date"] = strtok(")");
+				$this->ANNOTATION[$Counter]["Line"] = substr(strtok("\n"), 2);
+				$Counter++;
+			}			
+		}
+		
+		return true;
 	}
 }
 
