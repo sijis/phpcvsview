@@ -11,6 +11,10 @@
  * @copyright 2003-2004 Brian A Cheeseman
  **/
 
+if ($config['UseGeSHi']) {
+    include_once($config['GeSHiPath'].'/geshi.php');
+}
+
 function DisplayFileContents($File, $Revision = "")
 {
 	global $config, $env;
@@ -48,19 +52,37 @@ function DisplayFileContents($File, $Revision = "")
 		// Add the quick link navigation bar.
 		echo GetQuickLinkBar($env['mod_path'], "Code view for: ", true, true, $Revision);
 
-		// Display the file contents.
 		echo "<hr />\n";
-		$search = array('<', '>', '\n', '\t');
-		$replace = array("&lt;", "&gt;", "", "    ");
-		$content = str_replace($search, $replace, $CVSServer->FILECONTENTS);
-		$source = explode("\n", $content);
-		$soure_size = sizeof($source);
 
-		echo "<pre>\n";
-		for($i = 1; $i <= $soure_size; $i++) {
-			echo '<a name="'.$i.'" class="numberedLine">'.str_repeat('&nbsp;', strlen($soure_size) - strlen($i)). $i.':</a> ' . $source[$i-1] . "\n";
+		if ($config['UseGeSHi']) {
+    		// Create the GeSHi instance and parse the output.
+			// TODO: setup code to auto identify the highlighting class to use for current file.
+			$geshi = new GeSHi($CVSServer->FILECONTENTS, "php", $config['GeSHiHighlightersPath']);
+			$geshi->enable_line_numbers(GESHI_NORMAL_LINE_NUMBERS);
+			$geshi->set_line_style('background: #fcfcfc;'); 
+			$geshi->set_tab_width(4);
+			$geshi->enable_classes();
+			$geshi->set_overall_class('geshi');
+			$hlcontent = $geshi->parse_code();
+
+			// Display the file contents.
+			echo $hlcontent;
 		}
-		echo "</pre>\n";
+		else
+		{
+			$search = array('<', '>', '\n', '\t');
+			$replace = array("&lt;", "&gt;", "", " ");
+			$content = str_replace($search, $replace, $CVSServer->FILECONTENTS);
+			$source = explode("\n", $content);
+			$soure_size = sizeof($source);
+			
+			echo "<pre>\n";
+			for($i = 1; $i <= $soure_size; $i++) {
+				echo '<a name="'.$i.'" class="numberedLine">&nbsp;'.str_repeat('&nbsp;', strlen($soure_size) - strlen($i)). $i.'.</a> ' . $source[$i-1] . "\n";
+			}
+			echo "</pre>\n";
+		}
+		echo "<hr />";
 
 		// Close the connection.
 		$CVSServer->Disconnect();

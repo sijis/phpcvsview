@@ -33,4 +33,9 @@ $config['html_tbl_head_bg'] = "#CCCCCC";
 $config['html_tbl_cell_one'] = "#FFFFFF";
 $config['html_tbl_cell_two'] = "#CCCCEE";
 
+// Setup whether to use GeSHi project code for syntax highlighting or not.
+$config['UseGeSHi'] = true;
+$config['GeSHiPath'] = "geshi";
+$config['GeSHiHighlightersPath'] = "geshi/geshi";
+
 ?>
