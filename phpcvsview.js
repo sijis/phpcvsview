@@ -46,7 +46,6 @@ function postBackDiffRequest(form)
 	else
 	{
 		var dfDiffReq=form.URLDiffReq.value;
-		alert('Redirecting to: '+dfDiffReq+'&r1='+ddRev1+'&r2='+ddRev2+'&df');
 		location=dfDiffReq+'&r1='+ddRev1+'&r2='+ddRev2+'&df';
 	}
 }

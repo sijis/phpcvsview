@@ -222,4 +222,27 @@ function addFiles($ModPath, $Files)
 	}
 }
 
+function GetDiffForm()
+{
+	global $CVSServer, $env;
+	$HREF = str_replace("//", "/", $env['script_name']."?mp=".$env['mod_path']);
+	
+	$DiffForm = "<form class=\"diffform\">";
+	$DiffForm .= "Diff between: <select name=\"DiffRev1\" class=\"diffform\">";
+	foreach ($CVSServer->FILES[0]["Revisions"] as $Revision)
+	{
+		$DiffForm .= "<option value=\"".$Revision["Revision"]."\">".$Revision["Revision"]."</option>";
+	}
+	$DiffForm .= "</select> and <select name=\"DiffRev2\" class=\"diffform\">";
+	foreach ($CVSServer->FILES[0]["Revisions"] as $Revision)
+	{
+		$DiffForm .= "<option value=\"".$Revision["Revision"]."\">".$Revision["Revision"]."</option>";
+	}
+	$DiffForm .= "</select><input type=\"hidden\" name=\"URLDiffReq\" value=\"".$HREF."\">";
+	$DiffForm .= "<input type=\"button\" value=\"Get Diff\" onclick=\"postBackDiffRequest(this.form)\">";
+	$DiffForm .= "</form>";
+	
+	return $DiffForm;
+}
+
 ?>

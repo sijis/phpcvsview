@@ -13,7 +13,7 @@
 
 function DisplayFileHistory()
 {
-	global $config, $env, $lang;
+	global $config, $env, $lang, $CVSServer;
 
 	// Calculate the path from the $env['script_name'] variable.
 	$env['script_path'] = substr($env['script_name'], 0, strrpos($env['script_name'], '/'));
@@ -67,12 +67,12 @@ function DisplayFileHistory()
 		}
 
 		echo '<hr />'."\n";
-
+		
+		echo GetDiffForm();
 		$CVSServer->Disconnect();
 	} else {
 		echo $lang['err_connect'];
 	}
-	echo GetDiffForm();
 	echo GetPageFooter();
 }
 
