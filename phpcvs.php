@@ -1031,7 +1031,7 @@ class CVS_PServer
 		    return false;
 		}
 
-		if (!$this->sendArgument(strftime("%d %b %Y %T -0000", $DateTime))) {
+		if (!$this->sendArgument(strftime("%d %b %Y %H:%M:%S -0000", $DateTime))) {
 		    return false;
 		}
 
