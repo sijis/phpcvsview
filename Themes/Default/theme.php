@@ -197,12 +197,16 @@ function addFolders($ModPath, $Folders)
 
 function addModules($ModPath, $Modules)
 {
-	global $RowClass, $ModuleIcon, $env;
+	global $RowClass, $DownloadIcon, $ModuleIcon, $env;
 	foreach ($Modules as $Key => $Val) {
 		// Add the row data here.
 		$HREF = str_replace("//", "/", $env['script_name']."?mp=$ModPath/".$Val."/");
 		echo "<tr class=\"$RowClass\">";
-		echo "<td class=\"min\">&nbsp;</td>";
+		if ($Val != "CVSROOT" && $Val != "Attic") {
+			echo "<td class=\"min\"><a href=\"$HREF&dp\"><img alt=\"D/L\" src=\"".$env['script_path']."/$DownloadIcon\" /></a></td>";
+		} else {
+			echo "<td class=\"min\">&nbsp;</td>";
+		}
 		echo "<td class=\"min\"><a href=\"$HREF\"><img alt=\"MOD\" src=\"".$env['script_path']."/$ModuleIcon\" /></a></td>";
 		echo "<td class=\"min\"><a href=\"$HREF\">".$Key."</a></td>";
 		echo "<td>&nbsp;</td>";
