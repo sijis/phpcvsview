@@ -72,21 +72,28 @@ function CalculateDateDiff($DateEarlier, $DateLater)
 	$Years = floor($Days/365);
 
 	if ($Seconds > 0) {
-	    $Result = $Seconds . " Second";
+	    $Result = "$Seconds Second";
 		if ($DateDiff > 1) {
 		    $Result .= "s";
 		}
 	}
 	if ($Minutes > 0) {
-	    $Result = $Minutes . " Minute";
+	    $Result = "$Minutes Minute";
 		if ($Minutes > 1) {
 		    $Result .= "s";
 		}
 	}
 	if ($Hours > 0) {
-	    $Result = $Hours . " Hour";
+	    $Result = "$Hours Hour";
 		if ($Hours > 1) {
 		    $Result .= "s";
+		}
+		$Minutes = $Minutes % 60;
+		if ($Minutes > 0) {
+		    $Result .= ", $Minutes Minute";
+			if ($Minutes > 1) {
+			    $Result .= "s";
+			}
 		}
 	}
 	if ($Days > 0) {
@@ -94,17 +101,38 @@ function CalculateDateDiff($DateEarlier, $DateLater)
 		if ($Days > 1) {
 		    $Result .= "s";
 		}
+		$Hours = $Hours % 24;
+		if ($Hours > 0) {
+		    $Result .= ", $Hours Hour";
+			if ($Hours > 1) {
+			    $Result .= "s";
+			}
+		}
 	}
 	if ($Weeks > 0) {
 	    $Result = $Weeks . " Week";
 		if ($Days > 1) {
 		    $Result .= "s";
 		}
+		$Days = $Days % 7;
+		if ($Days > 0) {
+		    $Result .= ", $Days Day";
+			if ($Days > 1) {
+			    $Result .= "s";
+			}
+		}
 	}
 	if ($Years > 0) {
 		$Result = $Years . " Year";
 		if ($Years > 1) {
 		    $Result .= "s";
+		}
+		$Weeks = $Weeks % 52;
+		if ($Weeks > 0) {
+		    $Result .= ", $Weeks Week";
+			if ($Weeks > 1) {
+			    $Result .= "s";
+			}
 		}
 	}
 	return $Result;
@@ -190,7 +218,7 @@ function DisplayDirListing() {
 			echo "  <tr bgcolor=\"$BGColor\" valign=\"top\">\n";
 			echo "    <td align=\"center\" valign=\"center\"><a href=\"$HREF&fh\"><img border=\"0\" src=\"$ScriptPath/images/file.png\"></a></td>\n";
 			echo "    <td><a href=\"$HREF&fh\">".$File["Name"]."</a></td>\n";
-			echo "    <td align=\"center\"><a href=\"$HREF&fv=1&fr=".$File["Head"]."\">".$File["Head"]."</td>\n";
+			echo "    <td align=\"center\"><a href=\"$HREF&fv&fr=".$File["Head"]."\">".$File["Head"]."</td>\n";
 			echo "    <td align=\"center\">".$AGE." ago</td>\n";
 			echo "    <td align=\"center\">".$File["Revisions"][$File["Head"]]["author"]."</td>\n";
 			echo "    <td>".str_replace("\n", "<br>", $File["Revisions"][$File["Head"]]["LogMessage"])."</td>\n";
@@ -258,9 +286,25 @@ function DisplayFileHistory()
 		echo "<h1>History for ".$ModPath."</h1>\n";
 		foreach ($CVSServer->FILES[0]["Revisions"] as $Revision)
 		{
+			$HREF = str_replace("//", "/", "$ScriptName?mp=$ModPath");
 			echo "<hr>\n";
-			echo "Revision <b>".$Revision["Revision"]."</b> - (view) (download)<br>\n";
-			echo "Last Checkin: ".strftime("%A %d %b %Y %T %Z", strtotime($Revision["date"]))." (".CalculateDateDiff(strtotime($Revision["date"]), time())." ago) by ".$Revision["author"]."<br>\n";
+			echo "<b>Revision</b> ".$Revision["Revision"]." -";
+			echo " (<a href=\"$HREF&fv&fr=".$Revision["Revision"]."\">view</a>)";
+			echo " (<a href=\"$HREF&fd&fr=".$Revision["Revision"]."\">download</a>)<br>\n";
+			echo "<b>Last Checkin:</b> ".strftime("%A %d %b %Y %T %Z", strtotime($Revision["date"]))." (".CalculateDateDiff(strtotime($Revision["date"]), time())." ago) by ".$Revision["author"]."<br>\n";
+			echo "<b>Branch:</b> ".$Revision["Branches"]."<br>\n";
+			$DateTime = strtotime($Revision["date"]);
+			echo "<b>Date:</b> ".strftime("%B %d, %Y", $DateTime)."<br>\n";
+			echo "<b>Time:</b> ".strftime("%H:%M:%S", $DateTime)."<br>\n";
+			echo "<b>Author:</b> ".$Revision["author"]."<br>\n";
+			echo "<b>State:</b> ".$Revision["state"]."<br>\n";
+			echo "<b>Log Message:</b><pre>".$Revision["LogMessage"]."</pre>\n";
+
+//			if (($i + 1) < $Elements[0]["TotalRevisions"]) {
+//				echo "Changes since ".$Elements[$i+1]["Revision"].": ";
+//			    echo "+".$Elements[$i]["LinesAdd"]." -".$Elements[$i]["LinesSub"]."<br>\n";
+//			} // End of if (($i + 1) < $Elements[0]["TotalRevisions"])
+
 		}
 		
 		echo "<hr>\n";
