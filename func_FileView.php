@@ -67,8 +67,6 @@ function DisplayFileContents($File, $Revision = "")
 			$geshi->enable_line_numbers(GESHI_NORMAL_LINE_NUMBERS);
 			$geshi->set_line_style('background: #fcfcfc;'); 
 			$geshi->set_tab_width(4);
-//			$geshi->enable_classes();
-//			$geshi->set_overall_class('geshi2');
 			$hlcontent = $geshi->parse_code();
 
 			// Display the file contents.
