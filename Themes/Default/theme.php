@@ -19,7 +19,7 @@ $ParentIcon = "Themes/".$ThemeName."/Images/parent.png";
 $ModuleIcon = "Themes/".$ThemeName."/Images/module.png";
 
 function GetPageHeader($Title="", $Heading="") {
-	global $StartTime, $ThemeName;
+	global $StartTime, $ThemeName, $env;
 	$StartTime = microtime();
 	$PageHead = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">";
 	$PageHead .= "<html><head>";
