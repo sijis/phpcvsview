@@ -2410,4 +2410,63 @@ if ( !function_exists('geshi_highlight') )
 	}
 }
 
+	/**
+	* function: guess_highlighter
+	* ---------------------------
+	* This function attempts to identify the highlighter to use for a 
+	* given file extension.
+	*/
+	function guess_highlighter($fileExtension)
+	{
+		$highlightmappings = array(
+			'as' => 'actionscript',
+			'ada' => 'ada',
+			'conf' => 'apache',
+			'asm' => 'asm',
+			'asp' => 'asp',
+			'sh' => 'bash',
+			'c' => 'c,c_mac,objc',
+			'dcl' => 'caddcl',
+			'lisp' => 'cadlisp,lisp',
+			'cpp' => 'cpp',
+			'c++' => 'cpp',
+			'cxx' => 'cpp',
+			'cs' => 'csharp',
+			'css' => 'css',
+			'pas' => 'delphi,pascal',
+			'htm' => 'html4script',
+			'html' => 'html4script',
+			'java' => 'java',
+			'js' => 'javascript',
+			'lua' => 'lua',
+			'nsi' => 'nsis',
+			'bas' => 'oobas,qbasic',
+			'pl' => 'perl',
+			'php' => 'php,php-brief',
+			'php3' => 'php,php-brief',
+			'php4' => 'php,php-brief',
+			'php5' => 'php,php-brief',
+			'py' => 'python',
+			'tpl' => 'smarty',
+			'sql' => 'sql',
+			'vb' => 'vb,vbnet',
+			'fky' => 'visualfoxpro',
+			'xml' => 'xml'
+		);
+		
+		$highlighter = $highlightmappings[$fileExtension];
+		if ($highlighter == null) {
+		    $highlighter = "";
+		}
+		$pos = strpos($highlighter, ",");
+		if ($pos === false) {
+		    return $highlighter;
+		}
+		else
+		{
+			$arr = explode(",", $highlighter);
+			return $arr;
+		}
+	}
+
 ?>

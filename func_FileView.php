@@ -57,16 +57,24 @@ function DisplayFileContents($File, $Revision = "")
 		if ($config['UseGeSHi']) {
     		// Create the GeSHi instance and parse the output.
 			// TODO: setup code to auto identify the highlighting class to use for current file.
-			$geshi = new GeSHi($CVSServer->FILECONTENTS, "php", $config['GeSHiHighlightersPath']);
+			$FileExt = substr($File, strrpos($File, ".")+1);
+			$Language = guess_highlighter($FileExt);
+			if (is_array($Language)) {
+			    $Language = $Language[0];
+			}
+			
+			$geshi = new GeSHi($CVSServer->FILECONTENTS, $Language, $config['GeSHiHighlightersPath']);
 			$geshi->enable_line_numbers(GESHI_NORMAL_LINE_NUMBERS);
 			$geshi->set_line_style('background: #fcfcfc;'); 
 			$geshi->set_tab_width(4);
-			$geshi->enable_classes();
-			$geshi->set_overall_class('geshi');
+//			$geshi->enable_classes();
+//			$geshi->set_overall_class('geshi2');
 			$hlcontent = $geshi->parse_code();
 
 			// Display the file contents.
+			echo "<table class=\"source\"><tr><td>";
 			echo $hlcontent;
+			echo "</td></tr></table>";
 		}
 		else
 		{
