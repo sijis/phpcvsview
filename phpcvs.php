@@ -1,4 +1,5 @@
 <?php
+error_reporting(E_ALL);
 
 /**
  * This source code is distributed under the terms as layed out in the
@@ -8,7 +9,7 @@
  *
  * @author Brian A Cheeseman <bcheesem@users.sourceforge.net>
  * @version $Id$
- * @copyright 2003-2004 Brian A Cheeseman
+ * @copyright 2003-2005 Brian A Cheeseman
  **/
 
 require_once 'Net/Socket.php';
@@ -58,7 +59,8 @@ class CVS_PServer
 		"Mbinary" => "processMBinary",
 		"E" => "processE",
 		"F" => "processF",
-		"MT" => "processMT");
+		"MT" => "processMT"
+		);
 
 	var $ALLOWED_REQUESTS = array();	// A hashed array of requests we are allowed to send.
 	var $FINAL_RESPONSE;				// A state variable for tracking whether the final response
@@ -72,6 +74,7 @@ class CVS_PServer
 	var $ANNOTATION = array();			// An array of the lines in the file which has been annotated.
 	var $FILECONTENTS = "";				// A string to store the lines of the file contents in.
 	var $INITIALISED = false;			// A boolean to indicate whether we have already sent the Root/ValidRequests/ValidResponses.
+	var $DEBUG = false;					// A boolean to enable/disable debug output
 
 	/**
 	* Allowed Response Decoding functions.
@@ -283,7 +286,7 @@ class CVS_PServer
 
 		// Define our constant array to provide a lookup table for the conversion
 		// of the clear password to cipher text.
-	   	$NewChars = array(
+		$NewChars = array(
 			'!' => 'x',		'8' => '_',		'N' => '[',		'g' => 'I',
 			'"' => '5',		'9' => 'A',		'O' => '#',		'h' => 'c',
 			'%' => 'm',		':' => 'p',		'P' => '}',		'i' => '?',
@@ -362,48 +365,48 @@ class CVS_PServer
 	{
 		// Send the start of authentication request.
 		if ($this->SOCKET->write("BEGIN AUTH REQUEST\n") != true) {
-		    return false;
+			return false;
 		}
 
 		// Send the path to the repository we are attempting to connect to.
 		if ($this->SOCKET->write($this->CVS_REPOSITORY."\n") != true) {
-		    return false;
+			return false;
 		}
 
 		// Send the user name to authenticate with.
 		if ($this->SOCKET->write($this->CVS_USERNAME."\n") != true) {
-		    return false;
+			return false;
 		}
 
 		// Transform and send the password matching the username above.
 		if ($this->SOCKET->write("A".$this->TransformPW($this->CVS_PASSWORD)."\n") != true) {
-		    return false;
+			return false;
 		}
 
 		// Send the terminator for the authentication request.
 		if ($this->SOCKET->write("END AUTH REQUEST\n") != true) {
-		    return false;
+			return false;
 		}
 
 		// Read the next line to determine if we were successful.
 		$response = $this->SOCKET->readLine();
 		if ($response == true && strncmp($response, "I LOVE YOU", 10) == 0) {
-	        return true;
+			return true;
 		} else {
 			// Retrieve the error message from the PServer.
 			$errorMsg = "";
 			while(!$this->SOCKET->eof()){
 				$line = $this->SOCKET->readLine();
 				if (strncmp($line, "E ", 2) == 0) {
-				    $errorMsg .= substr($line, 2);
+					$errorMsg .= substr($line, 2);
 				}
 				if (strncmp($line, "error", 5) == 0) {
-				    $this->SOCKET->disconnect();
+					$this->SOCKET->disconnect();
 				}
 			}
 
 			if ($errorMsg == "") {
-			    return false;
+				return false;
 			} else {
 				return $errorMsg;
 			}
@@ -416,29 +419,28 @@ class CVS_PServer
 	//   Parameters: None.
 	// Return Value: boolean		- Successfully sent.
 	// ***************************************************************************
-	function processResponse($Debug = false)
+	function processResponse()
 	{
 		$this->MESSAGE_CONTENT = "";
 		$this->STDERR = "";
 		$KeepGoing = true;
-		if ($Debug) {
-		    echo "<pre>";
-		}
+		$debugMsg = "";
+
 		while($KeepGoing){
 			$ResponseLine = $this->SOCKET->readLine();
 			$Response = explode(" ", $ResponseLine);
-			if ($Debug) {
-				echo $ResponseLine."\n";
+			if ($this->DEBUG) {
+				$debugMsg .= $ResponseLine."\n";
 			}
 			if ($Response[0] != "") {
 				$Func = $this->ALLOWED_RESPONSES[$Response[0]];
-    			if (method_exists($this, $Func)) {
-				    $KeepGoing = $this->$Func($ResponseLine);
+				if (method_exists($this, $Func)) {
+					$KeepGoing = $this->$Func($ResponseLine);
 				}
 			}
 		}
-		if ($Debug) {
-			echo "</pre>";
+		if ($this->DEBUG) {
+			 CVS_PServer::debug($debug);
 		}
 	}
 
@@ -451,7 +453,7 @@ class CVS_PServer
 	function sendCVSROOT()
 	{
 		if ($this->SOCKET->write("Root ".$this->CVS_REPOSITORY."\n") != true) {
-		    return false;
+			return false;
 		}
 		return true;
 	}
@@ -487,7 +489,7 @@ class CVS_PServer
 
 		// Send the command to the pserver.
 		if ($this->SOCKET->write("Valid-responses".$ValidResponses."\n") != true) {
-		    return false;
+			return false;
 		}
 		return true;
 	}
@@ -501,7 +503,7 @@ class CVS_PServer
 	function sendValidRequests()
 	{
 		if ($this->SOCKET->write("valid-requests\n") != true) {
-		    return false;
+			return false;
 		}
 		$this->processResponse();
 		return true;
@@ -516,9 +518,9 @@ class CVS_PServer
 	function sendUseUnchanged()
 	{
 		if ($this->ALLOWED_REQUESTS["UseUnchanged"] == true) {
-		    if ($this->SOCKET->write("UseUnchanged\n") != true) {
-		        return false;
-		    }
+			if ($this->SOCKET->write("UseUnchanged\n") != true) {
+				return false;
+			}
 		}
 		return true;
 	}
@@ -532,9 +534,9 @@ class CVS_PServer
 	function sendArgument($ArgToSend)
 	{
 		if ($this->ALLOWED_REQUESTS["Argument"] == true) {
-		    if ($this->SOCKET->write("Argument $ArgToSend\n") != true) {
-		        return false;
-		    }
+			if ($this->SOCKET->write("Argument $ArgToSend\n") != true) {
+				return false;
+			}
 		}
 		return true;
 	}
@@ -548,9 +550,9 @@ class CVS_PServer
 	function sendRLog()
 	{
 		if ($this->ALLOWED_REQUESTS["rlog"] == true) {
-		    if ($this->SOCKET->write("rlog\n") != true) {
-		        return false;
-		    }
+			if ($this->SOCKET->write("rlog\n") != true) {
+				return false;
+			}
 		}
 		return true;
 	}
@@ -565,9 +567,9 @@ class CVS_PServer
 	{
 		if ($this->ALLOWED_REQUESTS["Directory"] == true) {
 			if (strncmp($Directory, "/", 1) == 0) {
-			    $Directory = substr($Directory, 1);
+				$Directory = substr($Directory, 1);
 			}
-		    if ($this->SOCKET->write("Directory $Directory\n") == true) {
+			if ($this->SOCKET->write("Directory $Directory\n") == true) {
 				$Line = $this->CVS_REPOSITORY;
 				if ($Directory != ".") {
 					$Line .= "/" . $Directory;
@@ -577,7 +579,7 @@ class CVS_PServer
 				}
 			} else {
 				return false;
-		    }
+			}
 		}
 		return true;
 	}
@@ -591,9 +593,9 @@ class CVS_PServer
 	function sendStaticDirectory()
 	{
 		if ($this->ALLOWED_REQUESTS["Static-directory"] == true) {
-		    if ($this->SOCKET->write("Static-directory\n") != true) {
-		        return false;
-		    }
+			if ($this->SOCKET->write("Static-directory\n") != true) {
+				return false;
+			}
 		}
 		return true;
 	}
@@ -617,9 +619,9 @@ class CVS_PServer
 				$FName = $Name;
 			}
 
-		    if ($this->SOCKET->write("Entry /$FName/$Version/$Conflict/$Options/$TagOrDate\n") != true) {
-		        return false;
-		    }
+			if ($this->SOCKET->write("Entry /$FName/$Version/$Conflict/$Options/$TagOrDate\n") != true) {
+				return false;
+			}
 		}
 		return true;
 	}
@@ -635,14 +637,14 @@ class CVS_PServer
 		if ($this->ALLOWED_REQUESTS["Unchanged"] == true) {
 			$SlashPos = strrpos($Name, "/");
 			if ($SlashPos !== false) {
-			    $BaseFileName = substr($Name, $SlashPos+1);
+				$BaseFileName = substr($Name, $SlashPos+1);
 			} else {
 				$BaseFileName = $Name;
 			}
 
-		    if ($this->SOCKET->write("Unchanged $BaseFileName\n") != true) {
-		        return false;
-		    }
+			if ($this->SOCKET->write("Unchanged $BaseFileName\n") != true) {
+				return false;
+			}
 		}
 		return true;
 	}
@@ -656,9 +658,9 @@ class CVS_PServer
 	function sendAnnotate()
 	{
 		if ($this->ALLOWED_REQUESTS["annotate"] == true) {
-		    if ($this->SOCKET->write("annotate\n") != true) {
-		        return false;
-		    }
+			if ($this->SOCKET->write("annotate\n") != true) {
+				return false;
+			}
 		}
 		return true;
 	}
@@ -672,9 +674,9 @@ class CVS_PServer
 	function sendExpandModules()
 	{
 		if ($this->ALLOWED_REQUESTS["expand-modules"] == true) {
-		    if ($this->SOCKET->write("expand-modules\n") != true) {
-		        return false;
-		    }
+			if ($this->SOCKET->write("expand-modules\n") != true) {
+				return false;
+			}
 		}
 		$this->processResponse();
 		return true;
@@ -689,9 +691,9 @@ class CVS_PServer
 	function sendExportFile()
 	{
 		if ($this->ALLOWED_REQUESTS["export"] == true) {
-		    if ($this->SOCKET->write("export\n") != true) {
-		        return false;
-		    }
+			if ($this->SOCKET->write("export\n") != true) {
+				return false;
+			}
 		}
 		$this->processResponse();
 
@@ -768,27 +770,27 @@ class CVS_PServer
 		}
 
 		if (strncmp($Folder, "/", 1) == 0) {
-		    $Directory = substr($Folder, 1);
+				$Directory = substr($Folder, 1);
 		} else {
 			$Directory = $Folder;
 		}
 
 		if (!$this->sendArgument($Directory)) {
-		    return false;
+			return false;
 		}
 
 		if (!$this->sendRLog()) {
-		    return false;
+			return false;
 		}
 
 		$this->processResponse();
 
 		if (!($this->FINAL_RESPONSE)) {
-		    return $this->RLog(substr($Folder, 1));
+			return $this->RLog(substr($Folder, 1));
 		}
 
 		if ($Folder == "") {
-		    $Folder = "/";
+			$Folder = "/";
 		}
 
 		$DirCount = -1;
@@ -809,7 +811,7 @@ class CVS_PServer
 					// We have the file/dir name, so we can now determine what we are dealing with.
 					$TempLine = substr($Line, 10+strlen($this->CVS_REPOSITORY.$Folder));
 					if (strncmp($TempLine, "/", 1) == 0) {
-					    $TempLine = substr($TempLine, 1);
+						$TempLine = substr($TempLine, 1);
 					}
 					if (($SlashPos = strpos($TempLine, "/")) > 0) {
 						// We have a folder.
@@ -843,7 +845,7 @@ class CVS_PServer
 				}
 				// Lets continue, but only if we have a CurrentDecode type of 2 (ie a file).
 				if ($CurrentDecode == 2) {
-				    // Process for the remaining file attributes.
+					// Process for the remaining file attributes.
 
 					// Head version of file.
 					if (strncmp($Line, "head:", 5) == 0) {
@@ -854,6 +856,7 @@ class CVS_PServer
 					// Default branch.
 					if (strncmp($Line, "branch:", 7) == 0) {
 						$this->FILES[$FileCount]["Branch"] = trim(substr($Line, 8));
+						//$this->FILES[$FileCount]["Branch"] = (strlen($Line) > 7) ? trim(substr($Line, 8)) : "Main";
 						$LineProcessed = true;
 					}
 
@@ -871,7 +874,7 @@ class CVS_PServer
 
 					// Process the symbolic names.
 					if (strncmp($Line, "symbolic names:", 15) == 0) {
-					    $LineProcessed = true;
+						$LineProcessed = true;
 					}
 
 					if (strncmp($Line, "\t", 1) == 0) {
@@ -885,13 +888,13 @@ class CVS_PServer
 
 					// Process the Keyword Substitution.
 					if (strncmp($Line, "keyword substitution:", 21) == 0) {
-					    $this->FILES[$FileCount]["KeywordSubst"] = trim(substr($Line, 22));
+						$this->FILES[$FileCount]["KeywordSubst"] = trim(substr($Line, 22));
 						$LineProcessed = true;
 					}
 
 					// Process the Total Revisions.
 					if (strncmp($Line, "total revisions:", 16) == 0) {
-					    $TempLine = substr($Line, 17);
+						$TempLine = substr($Line, 17);
 						$this->FILES[$FileCount]["TotalRevs"] = trim(substr($TempLine, 0, strpos($TempLine, ";")));
 						$this->FILES[$FileCount]["SelectedRevs"] = trim(substr($TempLine, strpos($TempLine, ";")+22));
 						$LineProcessed = true;
@@ -899,30 +902,40 @@ class CVS_PServer
 
 					// Process the description.
 					if (strncmp($Line, "description:", 12) == 0) {
-					    $this->FILES[$FileCount]["Description"] = trim(substr($Line, 13));
+						$this->FILES[$FileCount]["Description"] = trim(substr($Line, 13));
 						$LineProcessed = true;
 					}
 
 					// Process the individual revision information.
 					if (strncmp($Line, "-------------", 13) == 0) {
-					    $LineProcessed = true;
+						$LineProcessed = true;
 					}
 
 					// Get this revision number.
 					if (strncmp($Line, "revision", 8) == 0) {
-					    $CurrentRevision = substr($Line, 9);
+						$CurrentRevision = substr($Line, 9);
 						$this->FILES[$FileCount]["Revisions"]["$CurrentRevision"]["Revision"] = $CurrentRevision;
 						$this->FILES[$FileCount]["Revisions"]["$CurrentRevision"]["LogMessage"] = "";
+						
+						// hack: set branches default for current version
+						$this->FILES[$FileCount]["Revisions"]["$CurrentRevision"]["Branches"] = "Main";
+
 						if ($PreviousRevision != "") {
 							$this->FILES[$FileCount]["Revisions"]["$PreviousRevision"]["PrevRevision"] = $CurrentRevision;
 						}
+
+						// temporary solution for initial file revision not having a previous version to create a diff
+						if ($CurrentRevision == "1.1") {
+							$this->FILES[$FileCount]["Revisions"]["$CurrentRevision"]["PrevRevision"] = "";
+						}
+
 						$PreviousRevision = $CurrentRevision;
 						$LineProcessed = true;
 					}
 
 					// Get the Date, Author, State and Lines of this revision.
 					if (strncmp($Line, "date:", 5) == 0) {
-					    $Segment = explode(";", $Line);
+						$Segment = explode(";", $Line);
 						foreach($Segment as $Part){
 							$SepPos = trim(strpos($Part, ":"));
 							$Name = trim(substr($Part, 0, $SepPos));
@@ -935,7 +948,8 @@ class CVS_PServer
 					// Get the current revisions branch.
 					if (strncmp($Line, "branches:", 9) == 0) {
 						$this->FILES[$FileCount]["Revisions"]["$CurrentRevision"]["Branches"] = trim(substr($Line, 10));
-					    $LineProcessed = true;
+						//$this->FILES[$FileCount]["Revisions"]["$CurrentRevision"]["Branches"] = (strlen($Line) > 9) ? trim(substr($Line, 10)) : "Main";
+						$LineProcessed = true;
 					}
 
 					// Deal with the new file seperator.
@@ -947,11 +961,11 @@ class CVS_PServer
 					// Get any lines not already processed and assume they are the log message.
 					if (!$LineProcessed) {
 						if (strlen($this->FILES[$FileCount]["Revisions"]["$CurrentRevision"]["LogMessage"]) > 0) {
-						    $this->FILES[$FileCount]["Revisions"]["$CurrentRevision"]["LogMessage"] .= "\n";
+							$this->FILES[$FileCount]["Revisions"]["$CurrentRevision"]["LogMessage"] .= "\n";
 						}
 						$Line = trim($Line);
 						if ($Line != "") {
-						    $this->FILES[$FileCount]["Revisions"]["$CurrentRevision"]["LogMessage"] .= trim($Line);
+							$this->FILES[$FileCount]["Revisions"]["$CurrentRevision"]["LogMessage"] .= trim($Line);
 						}
 					}
 				}
@@ -975,52 +989,52 @@ class CVS_PServer
 		}
 
 		if (!$this->sendUseUnchanged()) {
-		    return false;
+			return false;
 		}
 
 		if (!$this->sendArgument("--")) {
-		    return false;
+			return false;
 		}
 
 		$SlashPos = strrpos($Name, "/");
 		if ($SlashPos > -1) {
-		    $Directory = substr($Name, 0, $SlashPos);
+			$Directory = substr($Name, 0, $SlashPos);
 		} else {
 			$Directory = "/";
 		}
 
 		if (!$this->sendDirectory($Directory)) {
-		    return false;
+			return false;
 		}
 
 		if (!$this->sendStaticDirectory()) {
-		    return false;
+			return false;
 		}
 
 		if (!$this->sendEntry($Name, $Revision)) {
-		    return false;
+			return false;
 		}
 
 		if (!$this->sendUnchanged($Name)) {
-		    return false;
+			return false;
 		}
 
 		if (!$this->sendDirectory(".")) {
-		    return false;
+			return false;
 		}
 
 		if (strncmp($Name, "/", 1) == 0) {
-		    $Arg = substr($Name, 1);
+			$Arg = substr($Name, 1);
 		} else {
 			$Arg = $Name;
 		}
 
 		if (!$this->sendArgument($Arg)) {
-		    return false;
+			return false;
 		}
 
 		if (!$this->sendAnnotate()) {
-		    return false;
+			return false;
 		}
 
 		$this->processResponse();
@@ -1059,53 +1073,53 @@ class CVS_PServer
 		$this->FILECONTENTS = "";
 
 		if (strncmp($FileName, "/", 1) == 0) {
-		    $FName = substr($FileName, 1);
+			$FName = substr($FileName, 1);
 		} else {
 			$FName = $FileName;
 		}
 
 		if (!$this->sendUseUnchanged()) {
-		    return false;
+			return false;
 		}
 
 		if (!$this->sendArgument($FName)) {
-		    return false;
+			return false;
 		}
 
 		if (!$this->sendDirectory(".")) {
-		    return false;
+			return false;
 		}
 
 		if (!$this->sendExpandModules()) {
-		    return false;
+			return false;
 		}
 
 		if (!$this->sendArgument("-N")) {
-		    return false;
+			return false;
 		}
 
 		if (!$this->sendArgument("-D")) {
-		    return false;
+			return false;
 		}
 
 		if (!$this->sendArgument(strftime("%d %b %Y %H:%M:%S -0000", $DateTime))) {
-		    return false;
+			return false;
 		}
 
 		if (!$this->sendArgument("--")) {
-		    return false;
+			return false;
 		}
 
 		if (!$this->sendArgument($FName)) {
-		    return false;
+			return false;
 		}
 
 		if (!$this->sendDirectory(".")) {
-		    return false;
+			return false;
 		}
 
 		if (!$this->sendExportFile()) {
-		    return false;
+			return false;
 		}
 
 		return true;
@@ -1132,10 +1146,10 @@ class CVS_PServer
 		// Process each line of the modules file looking for module definitions.
 		foreach ($Lines as $Line) {
 			if (strncmp($Line, '#', 1) != 0) {
-			    // Process the line.
+				// Process the line.
 				$Elements = explode(" ", $Line);
 				if (count($Elements) > 1) {
-				    $Results[$Elements[0]] = $Elements[1];
+					$Results[$Elements[0]] = $Elements[1];
 				}
 			}
 		}
@@ -1225,7 +1239,8 @@ class CVS_PServer
 	// 				 string			- (optional) options: var_dump, both, print_r
 	// Return Value: void			- none.
 	// ***************************************************************************
-	function debug($foo, $bar = ""){
+	function debug($foo, $bar = "")
+	{
 		echo "<pre>";
 		switch($bar){
 			case "var_dump":
@@ -1236,8 +1251,9 @@ class CVS_PServer
 				echo print_r($foo);
 				break;
 			case "print_r":
-			default:
 				echo print_r($foo);
+			default:
+				echo $foo;
 		}
 		echo '</pre>';
 	}
