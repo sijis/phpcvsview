@@ -15,10 +15,6 @@ function DisplayFileHistory()
 {
 	global $config, $env, $lang, $CVSServer;
 
-	// Calculate the path from the $env['script_name'] variable.
-	$env['script_path'] = substr($env['script_name'], 0, strrpos($env['script_name'], '/'));
-	$env['script_path'] = (empty($env['script_path']))? '/' : $env['script_path'];
-
 	// Create our CVS connection object and set the required properties.
 	$CVSServer = new CVS_PServer($env['CVSSettings']['cvsroot'], $env['CVSSettings']['server'], $env['CVSSettings']['username'], $env['CVSSettings']['password']);
 
@@ -40,7 +36,7 @@ function DisplayFileHistory()
 		$Files = $CVSServer->FILES;
 
 		// Add the quick link navigation bar.
-		echo GetQuickLinkBar($env['mod_path'], $lang['rev_history'], false, true, "");
+		echo GetQuickLinkBar($lang['rev_history'], false, true, "");
 
 		foreach ($CVSServer->FILES[0]["Revisions"] as $Revision) {
 			$HREF = str_replace('//', '/', $env['script_name'].'?mp='.$env['mod_path']);
