@@ -19,7 +19,7 @@
  
 // The CVSROOT path to access. For sourceforge you need the usual expansion 
 // of the path based on the project name.
-$CVSROOT = "/cvsroot/p/ph/phpcvsview/";
+$CVSROOT = "/cvsroot/p/ph/phpcvsview";
 
 // The hostname (or IP Address) of the server providing the PServer services.
 $PServer = "cvs.sourceforge.net";
@@ -29,6 +29,15 @@ $UserName = "anonymous";
 
 // The password associated with the username above for authentication process.
 $Password = "";
+
+// The HTMLTitle and HTMLHeading are used purely for the generation of the 
+// resultant web pages.
+$HTMLTitle = "PHPCVSViewer Source Code Library";
+$HTMLHeading = "";
+
+$HTMLTblHdBg  = "#CCCCCC";
+$HTMLTblCell1 = "#FFFFFF";
+$HTMLTblCell2 = "#CCCCEE";
 
 /**
  * 
@@ -51,9 +60,9 @@ function microtime_diff($a, $b) {
 } // End of function microtime_diff($a, $b)
 
 function DisplayDirListing() {
-	global $REPOS, $CVSROOT, $PServer, $UserName, $Password, $ScriptName;
+	global $REPOS, $CVSROOT, $PServer, $UserName, $Password, $ScriptName, $HTMLTitle, $HTMLHeading, $HTMLTblHdBg, $HTMLTblCell1, $HTMLTblCell2;
 	$CVSServer = new phpcvs($CVSROOT, $PServer, $UserName, $Password);
-	echo GetPageHeader("phpCVSView CVS Repository", "phpCVSView CVS Repository");
+	echo GetPageHeader($HTMLTitle, $HTMLHeading);
 	if ($CVSServer->ConnectTcpAndLogon()) {
 		$CVSServer->SendRoot();
 		$CVSServer->SendValidResponses();
@@ -61,28 +70,30 @@ function DisplayDirListing() {
 		$Elements = $CVSServer->RLOGDir($REPOS);
 		$FileOut = "";
 		echo "<HR>\n";
-		echo "<TABLE BORDER=\"0\" CELLPADDING=\"2\" CELLSPACING=\"1\" WIDTH=\"100%\">\n";
-		echo "  <TR BGCOLOR=\"#CCFFCC\">\n    <TH>File</TH>\n    <TH>Rev.</TH>\n    <TH>Age</TH>\n    <TH>Author</TH>\n    <TH>Last Log Entry</TH>\n  </TR>\n";
-		$BGColor = "#FFFFFF";
+		echo "<TABLE BORDER=\"0\" CELLPADDING=\"4\" CELLSPACING=\"0\" WIDTH=\"100%\">\n";
+		echo "  <TR BGCOLOR=\"$HTMLTblHdBg\">\n    <TH>File</TH>\n    <TH>Rev.</TH>\n    <TH>Age</TH>\n    <TH>Author</TH>\n    <TH>Last Log Entry</TH>\n  </TR>\n";
+		$BGColor = $HTMLTblCell1;
 		if (strcmp($REPOS, "/") != 0) {
-		    echo "  <TR BGCOLOR=\"$BGColor\" COLSPAN=\"5\">\n    <TD><A HREF=\"$ScriptName?CVSROOT=";
+		    echo "  <TR BGCOLOR=\"$BGColor\" >\n    <TD><A HREF=\"$ScriptName?CVSROOT=";
 			$UpDirPath = substr($REPOS, 0, strlen($REPOS)-1);
 			echo strrev(strchr(strrev($UpDirPath), "/"));
-			echo "\"><IMG SRC=\"/icons/back.gif\" border=\"0\">&nbsp;Parent&nbsp;Directory</A>&nbsp;</TD>\n";
-			$BGColor="#CCCCFF";
+			echo "\"><IMG SRC=\"/icons/back.gif\" border=\"0\">&nbsp;Parent&nbsp;Directory</A>&nbsp;</TD><TD></TD><TD></TD><TD></TD><TD></TD>\n";
+			$BGColor = $HTMLTblCell2;
 		} // End of if (strcmp($REPOS, "/") != 0)
 		while(list($key, $val) = each($Elements)){
 			if ($val == "DIR") {
-				echo "  <TR BGCOLOR=\"$BGColor\">\n";
-				echo "    <TD><A HREF=\"$ScriptName?CVSROOT=$REPOS".substr($key, 0, strlen($key))."\">";
-				echo "<IMG SRC=\"/icons/dir.gif\" WIDTH=\"20\" HEIGHT=\"22\" border=\"0\">&nbsp;".$key."</A></TD>\n";
-				echo "    <TD>&nbsp;</TD>\n    <TD>&nbsp;</TD>\n    <TD>&nbsp;</TD>\n    <TD>&nbsp;</TD>\n";
-				echo "  </TR>\n";
-				if (strcmp($BGColor, "#FFFFFF") == 0) {
-				    $BGColor = "#CCCCFF";
-				} else { // Else of if (strcmp($BGColor, "#FFFFFF") == 0)
-					$BGColor = "#FFFFFF";
-				} // End of if (strcmp($BGColor, "#FFFFFF") == 0)
+				if (strpos($key, "CVSROOT") === false) {
+					echo "  <TR BGCOLOR=\"$BGColor\">\n";
+					echo "    <TD><A HREF=\"$ScriptName?CVSROOT=$REPOS".substr($key, 0, strlen($key))."\">";
+					echo "<IMG SRC=\"/icons/dir.gif\" WIDTH=\"20\" HEIGHT=\"22\" border=\"0\">&nbsp;".$key."</A></TD>\n";
+					echo "    <TD>&nbsp;</TD>\n    <TD>&nbsp;</TD>\n    <TD>&nbsp;</TD>\n    <TD>&nbsp;</TD>\n";
+					echo "  </TR>\n";
+					if (strcmp($BGColor, $HTMLTblCell1) == 0) {
+					    $BGColor = $HTMLTblCell2;
+					} else { // Else of if (strcmp($BGColor, "#FFFFFF") == 0)
+						$BGColor = $HTMLTblCell1;
+					} // End of if (strcmp($BGColor, "#FFFFFF") == 0)
+				}
 			} // End of if ($val == "DIR")
 		} // End of while(list($key, $val) = each($Elements))
 		reset($Elements);
@@ -96,10 +107,10 @@ function DisplayDirListing() {
 				$FileOut .= "    <TD>&nbsp;".$val["AUTHOR"]."&nbsp;</TD>\n";
 				$FileOut .= "    <TD>".str_replace("\n", "<BR>", substr($val["LOG"], 0, strlen($val["LOG"])-1))."</TD>\n";
 				$FileOut .= "  </TR>\n";
-				if (strcmp($BGColor, "#FFFFFF") == 0) {
-				    $BGColor = "#CCCCFF";
+				if (strcmp($BGColor, $HTMLTblCell1) == 0) {
+				    $BGColor = $HTMLTblCell2;
 				} else { // End of if (strcmp($BGColor, "#FFFFFF") == 0)
-					$BGColor = "#FFFFFF";
+					$BGColor = $HTMLTblCell1;
 				} // End of if (strcmp($BGColor, "#FFFFFF") == 0)
 			} // End of if ($val != "DIR"
 		} // End of while(list($key, $val) = each($Elements))
@@ -113,9 +124,9 @@ function DisplayDirListing() {
 } // End of function DisplayDirListing()
 
 function DisplayFileHistory($FileName) {
-	global $REPOS, $CVSROOT, $PServer, $UserName, $Password, $ScriptName;
+	global $REPOS, $CVSROOT, $PServer, $UserName, $Password, $ScriptName, $HTMLTitle, $HTMLHeading;
 	$CVSServer = new phpcvs($CVSROOT, $PServer, $UserName, $Password);
-	echo GetPageHeader("phpCVSView CVS Repository", "phpCVSView CVS Repository");
+	echo GetPageHeader($HTMLTitle, $HTMLHeading);
 	if ($CVSServer->ConnectTcpAndLogon()) {
 		$CVSServer->SendRoot();
 		$CVSServer->SendValidResponses();
@@ -124,17 +135,17 @@ function DisplayFileHistory($FileName) {
 		echo "<H3>Revision History for '".$REPOS.$_GET["ShowHist"]."'</H3>";
 		for ($i = 1; $i <= $Elements[0]["TotalRevisions"]; $i++) {
 			echo "<HR>\n";
-		    echo "Revision: ".$Elements[$i]["Revision"]."&nbsp;&nbsp;";
+		    echo "<B>Revision</b>: ".$Elements[$i]["Revision"]."&nbsp;&nbsp;";
 			echo "[<A HREF=\"$ScriptName?CVSROOT=$REPOS&ShowFile=".$FileName."&Rev=".$Elements[$i]["Revision"]."\">View";
 			echo "</a>]&nbsp;&nbsp;";
 			echo "[<A HREF=\"$ScriptName?CVSROOT=$REPOS&DownloadFile=".$FileName."&Rev=".$Elements[$i]["Revision"]."\">Download";
 			echo "</a>]";
 			echo "<BR>\n";
-			echo "Branch: Yet to identify.<BR>\n";
-			echo "Date: ".$Elements[$i]["Date"]."<BR>\n";
-			echo "Time: ".$Elements[$i]["Time"]."<BR>\n";
-			echo "Author: ".$Elements[$i]["Author"]."<BR>\n";
-			echo "State: ".$Elements[$i]["State"]."<BR>\n";
+			echo "<b>Branch</b>: Yet to identify.<BR>\n";
+			echo "<b>Date</b>: ".$Elements[$i]["Date"]."<BR>\n";
+			echo "<b>Time</b>: ".$Elements[$i]["Time"]."<BR>\n";
+			echo "<b>Author</b>: ".$Elements[$i]["Author"]."<BR>\n";
+			echo "<b>State</b>: ".$Elements[$i]["State"]."<BR>\n";
 			if (($i + 1) < $Elements[0]["TotalRevisions"]) {
 				echo "Changes since ".$Elements[$i+1]["Revision"].": ";
 			    echo "+".$Elements[$i]["LinesAdd"]." -".$Elements[$i]["LinesSub"]."<br>\n";
@@ -150,28 +161,31 @@ function DisplayFileHistory($FileName) {
 } // End of function DisplayFileHistory()
 
 function DisplayFile() {
-	global $REPOS, $CVSROOT, $PServer, $UserName, $Password, $FileToView, $FileRev;
+	global $REPOS, $CVSROOT, $PServer, $UserName, $Password, $FileToView, $FileRev, $HTMLTitle, $HTMLHeading;
 	$CVSServer = new phpcvs($CVSROOT, $PServer, $UserName, $Password);
-	echo GetPageHeader("phpCVSView CVS Repository", "phpCVSView CVS Repository");
+	echo GetPageHeader($HTMLTitle, $HTMLHeading);
 	if ($CVSServer->ConnectTcpAndLogon()) {
 		$CVSServer->SendRoot();
 		$CVSServer->SendValidResponses();
 		$CVSServer->SendValidRequests();
-		echo "<H3>File Contents for Revision ".$FileRev." of '".$REPOS.$FileToView."'</H3>";
+		echo "<H3>File Contents for Revision ".$FileRev." of '".$REPOS.$FileToView."'</H3><HR>";
 		$Elements = $CVSServer->ViewFile($FileToView, $FileRev, $REPOS);
 		if (strpos($FileToView, ".php")) {
-		    $OutText = highlight_string($Elements["CONTENT"], true);
-			$OutText = str_replace("<code>", "<pre>", $OutText);
+			$OutText = highlight_string($Elements["CONTENT"], true);
+	 		$OutText = str_replace("<code>", "<pre>", $OutText);
 			$OutText = str_replace("</code>", "</pre>", $OutText);
-			echo $OutText;
+		    echo $OutText;
 		} else { // Else of if (strpos($FileToView, ".php"))
-			$Find = array("\r", "\n", " ", "\t");
-			$Repl = array("", "<BR>", "&nbsp;", "&nbsp;&nbsp;&nbsp;&nbsp;");
-			echo "<pre>".str_replace($Find, $Repl, $Elements["CONTENT"])."</pre>";
+			$Find = array("<", ">", "\r", "\n", " ", "\t");
+			$Repl = array("&lt;", "&gt;", "", "<BR>", "&nbsp;", "&nbsp;&nbsp;&nbsp;&nbsp;");
+			$Output = "<pre>".str_replace($Find, $Repl, $Elements["CONTENT"])."</pre>";
+			$Find = array("<BR><BR>");
+			$Repl = array("<BR>&nbsp;<BR>");
+			echo str_replace($Find, $Repl, $Output);
 		} // End of if (strpos($FileToView, ".php"))
 		$CVSServer->DisconnectTcp();
 	} // End of if ($CVSServer->ConnectTcpAndLogon())
-	echo GetPageFooter();
+	echo "<HR>".GetPageFooter();
 } // End of function DisplayFile()
 
 function DownloadFile() {

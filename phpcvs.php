@@ -192,7 +192,7 @@ class phpcvs {
 			while(strncmp($RecvLN, "ok", 2) != 0){
 				$RecvLN = fgets($this->SOCKET_HANDLE);
 				if (strncmp($RecvLN, "M \n", 3) == 0) {
-				    $FileName = fgets($this->SOCKET_HANDLE, 12+strlen($this->CVS_REPOSITORY.$Module));
+				    $FileName = fgets($this->SOCKET_HANDLE, 13+strlen($this->CVS_REPOSITORY.$Module));
 					if (strncmp($FileName, "M RCS file", 10) == 0) {
 						$FileName = fgets($this->SOCKET_HANDLE, 8192);
 						if (strpos($FileName, '/') > 0) {
