@@ -70,6 +70,7 @@ class CVS_PServer {
 	var $CURRENT_FILE;					// The current file we are building up.
 	var $ANNOTATION = array();			// An array of the lines in the file which has been annotated.
 	var $FILECONTENTS = "";				// A string to store the lines of the file contents in.
+	var $INITIALISED = false;			// A boolean to indicate whether we have already sent the Root/ValidRequests/ValidResponses.
 	
 	/**
 	* Allowed Response Decoding functions.
@@ -674,14 +675,9 @@ class CVS_PServer {
 		// Here the first line is the length, the remaining (upto the 'ok')
 		// is the content of the file.
 		if ($this->FINAL_RESPONSE) {
+			$ContentLength = $this->SOCKET->readLine();
+			$this->FILECONTENTS = $this->SOCKET->read($ContentLength);
 			$ReadLine = $this->SOCKET->readLine();
-			$ReadLine = $this->SOCKET->readLine();
-			$Counter = 0;
-			while($ReadLine != "ok"){
-				$this->FILECONTENTS .= $ReadLine."\n";
-				$ReadLine = $this->SOCKET->readLine();
-			} // while
-	
 			return true;
 		}
 		else
@@ -702,15 +698,26 @@ class CVS_PServer {
 	// ***************************************************************************
 	function RLog($Folder)
 	{
-		$this->sendCVSROOT();
-		$this->sendValidResponses();
-		$this->sendValidRequests();
+		if (!($this->INITIALISED)) {
+			$this->sendCVSROOT();
+			$this->sendValidResponses();
+			$this->sendValidRequests();
+			$this->INITIALISED = true;
+		}
 	
 		if (!$this->sendUseUnchanged()) {
 		    return false;
 		}
 		
-		if (!$this->sendArgument($Folder)) {
+		if (strncmp($Folder, "/", 1) == 0) {
+		    $Directory = substr($Folder, 1);
+		}
+		else
+		{
+			$Directory = $Folder;
+		}
+		
+		if (!$this->sendArgument($Directory)) {
 		    return false;
 		}
 
@@ -899,9 +906,12 @@ class CVS_PServer {
 	// ***************************************************************************
 	function Annotate($Name, $Revision = "")
 	{
-		$this->sendCVSROOT();
-		$this->sendValidResponses();
-		$this->sendValidRequests();
+		if (!($this->INITIALISED)) {
+			$this->sendCVSROOT();
+			$this->sendValidResponses();
+			$this->sendValidRequests();
+			$this->INITIALISED = true;
+		}
 	
 		if (!$this->sendUseUnchanged()) {
 		    return false;
@@ -983,9 +993,12 @@ class CVS_PServer {
 	// ***************************************************************************
 	function ExportFile($FileName, $DateTime)
 	{
-		$this->sendCVSROOT();
-		$this->sendValidResponses();
-		$this->sendValidRequests();
+		if (!($this->INITIALISED)) {
+			$this->sendCVSROOT();
+			$this->sendValidResponses();
+			$this->sendValidRequests();
+			$this->INITIALISED = true;
+		}
 	
 		if (strncmp($FileName, "/", 1) == 0) {
 		    $FName = substr($FileName, 1);
