@@ -11,8 +11,8 @@
  * @copyright 2003-2004 Brian A Cheeseman
  **/
 
-if ($config['UseGeSHi']) {
-    include_once($config['GeSHiPath'].'/geshi.php');
+if ($config['GeSHi']['Use']) {
+    include_once($config['GeSHi']['Path'].'/geshi.php');
 }
 
 function DisplayFileContents($File, $Revision = "")
@@ -54,7 +54,7 @@ function DisplayFileContents($File, $Revision = "")
 
 		echo "<hr />\n";
 
-		if ($config['UseGeSHi']) {
+		if ($config['GeSHi']['Use']) {
     		// Create the GeSHi instance and parse the output.
 			// TODO: setup code to auto identify the highlighting class to use for current file.
 			$FileExt = substr($File, strrpos($File, ".")+1);
@@ -63,7 +63,7 @@ function DisplayFileContents($File, $Revision = "")
 			    $Language = $Language[0];
 			}
 			
-			$geshi = new GeSHi($CVSServer->FILECONTENTS, $Language, $config['GeSHiHighlightersPath']);
+			$geshi = new GeSHi($CVSServer->FILECONTENTS, $Language, $config['GeSHi']['HighlightersPath']);
 			$geshi->enable_line_numbers(GESHI_NORMAL_LINE_NUMBERS);
 			$geshi->set_line_style('background: #fcfcfc;'); 
 			$geshi->set_tab_width(4);

@@ -30,8 +30,9 @@ $config['html_title'] = "phpCVSView Source Code Library";
 $config['html_header'] = "phpCVSView Source Code Library";
 
 // Setup whether to use GeSHi project code for syntax highlighting or not.
-$config['UseGeSHi'] = true;
-$config['GeSHiPath'] = "geshi";
-$config['GeSHiHighlightersPath'] = "geshi/geshi";
+$config['GeSHi']['Enable'] = true;
+$config['GeSHi']['Path'] = "geshi";
+$config['GeSHi']['HighlightersPath'] = "geshi/geshi";
 
 ?>
+
