@@ -42,7 +42,9 @@ function DisplayFileHistory()
 
 		$Files = $CVSServer->FILES;
 		
-		echo "<h1>History for ".$ModPath."</h1>\n";
+		// Add the quick link navigation bar.
+		echo GetQuickLinkBar($ModPath, "Revision History for: ", false, true, "");
+
 		foreach ($CVSServer->FILES[0]["Revisions"] as $Revision)
 		{
 			$HREF = str_replace("//", "/", "$ScriptName?mp=$ModPath");
