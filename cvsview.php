@@ -64,13 +64,15 @@ function microtime_diff($a, $b) {
 function CalculateDateDiff($DateEarlier, $DateLater)
 {
 	$DateDiff = $DateLater - $DateEarlier;
-	$Years = floor($DateDiff/365/60/60/24);
-	$Weeks = floor($DateDiff/60/60/24/7);
-	$Days = floor($DateDiff/60/60/24);
-	$Hours = floor($DateDiff/60/60);
-	$Minutes = floor($DateDiff/60);
-	if ($DateDiff > 0) {
-	    $Result = $DateDiff . " Second";
+	$Seconds = $DateDiff;
+	$Minutes = floor($Seconds/60);
+	$Hours = floor($Minutes/60);
+	$Days = floor($Hours/24);
+	$Weeks = floor($Days/7);
+	$Years = floor($Days/365);
+
+	if ($Seconds > 0) {
+	    $Result = $Seconds . " Second";
 		if ($DateDiff > 1) {
 		    $Result .= "s";
 		}
