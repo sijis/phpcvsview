@@ -24,6 +24,11 @@ $config['username'] = "anonymous";
 // The password associated with the username above for authentication process.
 $config['password'] = "";
 
+// The HTMLTitle and HTMLHeading are used purely for the generation of the
+// resultant web pages.
+$config['html_title'] = "phpCVSView Source Code Library";
+$config['html_header'] = "phpCVSView Source Code Library";
+
 // Setup whether to use GeSHi project code for syntax highlighting or not.
 $config['UseGeSHi'] = true;
 $config['GeSHiPath'] = "geshi";
