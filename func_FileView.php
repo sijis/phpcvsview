@@ -4,14 +4,14 @@
  * This source code is distributed under the terms as layed out in the
  * GNU General Public License.
  *
- * Purpose: To provide File Annotation Page.
+ * Purpose: To provide File View Page.
  *
  * @author Brian A Cheeseman <bcheesem@users.sourceforge.net>
  * @version $Id$
  * @copyright 2003-2004 Brian A Cheeseman
  **/
 
-function DisplayFileAnnotation($File, $Revision = "") {
+function DisplayFileContents($File, $Revision = "") {
 	global $ModPath, $CVSROOT, $PServer, $UserName, $Password, $ScriptName, 
 	       $HTMLTitle, $HTMLHeading, $HTMLTblHdBg, $HTMLTblCell1, $HTMLTblCell2;
 
@@ -36,34 +36,47 @@ function DisplayFileAnnotation($File, $Revision = "") {
 			return;
 		}
 		
-		// Annotate the file.
-		$Response = $CVSServer->Annotate($File, $Revision);
+		// Get a RLOG of the module path specified in $ModPath.
+		$CVSServer->RLog($ModPath);
+		
+		// "Export" the file.
+		$Response = $CVSServer->ExportFile($File, $Revision);
 		if ($Response !== true) {
 		    return;
 		}
 		
-		//print_r($CVSServer->ANNOTATION);
-
-		// Start the output for the table.
-		echo "<hr>\n";
-		echo "<table border=\"0\" cellpadding=\"2\" cellspacing=\"0\" width=\"100%\">\n";
-		$BGColor = $HTMLTblCell1;
-
-		$search = array('<', '>', '\n'); 
-		$replace = array("&lt;", "&gt;", ""); 
-		foreach ($CVSServer->ANNOTATION as $Annotation)
-		{
-			echo "<tr bgcolor=\"$BGColor\"><td nowrap><pre>".$Annotation["Revision"]."</pre></td><td nowrap><pre>".$Annotation["Author"];
-			echo "</pre></td><td nowrap><pre>".$Annotation["Date"]."</pre></td><td nowrap><pre>".str_replace($search, $replace, $Annotation["Line"])."</pre></td></tr>\n";
-			if ($BGColor == $HTMLTblCell1) {
-			    $BGColor = $HTMLTblCell2;
+		// Start the output for the file.
+		$Dirs = explode("/", $ModPath);
+		echo "Navigate to: <a href=\"$ScriptName\">Root</a>&nbsp;";
+		$intCount = 1;
+		while($intCount < count($Dirs)){
+			echo "/&nbsp;<a href=\"$ScriptName?mp=".ImplodeToPath($Dirs, "/", $intCount);
+			if ($intCount == (count($Dirs) - 1)) {
+				echo "&fh#$Revision";
 			}
 			else
 			{
-				$BGColor = $HTMLTblCell1;
+			    echo "/";
 			}
+			echo "\">".$Dirs[$intCount]."</a>&nbsp;";
+			$intCount++;
+		} // while
+		echo "<br>\n";
+		
+		
+		// Display the file contents.
+		echo "<hr>\n";
+		if (strpos($File, ".php")) {
+		    echo highlight_string($CVSServer->FILECONTENTS, true);
 		}
-		echo "</table>\n";
+		else
+		{
+			$search = array('<', '>', '\n'); 
+			$replace = array("&lt;", "&gt;", ""); 
+			echo "<pre>\n";
+			echo str_replace($search, $replace, $CVSServer->FILECONTENTS)."\n";
+			echo "</pre>\n";
+		}
 		
 		// Close the connection.
 		$CVSServer->Disconnect();

@@ -47,14 +47,14 @@ function DisplayFileHistory()
 		{
 			$HREF = str_replace("//", "/", "$ScriptName?mp=$ModPath");
 			$DateTime = strtotime($Revision["date"]);
-			echo "<hr>\n";
+			echo "<a name=\"$DateTime\"><hr>\n";
 			echo "<b>Revision</b> ".$Revision["Revision"]." -";
 			echo " (<a href=\"$HREF&fv&dt=$DateTime\">view</a>)";
 			echo " (<a href=\"$HREF&fd&dt=$DateTime\">download</a>)";
 			echo " (<a href=\"$HREF&df&r1=".strtotime($Revision["date"])."&r2=";
 			echo strtotime($CVSServer->FILES[0]["Revisions"][$Revision["PrevRevision"]]["date"])."\">diff to previous</a>)";
 			echo " (<a href=\"$HREF&fa=".$Revision["Revision"]."\">annotate</a>)<br>\n";
-			echo "<b>Last Checkin:</b> ".strftime("%A %d %b %Y %T -0000", strtotime($Revision["date"]))." (".CalculateDateDiff(strtotime($Revision["date"]), time())." ago)<br>\n";
+			echo "<b>Last Checkin:</b> ".strftime("%A %d %b %Y %T -0000", strtotime($Revision["date"]))." (".CalculateDateDiff(strtotime($Revision["date"]), strtotime(gmdate("M d Y H:i:s")))." ago)<br>\n";
 			echo "<b>Branch:</b> ".$Revision["Branches"]."<br>\n";
 			echo "<b>Date:</b> ".strftime("%B %d, %Y", $DateTime)."<br>\n";
 			echo "<b>Time:</b> ".strftime("%H:%M:%S", $DateTime)."<br>\n";

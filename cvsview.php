@@ -36,6 +36,7 @@ require_once 'utils.php';
 require_once 'func_DirListing.php';
 require_once 'func_FileHistory.php';
 require_once 'func_FileAnnotation.php';
+require_once 'func_FileView.php';
 
 		
 // Check for a module path
@@ -56,7 +57,13 @@ else
 	}
 	else
 	{
-		DisplayDirListing();
+		if (isset($_GET["fv"])) {
+		    DisplayFileContents($ModPath, $_GET["dt"]);
+		}
+		else
+		{
+			DisplayDirListing();
+		}
 	}
 }
 

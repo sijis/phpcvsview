@@ -94,7 +94,7 @@ function DisplayDirListing() {
 		{
 			$HREF = str_replace("//", "/", "$ScriptName?mp=$ModPath/".$File["Name"]); 
 			$DateTime = strtotime($File["Revisions"][$File["Head"]]["date"]);
-			$AGE = CalculateDateDiff($DateTime, time());
+			$AGE = CalculateDateDiff($DateTime, strtotime(gmdate("M d Y H:i:s")));
 			echo "  <tr bgcolor=\"$BGColor\" valign=\"top\">\n";
 			echo "    <td align=\"center\" valign=\"center\"><a href=\"$HREF&fh\"><img border=\"0\" src=\"$ScriptPath/images/file.png\"></a></td>\n";
 			echo "    <td><a href=\"$HREF&fh\">".$File["Name"]."</a></td>\n";

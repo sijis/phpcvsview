@@ -69,6 +69,7 @@ class CVS_PServer {
 	var $CURRENT_FOLDER;				// The current folder we are building up.
 	var $CURRENT_FILE;					// The current file we are building up.
 	var $ANNOTATION = array();			// An array of the lines in the file which has been annotated.
+	var $FILECONTENTS = "";				// A string to store the lines of the file contents in.
 	
 	/**
 	* Allowed Response Decoding functions.
@@ -140,6 +141,55 @@ class CVS_PServer {
 	{
 		$this->MESSAGE_CONTENT .= substr($LineOfText, 2) . "\n";
 		return true;
+	}
+	
+	// ***************************************************************************
+	//     Function: processClearSticky()
+	//       Author: Brian A Cheeseman.
+	//   Parameters: string			- Line of response text.
+	// Return Value: boolean		- Are we expecting more responses to come in?
+	// ***************************************************************************
+	function processClearSticky($LineOfText)
+	{
+		$this->SOCKET->readLine();
+		return true;
+	}
+	
+	// ***************************************************************************
+	//     Function: processSetStaticDirectory()
+	//       Author: Brian A Cheeseman.
+	//   Parameters: string			- Line of response text.
+	// Return Value: boolean		- Are we expecting more responses to come in?
+	// ***************************************************************************
+	function processSetStaticDirectory($LineOfText)
+	{
+		$this->SOCKET->readLine();
+		return true;
+	}
+	
+	// ***************************************************************************
+	//     Function: processModTime()
+	//       Author: Brian A Cheeseman.
+	//   Parameters: string			- Line of response text.
+	// Return Value: boolean		- Are we expecting more responses to come in?
+	// ***************************************************************************
+	function processModTime($LineOfText)
+	{
+		return true;
+	}
+	
+	// ***************************************************************************
+	//     Function: processCreated()
+	//       Author: Brian A Cheeseman.
+	//   Parameters: string			- Line of response text.
+	// Return Value: boolean		- Are we expecting more responses to come in?
+	// ***************************************************************************
+	function processCreated($LineOfText)
+	{
+		$this->SOCKET->readLine();
+		$this->SOCKET->readLine();
+		$this->SOCKET->readLine();
+		return false;
 	}
 	
 	/**
@@ -589,6 +639,57 @@ class CVS_PServer {
 		return true;
 	}
 	
+	// ***************************************************************************
+	//     Function: sendExpandModules()
+	//       Author: Brian A Cheeseman.
+	//   Parameters: None.
+	// Return Value: boolean		- Successfully sent.
+	// ***************************************************************************
+	function sendExpandModules()
+	{
+		if ($this->ALLOWED_REQUESTS["expand-modules"] == true) {
+		    if ($this->SOCKET->write("expand-modules\n") != true) {
+		        return false;
+		    }
+		}
+		$this->processResponse();
+		return true;
+	}
+	
+	// ***************************************************************************
+	//     Function: sendExportFile()
+	//       Author: Brian A Cheeseman.
+	//   Parameters: None.
+	// Return Value: boolean		- Successfully sent.
+	// ***************************************************************************
+	function sendExportFile()
+	{
+		if ($this->ALLOWED_REQUESTS["export"] == true) {
+		    if ($this->SOCKET->write("export\n") != true) {
+		        return false;
+		    }
+		}
+		$this->processResponse();
+		
+		// Here the first line is the length, the remaining (upto the 'ok')
+		// is the content of the file.
+		if ($this->FINAL_RESPONSE) {
+			$ReadLine = $this->SOCKET->readLine();
+			$ReadLine = $this->SOCKET->readLine();
+			$Counter = 0;
+			while($ReadLine != "ok"){
+				$this->FILECONTENTS .= $ReadLine."\n";
+				$ReadLine = $this->SOCKET->readLine();
+			} // while
+	
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
 	/**
 	* Helper Methods.
 	**/
@@ -868,6 +969,74 @@ class CVS_PServer {
 				$this->ANNOTATION[$Counter]["Line"] = substr(strtok("\n"), 2);
 				$Counter++;
 			}			
+		}
+		
+		return true;
+	}
+
+	// ***************************************************************************
+	//     Function: ExportFile()
+	//       Author: Brian A Cheeseman.
+	//   Parameters: string			- Name of file to export.
+	// 				 integer		- Date/Time of revision to export.
+	// Return Value: boolean		- Were we successful.
+	// ***************************************************************************
+	function ExportFile($FileName, $DateTime)
+	{
+		$this->sendCVSROOT();
+		$this->sendValidResponses();
+		$this->sendValidRequests();
+	
+		if (strncmp($FileName, "/", 1) == 0) {
+		    $FName = substr($FileName, 1);
+		}
+		else
+		{
+			$FName = $FileName;
+		}
+		
+		if (!$this->sendUseUnchanged()) {
+		    return false;
+		}
+		
+		if (!$this->sendArgument($FName)) {
+		    return false;
+		}
+		
+		if (!$this->sendDirectory(".")) {
+		    return false;
+		}
+		
+		if (!$this->sendExpandModules()) {
+		    return false;
+		}
+
+		if (!$this->sendArgument("-N")) {
+		    return false;
+		}
+		
+		if (!$this->sendArgument("-D")) {
+		    return false;
+		}
+		
+		if (!$this->sendArgument(strftime("%d %b %Y %T -0000", $DateTime))) {
+		    return false;
+		}
+		
+		if (!$this->sendArgument("--")) {
+		    return false;
+		}
+		
+		if (!$this->sendArgument($FName)) {
+		    return false;
+		}
+		
+		if (!$this->sendDirectory(".")) {
+		    return false;
+		}
+		
+		if (!$this->sendExportFile()) {
+		    return false;
 		}
 		
 		return true;
