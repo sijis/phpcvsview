@@ -17,7 +17,7 @@ function postBackDiffRequest(form)
 {
 	var ddRev1=form.DiffRev1.value;
 	var ddRev2=form.DiffRev2.value;
-	if (ddRev1 > ddRev2)
+	if (form.DiffRev1.selectedIndex < form.DiffRev2.selectedIndex)
 	{
 		// Swap the values.
 		var ddTemp = ddRev1;
@@ -31,6 +31,7 @@ function postBackDiffRequest(form)
 	else
 	{
 		var dfDiffReq=form.URLDiffReq.value;
+		alert('Redirecting to: '+dfDiffReq+'&r1='+ddRev1+'&r2='+ddRev2+'&df');
 		location=dfDiffReq+'&r1='+ddRev1+'&r2='+ddRev2+'&df';
 	}
 }
