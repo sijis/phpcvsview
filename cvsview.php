@@ -26,8 +26,18 @@ if ($env['script_path'] == "") {
 if (isset($_GET["tm"])) {
     $ThemeName = $_GET["tm"];
 } else {
-	$ThemeName = "Default";
+	if (isset($_COOKIE["theme"])) {
+	    $ThemeName = $_COOKIE["theme"];
+	}
+	else
+	{
+		$ThemeName = "Default";
+	}
 }
+
+// Re-Set our cookie with the theme name in it. This cookie is set to expire 1 Year from today.
+// This was done as there is no way to stop a cookie expiring.
+setcookie("theme", $ThemeName, time()+31536000, "/");
 
 require_once "Themes/$ThemeName/theme.php";
 require_once 'phpcvs.php';

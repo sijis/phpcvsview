@@ -35,4 +35,3 @@ $config['GeSHi']['Path'] = "geshi";
 $config['GeSHi']['HighlightersPath'] = "geshi/geshi";
 
 ?>
-
