@@ -20,7 +20,7 @@ function DownloadFile($File, $Revision = "")
 	$env['script_path'] = (empty($env['script_path']))? '/' : $env['script_path'];
 
 	// Create our CVS connection object and set the required properties.
-	$CVSServer = new CVS_PServer($config['cvsroot'], $config['pserver'], $config['username'], $config['password']);
+	$CVSServer = new CVS_PServer($env['CVSSettings']['cvsroot'], $env['CVSSettings']['server'], $env['CVSSettings']['username'], $env['CVSSettings']['password']);
 
 	// Connect to the CVS server.
 	if ($CVSServer->Connect() === true) {

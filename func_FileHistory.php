@@ -20,10 +20,10 @@ function DisplayFileHistory()
 	$env['script_path'] = (empty($env['script_path']))? '/' : $env['script_path'];
 
 	// Create our CVS connection object and set the required properties.
-	$CVSServer = new CVS_PServer($config['cvsroot'], $config['pserver'], $config['username'], $config['password']);
+	$CVSServer = new CVS_PServer($env['CVSSettings']['cvsroot'], $env['CVSSettings']['server'], $env['CVSSettings']['username'], $env['CVSSettings']['password']);
 
 	// Start the output process.
-	echo GetPageHeader($config['html_title'], $config['html_header']);
+	echo GetPageHeader($env['CVSSettings']['html_title'], $env['CVSSettings']['html_header']);
 
 	// Connect to the CVS server.
 	if ($CVSServer->Connect() === true) {
