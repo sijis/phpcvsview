@@ -45,41 +45,16 @@ function DisplayFileContents($File, $Revision = "") {
 		    return;
 		}
 		
-		// Start the output for the file.
-		$Dirs = explode("/", $ModPath);
-		echo "<div class=\"quicknav\">Navigate to: <a href=\"$ScriptName\">Root</a>&nbsp;";
-		$intCount = 1;
-		while($intCount < count($Dirs)){
-			echo "/&nbsp;<a href=\"$ScriptName?mp=".ImplodeToPath($Dirs, "/", $intCount);
-			if ($intCount == (count($Dirs) - 1)) {
-				echo "&amp;fh#rd$Revision";
-			}
-			else
-			{
-			    echo "/";
-			}
-			echo "\">".$Dirs[$intCount]."</a>&nbsp;";
-			$intCount++;
-		} // while
-		echo "</div>\n";
-		
+		// Add the quick link navigation bar.
+		echo GetQuickLinkBar($ModPath, "Code view for: ", true, true, $Revision);
 		
 		// Display the file contents.
 		echo "<hr />\n";
-		if (strpos($File, ".php")) {
-			$search = array('\t'); 
-			$replace = array("    "); 
-			$Content = str_replace($search, $replace, $CVSServer->FILECONTENTS);
-		    echo highlight_string($Content, true);
-		}
-		else
-		{
-			$search = array('<', '>', '\n', '\t'); 
-			$replace = array("&lt;", "&gt;", "", "    "); 
-			echo "<pre>\n";
-			echo str_replace($search, $replace, $CVSServer->FILECONTENTS)."\n";
-			echo "</pre>\n";
-		}
+		$search = array('<', '>', '\n', '\t'); 
+		$replace = array("&lt;", "&gt;", "", "    "); 
+		echo "<pre>\n";
+		echo str_replace($search, $replace, $CVSServer->FILECONTENTS)."\n";
+		echo "</pre>\n";
 		
 		// Close the connection.
 		$CVSServer->Disconnect();
