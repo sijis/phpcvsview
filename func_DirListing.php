@@ -39,6 +39,16 @@ function DisplayDirListing() {
 		// Get a RLOG of the module path specified in $ModPath.
 		$CVSServer->RLog($ModPath);
 		
+		// Add the quick link navigation bar.
+		$Dirs = explode("/", $ModPath);
+		echo "Navigate to: <a href=\"$ScriptName\">Root</a>&nbsp;";
+		$intCount = 1;
+		while($intCount < count($Dirs)-2){
+			echo "/&nbsp;<a href=\"$ScriptName?mp=".ImplodeToPath($Dirs, "/", $intCount)."/\">".$Dirs[$intCount]."</a>&nbsp;";
+			$intCount++;
+		} // while
+		echo "/&nbsp;".$Dirs[$intCount]."<br>\n";
+		
 		// Start the output for the table.
 		echo "<hr>\n";
 		echo "<table border=\"0\" cellpadding=\"2\" cellspacing=\"1\" width=\"100%\">\n";

@@ -94,4 +94,20 @@ function CalculateDateDiff($DateEarlier, $DateLater)
 	return $Result;
 }
 
+function ImplodeToPath($Dirs, $Seperator, $Number)
+{
+//	echo "<br><br>In ImplodeToPath()...<br>\n";
+	$RetVal = "";
+	for ($Counter = 0; $Counter <= $Number; $Counter++)
+	{
+//		echo "Counter is at $Counter of $Number. Value is '".$Dirs[$Counter]."'.<br>\n";
+		if ($Dirs[$Counter] != "") {
+		    $RetVal .= $Seperator . $Dirs[$Counter];
+		}
+//		echo "RetVal is '".$RetVal."'.<br>\n";
+	}
+//	echo "Out ImplodeToPath()...<br><br>\n";
+	return $RetVal;
+}
+
 ?>
