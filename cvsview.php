@@ -27,11 +27,17 @@ global $CVSROOT, $PServer, $UserName, $Password, $HTMLTitle, $HTMLHeading, $HTML
 
 $REPOS = "";
 $ScriptName = $_SERVER['PHP_SELF'];
+if (isset($_GET["tm"])) {
+    $ThemeName = $_GET["tm"];
+}
+else
+{
+	$ThemeName = "Default";
+}
  
+require_once "Themes/$ThemeName/theme.php";
 require_once 'phpcvs.php';
 require_once 'phpcvsmime.php';
-require_once 'header.php';
-require_once 'footer.php';
 require_once 'utils.php';
 require_once 'func_DirListing.php';
 require_once 'func_FileHistory.php';
