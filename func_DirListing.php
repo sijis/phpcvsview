@@ -43,26 +43,26 @@ function DisplayDirListing()
 		}
 
 		// Add the quick link navigation bar.
-		echo GetQuickLinkBar($env['mod_path']);
+		echo GetQuickLinkBar();
 
 		// Start the output for the table.
 		startDirList();
 
 		// Do we need the "Back" operation.
 		if (strlen($env['mod_path']) > 2) {
-			addParentDirectory($env['mod_path']);
+			addParentDirectory();
 		}
 
 		// Display the folders within the table.
-		addFolders($env['mod_path'], $CVSServer->FOLDERS);
+		addFolders($CVSServer->FOLDERS);
 		
 		// Display the Modules if we have them.
 		if ($Modules !== false) {
-			addModules($env['mod_path'], $Modules);
+			addModules($Modules);
 		}
 
 		// Display the files within the table.
-		addFiles($env['mod_path'], $CVSServer->FILES);
+		addFiles($CVSServer->FILES);
 
 		// Close off our HTML table.
 		endDirList();
