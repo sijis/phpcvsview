@@ -52,8 +52,14 @@ function DisplayFileContents($File, $Revision = "")
 		echo "<hr />\n";
 		$search = array('<', '>', '\n', '\t');
 		$replace = array("&lt;", "&gt;", "", "    ");
+		$content = str_replace($search, $replace, $CVSServer->FILECONTENTS);
+		$source = explode("\n", $content);
+		$soure_size = sizeof($source);
+
 		echo "<pre>\n";
-		echo str_replace($search, $replace, $CVSServer->FILECONTENTS)."\n";
+		for($i = 1; $i <= $soure_size; $i++) {
+			echo '<a name="'.$i.'" class="numberedLine">'.str_repeat('&nbsp;', strlen($soure_size) - strlen($i)). $i.':</a> ' . $source[$i-1] . "\n";
+		}
 		echo "</pre>\n";
 
 		// Close the connection.
