@@ -13,7 +13,7 @@
 
 require_once 'config.php';
 
-global $config, $env;
+global $config, $env, $ThemeName;
 
 $REPOS = "";
 $env['script_name'] = $_SERVER['PHP_SELF'];

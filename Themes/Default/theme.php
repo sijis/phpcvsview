@@ -10,28 +10,30 @@
  * @version $Id$
  * @copyright 2003-2004 Brian A Cheeseman
  **/
+ 
+//global $ThemeName;
 
-$FolderIcon = "Themes/Default/Images/folder.png";
-$FileIcon = "Themes/Default/Images/file.png";
-$ParentIcon = "Themes/Default/Images/parent.png";
-$ModuleIcon = "Themes/Default/Images/module.png";
+$FolderIcon = "Themes/".$ThemeName."/Images/folder.png";
+$FileIcon = "Themes/".$ThemeName."/Images/file.png";
+$ParentIcon = "Themes/".$ThemeName."/Images/parent.png";
+$ModuleIcon = "Themes/".$ThemeName."/Images/module.png";
 
 function GetPageHeader($Title="", $Heading="") {
-	global $StartTime;
+	global $StartTime, $ThemeName;
 	$StartTime = microtime();
 	$PageHead = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">";
-	$PageHead .= "<html>";
+	$PageHead .= "<html><head>";
 	if ($Title != "") {
-	    $PageHead .= "<head><title>$Title</title>";
-		$PageHead .= "<link href=\"Themes/Default/theme.css\" rel=\"stylesheet\" type=\"text/css\" />";
-		$PageHead .= "</head>";
+	    $PageHead .= "<title>$Title</title>";
 	}
-
+	$PageHead .= "<link href=\"Themes/".$ThemeName."/theme.css\" rel=\"stylesheet\" type=\"text/css\" />";
+	// Add JavaScript to postback the change in theme selection.
+	$PageHead .= "<script src=\"./phpcvsview.js\"></script>";
+	$PageHead .= "</head>";
 	$PageHead .= "<body>";
 	if ($Heading != "") {
 	    $PageHead .= "<div class=\"title\">$Heading</div>";
 	}
-	
 	$PageHead .= "<p>Welcome to the CVS Repository viewing system for the phpCVSView project ";
 	$PageHead .= "hosted at SourceForge.net</p><p>The goal of this project is simply to ";
 	$PageHead .= "build a php application/class to provide access to a CVS based source ";
@@ -43,12 +45,33 @@ function GetPageHeader($Title="", $Heading="") {
 	$PageHead .= "all support the commitment of the open source developers by using the many ";
 	$PageHead .= "wonderful products available.</p><p>Kindest Regards,<br />Brian Cheeseman.";
 	$PageHead .= "<br />phpCVSView Project Leader.</p>";
-	
-//	$PageHead .= "<p>Welcome to our CVS Repository viewer. This page has been dynamically";
-//	$PageHead .= " created with '<a href=\"http://phpcvsview.sourceforge.net/\">phpCVS";
-//	$PageHead .= "Viewer</a>' created by <a href=\"mailto:bcheesem@users.sourceforge.net";
-//	$PageHead .= "\">Brian Cheeseman</a> and <a href=\"mailto:sijis@users.sourceforge.net\">";
-//	$PageHead .= "Sijis Aviles</a>.</p><p>Please feel free to browse our source code.</p>";
+	$PageHead .= "<form class=\"themechanger\">Change Theme: <select name=\"ThemeSelect\" class=\"themechanger\" onchange=\"postBackThemeChange(this.form)\">";
+	foreach (GetThemeList() as $key=>$value)
+	{
+		$PageHead .= "<option value=\"$value\"";
+		if ($value == $ThemeName) {
+		    $PageHead .= " selected";
+		}
+		$PageHead .= ">$value</option>";
+	}
+	$PageHead .= "</select>";
+	$PageHead .= "<input type=\"hidden\" name=\"URLRequest\" value=\"".$env['script_name']."";
+	$first = true;
+	foreach ($_GET as $key=>$value)
+	{
+		if ($key != "tm") {
+			if ($first != true) {
+				$PageHead .= "&";
+			}
+			else
+			{
+				$PageHead .= "?";
+			}
+		    $first = false;
+			$PageHead .= $key."=".$value;
+		}
+	}
+	$PageHead .= "\"></form>";
 	return $PageHead;
 }
 

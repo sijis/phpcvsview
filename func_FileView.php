@@ -11,7 +11,7 @@
  * @copyright 2003-2004 Brian A Cheeseman
  **/
 
-if ($config['GeSHi']['Use']) {
+if ($config['GeSHi']['Enable']) {
     include_once($config['GeSHi']['Path'].'/geshi.php');
 }
 
@@ -54,7 +54,7 @@ function DisplayFileContents($File, $Revision = "")
 
 		echo "<hr />\n";
 
-		if ($config['GeSHi']['Use']) {
+		if ($config['GeSHi']['Enable']) {
     		// Create the GeSHi instance and parse the output.
 			// TODO: setup code to auto identify the highlighting class to use for current file.
 			$FileExt = substr($File, strrpos($File, ".")+1);

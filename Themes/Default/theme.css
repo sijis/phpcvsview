@@ -47,6 +47,13 @@ a:hover
 	text-align: left;
 	font-weight: bold;
 }
+.themechanger
+{
+	font-size: 8pt;
+	text-align: left;
+	padding: 0px;
+	margin: 0px;
+}
 .title
 {
 	text-align: center;
@@ -87,91 +94,3 @@ li
 	font-size: 12px;
 	font-weight: normal;
 }
-
-/*
-.geshi .de1, 
-.geshi .de2 
-{
-	font-family: 'Courier New', Courier, monospace; 
-	font-size: 12px;
-	font-weight: normal;
-} 
-
-.geshi .imp 
-{
-	font-weight: bold; 
-	color: red;
-} 
-
-.geshi .kw1 
-{
-	color: #b1b100;
-} 
-
-.geshi .kw2 
-{
-	color: #000000; 
-	font-weight: bold;
-} 
-
-.geshi .kw3 
-{
-	color: #6666cc;
-} 
-
-.geshi .co1 
-{
-	color: #808080; 
-	font-style: italic;
-} 
-
-.geshi .co2 
-{
-	color: #808080; 
-	font-style: italic;
-} 
-
-.geshi .coMULTI 
-{
-	color: #808080; 
-	font-style: italic;
-} 
-
-.geshi .es0 
-{
-	color: #000099; 
-	font-weight: bold;
-} 
-
-.geshi .br0 
-{
-	color: #66cc66;
-} 
-
-.geshi .st0 
-{
-	color: #ff0000;
-} 
-
-.geshi .nu0 
-{
-	color: #cc66cc;
-} 
-
-.geshi .me1 
-{
-	color: #006600;
-} 
-
-.geshi .me2 
-{
-	color: #006600;
-} 
-
-.geshi .re0 
-{
-	color: #0000ff;
-}
-
-
-*/
