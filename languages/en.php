@@ -22,17 +22,18 @@ $lang['last_log']		= 'Last Lost Entry';
 
 // customization options
 $lang['language']		= 'English';
-$lang['theme']			= 'Change Theme:';
+$lang['theme']			= 'Change Theme: ';
 
 // quick link bar listing
-$lang['change_theme']	= 'Change Theme:';
-$lang['change_lang']	= 'Language:';
+$lang['change_theme']	= 'Change Theme: ';
+$lang['change_lang']	= 'Language: ';
+$lang['change_cvsroot'] = 'CVS Repository: ';
 $lang['up_folder']		= 'Up one folder';
 $lang['rev_history']	= 'Revision history for: ';
 $lang['code_view']		= 'Code view for: ';
 $lang['navigate_to']	= 'Navigate to: ';
-$lang['file_ext']		= 'File Extension:';
-$lang['mime_type']		= 'Mime Type is:';
+$lang['file_ext']		= 'File Extension: ';
+$lang['mime_type']		= 'Mime Type is: ';
 
 // time and date related
 $lang['year']			= 'Year';

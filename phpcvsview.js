@@ -28,6 +28,21 @@ function postBackLangChange(form)
 	location=newlocation;
 }
 
+function postBackReposChange(form)
+{
+	var ddRepos=form.reposSelect.value;
+	var hfRequest=form.URLRequest.value;
+	if (hfRequest.indexOf("?") == -1)
+	{
+		newlocation=hfRequest+'?cr='+ddRepos;
+	}
+	else
+	{
+		newlocation=hfRequest+'&cr='+ddRepos;
+	}
+	location=newlocation;
+}
+
 function postBackDiffRequest(form)
 {
 	var ddRev1=form.DiffRev1.value;

@@ -34,6 +34,17 @@ function GetPageHeader($Title="", $Heading="") {
 	}
 	$PageHead .= $lang['message'];
 	$PageHead .= "<form class=\"themechanger\">";
+
+	$PageHead .= ' '.$lang['change_cvsroot'].' <select name="reposSelect" class="reposchanger" onchange="postBackReposChange(this.form)">';
+	foreach($config['cvs'] as $key => $value){
+		$PageHead .= '<option value="'.$key.'"';
+		if ($key == $env['CVSROOT']) {
+			$PageHead .= ' selected="selected"';
+		}
+		$PageHead .= '>'.$value['description'].'</option>';
+	}
+	$PageHead .= '</select><br />';
+
 	$PageHead .= $lang['change_theme'].' <select name="ThemeSelect" class="themechanger" onchange="postBackThemeChange(this.form)">';
 	foreach (GetThemeList() as $key=>$value)
 	{
