@@ -23,10 +23,10 @@ class phpcvs {
 	* 
 	**/
 	
-	function phpcvs(	$Repository = '', 
-	                		$PServer = '',
-							$UserName = '',
-							$Password = '') {
+	function phpcvs($Repository = '', 
+	                $PServer = '',
+					$UserName = '',
+					$Password = '') {
 					
 		$this->CVS_REPOSITORY = $Repository;
 		$this->CVS_PSERVER = $PServer;
@@ -305,9 +305,105 @@ class phpcvs {
 			
 			// Lets start receiving the response from the PServer.
 			$RecvLN = "";
+			$CurrentRevision = "";
+			$RevisionCounter = 0;
+			$Elements["CODE"] = "";
 			while(strncmp($RecvLN, "ok", 2) != 0){
-				$Elements .= substr($RecvLN, 2, strlen($RecvLN)-2);
+				// if we have a line beginning with 'M revision' then this is a new revision.
+				if (strncmp("M revision", $RecvLN, 10) == 0) {
+				    // New Revision details.
+					$RevisionCounter = $RevisionCounter + 1;
+					$CurrentRevision = substr($RecvLN, 11, strlen($RecvLN)-11);
+					$Elements[$RevisionCounter]["Revision"] = $CurrentRevision;
+					$RecvLN = fgets($this->SOCKET_HANDLE);
+					
+					// This line contains the Date, Author, State, and Line Counts.
+					strtok($RecvLN, " :;\n\t");
+					strtok(" :;\t\n");
+					$Elements[$RevisionCounter]["Date"] = strtok(" ;\n\t");
+					$Elements[$RevisionCounter]["Time"] = strtok(" ;\n\t");
+					strtok(" :;\n\t");
+					$Elements[$RevisionCounter]["Author"] = strtok(" :;\n\t");
+					strtok(" :;\n\t");
+					$Elements[$RevisionCounter]["State"] = strtok(" :;\n\t");
+					strtok(" :;\n\t");
+					$Elements[$RevisionCounter]["LinesAdd"] = substr(strtok(" :;\n\t"), 1);
+					$Elements[$RevisionCounter]["LinesSub"] = substr(strtok(" :;\n\t"), 1);
+					
+					// The following lines up until we get minuses or equals is the revision log.
+					$RecvLN = fgets($this->SOCKET_HANDLE);
+					$Elements[$RevisionCounter]["Log"] = "";
+					while((strncmp("M ----------------------------", $RecvLN, 30) != 0) &&
+					      (strncmp("M ============================", $RecvLN, 30) != 0)){
+						// Add the text to the log.
+						$Elements[$RevisionCounter]["Log"] .= substr($RecvLN, 2);
+						$RecvLN = fgets($this->SOCKET_HANDLE);
+					} // while
+				}
+			
+				// if we have a line beginning with 'M RCS file' then we have the full file system path of the file.
+				if (strncmp("M RCS file", $RecvLN, 10) == 0) {
+				    // Pull out the Full RCS filename.
+					strtok($RecvLN, " :\t\n");
+					strtok(" :\t\n");
+					strtok(" :\t\n");
+					$Elements[0]["RCSFile"] = strtok(" :\t\n");
+				}
+				
+				// if we have a line beginning with 'M head' then we have the head revision number for this file.
+				if (strncmp("M head", $RecvLN, 6) == 0) {
+				    // Pull out the head revision.
+					strtok($RecvLN, " :\t\n");
+					strtok(" :\t\n");
+					$Elements[0]["HeadRev"] = strtok(" :\t\n");
+				}
+				
+				// if we have a line beginning with 'M branch' then we have the name of the head branch.
+				if (strncmp("M branch", $RecvLN, 8) == 0) {
+				    // Pull out the head branch.
+					strtok($RecvLN, " :\t\n");
+					strtok(" :\t\n");
+					$Elements[0]["HeadBranch"] = strtok(" :\t\n");
+				}
+				
+				// if we have a line beginning with 'M locks' then we have the locking scheme in use by this CVS server.
+				if (strncmp("M locks", $RecvLN, 7) == 0) {
+					// Pull out the locking methodology.
+				    strtok($RecvLN, " :\t\n");
+					strtok(" :\t\n");
+					$Elements[0]["Locks"] = strtok(" :\t\n");
+				}
+				
+				// if we have a line beginning with 'M access list' then we have the current accessing list.
+				if (strncmp("M access list", $RecvLN, 13) == 0) {
+				    // Pull out the accessing list.
+					strtok($RecvLN, " :\t\n");
+					strtok(" :\t\n");
+					strtok(" :\t\n");
+					$Elements[0]["AccessList"] = strtok(" :\t\n");
+				}
+				
+				// if we have a line beginning with 'M symbolic names' then we have the list of symbolic names for this file.
+				if (strncmp("M symbolic names", $RecvLN, 16) == 0) {
+				    // Pull out the symbolic names.
+					strtok($RecvLN, " :\t\n");
+					strtok(" :\t\n");
+					strtok(" :\t\n");
+					$Elements[0]["SymNames"] = strtok(" :\t\n");
+				}
+				
+				// if we have a line beginning with 'M keyword substitution' then we have the keywork substitutions.
+				if (strncmp("M keywork substitutions", $RecvLN, 23) == 0) {
+				    strtok($RecvLN, " :\t\n");
+					strtok(" :\t\n");
+					strtok(" :\t\n");
+					$Elements[0]["KeywrdSubst"] = strtok(" :\t\n");
+				}
+				
+				$Elements["CODE"] .= substr($RecvLN, 2, strlen($RecvLN)-2);
+				$RecvLN = fgets($this->SOCKET_HANDLE);
 			} // End of while(strncmp($RecvLN, "ok", 2) != 0)
+			$Elements[0]["TotalRevisions"] = $RevisionCounter;
 		} // End of if ($this->SOCKET_HANDLE > -1)
 		return $Elements;
 	} // End of function RLOGFile();
@@ -354,8 +450,6 @@ class phpcvs {
 			}
 			if (strncmp($RecvLN, "Created", 7) == 0) {
 				
-				echo "We are getting the file contents.<br>";
-			
 			    // We are getting the file from the Server.
 				$RecvLN = fgets($this->SOCKET_HANDLE);
 				$RecvLN = fgets($this->SOCKET_HANDLE);
@@ -364,8 +458,6 @@ class phpcvs {
 
 				// RecvLN Holds the length of the file as a string
 				$TotalBytes = $RecvLN + 0;
-				echo "Number of bytes = $RecvLN<br>";
-				echo "Number of bytes = $TotalBytes<br>";
 				$Elements["CONTENT"] = fread($this->SOCKET_HANDLE, $TotalBytes);
 			}
 			$RecvLN = fgets($this->SOCKET_HANDLE);			

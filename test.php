@@ -9,11 +9,13 @@
 
 $REPOS = "";
 $CVSROOT = "/cvsroot/d/de/denet/";
+//$CVSROOT = "/cvsroot/p/ph/phpcvsview/";
 $PServer = "cvs.sourceforge.net";
 $UserName = "anonymous";
 $Password = "";
  
 include("phpcvs.php");
+include("phpcvsmime.php");
 
 function DisplayDirListing () {
 	global $REPOS, $CVSROOT, $PServer, $UserName, $Password;
@@ -77,7 +79,7 @@ function DisplayDirListing () {
 	} // End of if ($CVSServer->ConnectTcpAndLogon())
 } // End of function DisplayDirListing()
 
-function DisplayFileHistory() {
+function DisplayFileHistory($FileName) {
 	global $REPOS, $CVSROOT, $PServer, $UserName, $Password;
 
 	$CVSServer = new phpcvs($CVSROOT, $PServer, $UserName, $Password);
@@ -86,10 +88,40 @@ function DisplayFileHistory() {
 		$CVSServer->SendRoot();
 		$CVSServer->SendValidResponses();
 		$CVSServer->SendValidRequests();
-		$Elements = $CVSServer->RLOG ($REPOS);
+		$Elements = $CVSServer->RLOGFile($FileName, $REPOS);
+
+		echo "<code>".str_replace("\n", "<BR>", $Elements["CODE"])."</code>";
+		
+		// List each revision with a HorizRule between them.
+		for ($i = 1; $i <= $Elements[0]["TotalRevisions"]; $i++) {
+			echo "<HR>\n";
+		    echo "Revision: ".$Elements[$i]["Revision"]."&nbsp;&nbsp;";
+			echo "[<A HREF=\"/test.php?CVSROOT=$REPOS&ShowFile=".$FileName."&Rev=".$Elements[$i]["Revision"]."\">View";
+			echo "</a>]&nbsp;&nbsp;";
+
+			echo "[<A HREF=\"/test.php?CVSROOT=$REPOS&DownloadFile=".$FileName."&Rev=".$Elements[$i]["Revision"]."\">Download";
+			echo "</a>]";
+			
+			echo "<BR>\n";
+			
+			echo "Branch: Yet to identify.<BR>\n";
+			echo "Date: ".$Elements[$i]["Date"]."<BR>\n";
+			echo "Time: ".$Elements[$i]["Time"]."<BR>\n";
+			echo "Author: ".$Elements[$i]["Author"]."<BR>\n";
+			echo "State: ".$Elements[$i]["State"]."<BR>\n";
+			
+			if (($i + 1) < $Elements[0]["TotalRevisions"]) {
+				echo "Changes since ".$Elements[$i+1]["Revision"].": ";
+			    echo "+".$Elements[$i]["LinesAdd"]." -".$Elements[$i]["LinesSub"]."<br>\n";
+			}
+			echo "<pre>".str_replace("\n", "<BR>", $Elements[$i]["Log"])."</pre>";
+		}
+		echo "<HR>\n";
 		
 		
 		$CVSServer->DisconnectTcp();
+	} else {
+		echo "ERROR: Unable to connect to the CVS PServer.<BR>";
 	} // End of if ($CVSServer->ConnectTcpAndLogon())
 } // End of function DisplayFileHistory()
 
@@ -104,9 +136,46 @@ function DisplayFile() {
 		$CVSServer->SendValidRequests();
 		echo "<H1>File Contents for Revision ".$FileRev." of '".$REPOS.$FileToView."'</H1>";
 		$Elements = $CVSServer->ViewFile($FileToView, $FileRev, $REPOS);
-		$FileOut = "";
 		
-		echo "<PRE>".$Elements["CONTENT"]."</PRE>";
+		// Format and Display the output.
+		if (strpos($FileToView, ".php")) {
+		    $OutText = highlight_string($Elements["CONTENT"], true);
+			$OutText = str_replace("<code>", "<pre>", $OutText);
+			$OutText = str_replace("</code>", "</pre>", $OutText);
+			echo $OutText;
+		} else {
+			$Find = array("\r", "\n", " ", "\t");
+			$Repl = array("", "<BR>", "&nbsp;", "&nbsp;&nbsp;&nbsp;&nbsp;");
+			echo "<pre>".str_replace($Find, $Repl, $Elements["CONTENT"])."</pre>";
+		}
+//		echo "<code>".ereg_replace(" ", "&nbsp;", ereg_replace("\n", "<BR>", $Elements["CONTENT"]))."</code>";
+
+		$CVSServer->DisconnectTcp();
+	}
+}
+
+function DownloadFile() {
+	global $REPOS, $CVSROOT, $PServer, $UserName, $Password, $FileToDownload, $FileRev, $MIME_TYPE;
+
+	$CVSServer = new phpcvs($CVSROOT, $PServer, $UserName, $Password);
+	
+	if ($CVSServer->ConnectTcpAndLogon()) {
+		$CVSServer->SendRoot();
+		$CVSServer->SendValidResponses();
+		$CVSServer->SendValidRequests();
+		$Elements = $CVSServer->ViewFile($FileToDownload, $FileRev, $REPOS);
+		
+		// Send the file to the client.
+//		$Elements["CONTENT"];
+		$PeriodPos = strrchr($FileToDownload, ".");
+		$FileExt = substr($FileToDownload, $PeriodPos, strlen($FileToDownload)-$PeriodPos);
+		if (isset($MIME_TYPE["$FileExt"])) {
+		    $ContentType = $MIME_TYPE["$FileExt"];
+		} else {
+			$ContentType = "text/plain";
+		}
+		header("content-type: ".$ContentType);
+		echo $Elements["CONTENT"];
 
 		$CVSServer->DisconnectTcp();
 	}
@@ -129,9 +198,16 @@ if (isset($_GET["ShowFile"])) {
 	if (isset($_GET["ShowHist"])) {
 	    // Here we will show the Revision History of a given file.
 		echo "<H1>Revision History for '".$REPOS.$_GET["ShowHist"]."'</H1>";
+		DisplayFileHistory($_GET["ShowHist"]);
 	} else {
-		// Here we will just show the current file listing.
-		DisplayDirListing();
+		if (isset($_GET["DownloadFile"])) {
+			$FileToDownload = $_GET["DownloadFile"];
+			$FileRev = $_GET["Rev"];
+		    DownloadFile();
+		} else {
+			// Here we will just show the current file listing.
+			DisplayDirListing();
+		}
 	}
 }
 
