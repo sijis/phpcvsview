@@ -24,6 +24,10 @@ a:hover
 	color: #009900;
 	text-decoration: underline;
 }
+input
+{
+	font-size: 8pt;
+}
 .head
 {
 	background-color: #bbffbb;
@@ -55,6 +59,20 @@ a:hover
 	margin: 0px;
 }
 .langchanger
+{
+	font-size: 8pt;
+	text-align: left;
+	padding: 0px;
+	margin: 0px;
+}
+.reposchanger
+{
+	font-size: 8pt;
+	text-align: left;
+	padding: 0px;
+	margin: 0px;
+}
+.diffform
 {
 	font-size: 8pt;
 	text-align: left;
@@ -101,7 +119,6 @@ li
 	font-size: 12px;
 	font-weight: normal;
 }
-
 div.normal
 {
 	font-family: courier;
