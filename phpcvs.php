@@ -859,10 +859,10 @@ class CVS_PServer
 					// Get the Date, Author, State and Lines of this revision.
 					if (strncmp($Line, "date:", 5) == 0) {
 					    $Segment = explode(";", $Line);
-						for($i = 0; $i <= sizeof($Segment); $i++){
-							$SepPos = trim(strpos($Segment[$i], ":"));
-							$Name = trim(substr($Segment[$i], 0, $SepPos));
-							$Value = trim(substr($Segment[$i], $SepPos+1));
+						foreach($Segment as $Part){
+							$SepPos = trim(strpos($Part, ":"));
+							$Name = trim(substr($Part, 0, $SepPos));
+							$Value = trim(substr($Part, $SepPos+1));
 							$this->FILES[$FileCount]["Revisions"]["$CurrentRevision"]["$Name"] = $Value;
 						}
 						$LineProcessed = true;
