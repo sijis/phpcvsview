@@ -108,15 +108,15 @@ class CVS_PServer {
 	// ***************************************************************************
 	function processValidRequests($LineOfText)
 	{
-		// Start tokenising the list of Valid Requests.
-		$Token = strtok($LineOfText, " ");
-		
+		// Convert string to array
+		$Token = explode(" ", $LineOfText);
 		// Skip the first token, as it is the response identifier.
-		$Token = strtok(" ");
-		while($Token !== false){
-			$this->ALLOWED_REQUESTS[$Token] = true;
-			$Token = strtok(" ");
-		} // while
+		array_shift($Token);
+
+		// set values for allowed responses
+		for($i = 0; $i <= sizeof($Token)-1; $i++){
+			$this->ALLOWED_REQUESTS[$Token[$i]] = true;
+		}
 		return true;
 	}
 	
@@ -418,9 +418,9 @@ class CVS_PServer {
 		$KeepGoing = true;
 		while($KeepGoing){
 			$ResponseLine = $this->SOCKET->readLine();
-			$Response = strtok($ResponseLine, " ");
-			if ($Response != "") {
-				$Func = $this->ALLOWED_RESPONSES[$Response];
+			$Response = explode(" ", $ResponseLine);
+			if ($Response[0] != "") {
+				$Func = $this->ALLOWED_RESPONSES[$Response[0]];
     			if (method_exists($this, $Func)) {
 				    $KeepGoing = $this->$Func($ResponseLine);
 				}
@@ -1059,6 +1059,22 @@ class CVS_PServer {
 		
 		return true;
 	}
+
+	function debug($foo, $var = ''){
+		if($var == '' || $var == 'print_r'){
+			echo '<pre>';
+			echo '-- beg --<br />';
+			echo print_r($foo);
+			echo '</pre>';
+		}
+		else{
+			echo '<pre>';
+			echo var_dump($foo);
+			echo '-- end --<br />';
+			echo '</pre>';			
+		}
+	}
+
 }
 
 ?>
