@@ -2454,7 +2454,7 @@ if ( !function_exists('geshi_highlight') )
 			'xml' => 'xml'
 		);
 		
-		$highlighter = $highlightmappings[$fileExtension];
+		@$highlighter = $highlightmappings[$fileExtension];
 		if ($highlighter == null) {
 		    $highlighter = "";
 		}
