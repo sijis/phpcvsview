@@ -11,10 +11,10 @@
  * @copyright 2003-2004 Brian A Cheeseman
  **/
 
-$FolderIcon = "Themes/Default/Images/folder.gif";
-$FileIcon = "Themes/Default/Images/file.gif";
-$ParentIcon = "Themes/Default/Images/parent.gif";
-$ModuleIcon = "Themes/Default/Images/module.gif";
+$FolderIcon = "Themes/Default/Images/folder.png";
+$FileIcon = "Themes/Default/Images/file.png";
+$ParentIcon = "Themes/Default/Images/parent.png";
+$ModuleIcon = "Themes/Default/Images/module.png";
 
 function GetPageHeader($Title="", $Heading="") {
 	global $StartTime;
@@ -170,7 +170,7 @@ function addFiles($ModPath, $Files)
 		$HREF = str_replace("//", "/", $env['script_name']."?mp=$ModPath/".$File["Name"]);
 		$DateTime = strtotime($File["Revisions"][$File["Head"]]["date"]);
 		$AGE = CalculateDateDiff($DateTime, strtotime(gmdate("M d Y H:i:s")));
-		echo "  <tr class=\"$RowClass\" valign=\"top\">\n";
+		echo "  <tr class=\"$RowClass\">\n";
 		echo "    <td align=\"center\"><a href=\"$HREF&amp;fh\"><img alt=\"FILE\" src=\"".$env['script_path']."/$FileIcon\" /></a></td>\n";
 		echo "    <td><a href=\"$HREF&amp;fh\">".$File["Name"]."</a></td>\n";
 		echo "    <td align=\"center\"><a href=\"$HREF&amp;fv&amp;dt=$DateTime\">".$File["Head"]."</a></td>\n";

@@ -5,10 +5,10 @@ body
 	margin-left: 3px;
 	margin-right: 3px;
 	padding:0px;
-	font-family: Verdana, arial, sans-serif;
+	font-family: Tahoma, arial, sans-serif;
 	font-size: 10pt;
-	background-color: #000000;
-	color: #ffff99;
+	background-color: #ffffff;
+	color: #000000;
 }
 img
 {
@@ -16,27 +16,25 @@ img
 }
 a:link,a:active,a:visited
 {
-	color: #9999ff;
+	color: #000099;
 	text-decoration: none;
-	font-weight: bold;
 }
 a:hover
 {
-	color: #ff99ff;
+	color: #000099;
 	text-decoration: underline;
-	font-weight: bold;
 }
 .head
 {
-	background-color: #666677;
+	background-color: #bbbbff;
 }
 .row1
 {
-	background-color: #000011;
+	background-color: #eeeeee;
 }
 .row2
 {
-	background-color: #222233;
+	background-color: #ddddff;
 }
 .footer
 {
@@ -55,7 +53,7 @@ a:hover
 	font-size: 18pt;
 	font-weight: bold;
 	font-style: italic;
-	color: white;
+	color: black;
 }
 table
 {
@@ -70,15 +68,11 @@ td
 	padding: 3px;
 }
 
-
-
-
-
-/* GeSHi (c) Nigel McNie 2004 (http://qbnz.com/highlighter) */ 
 .geshi .de1, 
 .geshi .de2 
 {
 	font-family: 'Courier New', Courier, monospace; 
+	font-size: 12px;
 	font-weight: normal;
 } 
 
@@ -95,7 +89,7 @@ td
 
 .geshi .kw2 
 {
-	color: #ffffff; 
+	color: #000000; 
 	font-weight: bold;
 } 
 
