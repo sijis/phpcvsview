@@ -7,7 +7,7 @@
  * Purpose: To store the configuration for this instance of phpCVSView
  *
  * @author Brian A Cheeseman <brian@bcheese.homeip.net>
- * @version $Id: 
+ * @version $Id$
  * @copyright 2003 Brian A Cheeseman
  **/
 
@@ -15,7 +15,7 @@ global $CVSROOT, $PServer, $UserName, $Password, $HTMLTitle, $HTMLHeading, $HTML
 
 // The CVSROOT path to access. For sourceforge you need the usual expansion 
 // of the path based on the project name.
-$CVSROOT = "/cvsroot/phpcvsview";
+$CVSROOT = "/cvsroot/p/ph/phpcvsview";
 
 // The hostname (or IP Address) of the server providing the PServer services.
 $PServer = "cvs.sourceforge.net";
