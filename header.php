@@ -16,7 +16,9 @@ function GetPageHeader($Title="", $Heading="") {
 	$StartTime = microtime();
 	$PageHead = "<HTML>";
 	if ($Title != "") {
-	    $PageHead .= "<HEAD><TITLE>$Title</TITLE></HEAD>";
+	    $PageHead .= "<HEAD><TITLE>$Title</TITLE>";
+		$PageHead .= "<LINK REL=StyleSheet HREF=\"Themes/Default/theme.css\" TYPE=\"text/css\" MEDIA=screen>";
+		$PageHead .= "</HEAD>";
 	} // End of if ($Title != "")
 	$PageHead .= "<BODY>";
 	if ($Heading != "") {

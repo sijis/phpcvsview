@@ -67,12 +67,15 @@ function DisplayFileContents($File, $Revision = "") {
 		// Display the file contents.
 		echo "<hr>\n";
 		if (strpos($File, ".php")) {
-		    echo highlight_string($CVSServer->FILECONTENTS, true);
+			$search = array('\t'); 
+			$replace = array("    "); 
+			$Content = str_replace($search, $replace, $CVSServer->FILECONTENTS);
+		    echo highlight_string($Content, true);
 		}
 		else
 		{
-			$search = array('<', '>', '\n'); 
-			$replace = array("&lt;", "&gt;", ""); 
+			$search = array('<', '>', '\n', '\t'); 
+			$replace = array("&lt;", "&gt;", "", "    "); 
 			echo "<pre>\n";
 			echo str_replace($search, $replace, $CVSServer->FILECONTENTS)."\n";
 			echo "</pre>\n";
