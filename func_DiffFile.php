@@ -108,10 +108,12 @@ function DisplayFileDiff($Rev1, $Rev2)
 				$NewLineLength = count($NewFileLocation) == 2 ? $NewFileLocation[1]-$NewFileLocation[0]+1 : 1;
 				for ($LineCounter = 0; $LineCounter < $InsertLength; $LineCounter++)
 				{
-					$linenumber++;
-					$TempLine = array('mode' => "+", 'text' => substr($DiffLines[$linenumber], 2));
-					InsertIntoArray(&$FilePatching, $TempLine, $InsertLocation[0]+$LineCounter+$LineOffset);
-					$LineOffset++;
+					if ($LineCounter < $NewLineLength) {
+						$linenumber++;
+    					$TempLine = array('mode' => "+", 'text' => substr($DiffLines[$linenumber], 2));
+						InsertIntoArray(&$FilePatching, $TempLine, $InsertLocation[0]+$LineCounter+$LineOffset);
+						$LineOffset++;
+					}
 					$FilePatching[$InsertLocation[0]-2+$LineCounter+$LineOffset]['mode'] = '-';
 				}
 				for ($LineCounter = $InsertLength; $LineCounter < $NewLineLength; $LineCounter++)
