@@ -448,6 +448,20 @@ class CVS_PServer
 	}
 
 	// ***************************************************************************
+	//     Function: sendCASE()
+	//       Author: Brian A Cheeseman.
+	//   Parameters: None.
+	// Return Value: boolean		- Successfully sent.
+	// ***************************************************************************
+	function sendCASE()
+	{
+		if ($this->SOCKET->write("Case\n") != true) {
+		    return false;
+		}
+		return true;
+	}
+
+	// ***************************************************************************
 	//     Function: sendValidResponses()
 	//       Author: Brian A Cheeseman.
 	//   Parameters: None.
@@ -1088,6 +1102,77 @@ class CVS_PServer
 		
 		// Return our work.
 		return $Results;
+	}
+
+	// ***************************************************************************
+	//     Function: getFileDiff()
+	//       Author: Brian Cheeseman.
+	//   Parameters: string			- Name of file to diff.
+	// 				 int			- Revision 1.
+	//				 int			- Revision 2.
+	// Return Value: void			- none.
+	// ***************************************************************************
+	function getFileDiff($FileName, $Revision1, $Revision2)
+	{
+		if (!($this->INITIALISED)) {
+			$this->sendValidResponses();
+			$this->sendValidRequests();
+			$this->INITIALISED = true;
+		}
+
+		if (!$this->sendUseUnchanged()) {
+		    return false;
+		}
+
+		if (!$this->sendCVSROOT()) {
+		    return false;
+		}
+		
+		if (!$this->sendArgument("-r")) {
+		    return false;
+		}
+		
+		if (!$this->sendArgument($Revision1)) {
+		    return false;
+		}
+	
+		if (!$this->sendArgument("-r")) {
+		    return false;
+		}
+		
+		if (!$this->sendArgument($Revision2)) {
+		    return false;
+		}
+	
+		if (!$this->sendArgument("--")) {
+		    return false;
+		}
+		
+		$dir = substr($FileName, 0, strrpos($FileName, "/"));
+		$file = substr($FileName, strrpos($FileName, "/")+1);
+		if (!$this->sendDirectory($dir)) {
+		    return false;
+		}
+	
+		if (!$this->sendEntry($file, $Revision2, "", "", "")) {
+		    return false;
+		}
+		
+		if (!$this->sendUnchanged($file)) {
+		    return false;
+		}
+		
+		if (!$this->sendArgument($file)) {
+		    return false;
+		}
+		
+		if ($this->SOCKET->write("diff\n") != true) {
+		    return false;
+		}
+		
+		$this->processResponse();
+
+		return $this->MESSAGE_CONTENT;
 	}
 
 	// ***************************************************************************
