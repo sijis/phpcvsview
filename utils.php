@@ -114,7 +114,7 @@ function GetThemeList()
 		// list all directories
 		while (false !== ($file = readdir($handle))) {
 			// do not list . and ..
-			if ($file != "." && $file != "..") {
+			if ($file != "." && $file != ".." && $file != "CVS") {
 				// add directory to an array
 				array_push($theme, $file);
 			}
@@ -136,7 +136,7 @@ function GetLanguagesList()
 		// list all directory files
 		while (false !== ($file = readdir($handle))) {
 			// do not list . and ..
-			if ($file != "." && $file != "..") {
+			if ($file != "." && $file != ".." && $file != "CVS") {
 				// strip filename and add to an array
 				array_push($lang, rtrim($file, '.php'));
 			}
@@ -146,4 +146,13 @@ function GetLanguagesList()
 	return $lang;
 }
 
+function InsertIntoArray(&$Array, $Value, $Position)
+{
+	if (!is_array($Array)) return false;
+	$Last = array_splice($Array, $Position);
+	$Array[] = $Value;
+	$Array = array_merge($Array, $Last);
+}
+
 ?>
+
