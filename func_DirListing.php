@@ -32,6 +32,15 @@ function DisplayDirListing()
 
 		// Get a RLOG of the module path specified in $config['mod_path'].
 		$CVSServer->RLog($env['mod_path']);
+		
+		// If we are in the Root of the CVS Repository then lets get the Module list.
+		if (strlen($env['mod_path']) < 2) {
+		    $Modules = $CVSServer->getModuleList();
+		}
+		else
+		{
+			$Modules = false;
+		}
 
 		// Add the quick link navigation bar.
 		echo GetQuickLinkBar($env['mod_path']);
@@ -40,12 +49,17 @@ function DisplayDirListing()
 		startDirList();
 
 		// Do we need the "Back" operation.
-		if (strlen($env['mod_path']) > 1) {
-			addParentDirectory($env['script_name'], $env['script_path'], $env['mod_path']);
+		if (strlen($env['mod_path']) > 2) {
+			addParentDirectory($env['mod_path']);
 		}
 
 		// Display the folders within the table.
 		addFolders($env['mod_path'], $CVSServer->FOLDERS);
+		
+		// Display the Modules if we have them.
+		if ($Modules !== false) {
+		    addModules($env['mod_path'], $Modules);
+		}
 
 		// Display the files within the table.
 		addFiles($env['mod_path'], $CVSServer->FILES);

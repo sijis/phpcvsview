@@ -14,6 +14,7 @@
 $FolderIcon = "Themes/Default/Images/folder.gif";
 $FileIcon = "Themes/Default/Images/file.gif";
 $ParentIcon = "Themes/Default/Images/parent.gif";
+$ModuleIcon = "Themes/Default/Images/module.gif";
 
 function GetPageHeader($Title="", $Heading="") {
 	global $StartTime;
@@ -43,7 +44,7 @@ function GetPageFooter() {
 	$EndTime = microtime();
 	$PageFoot = "<div class=\"footer\">This page was created by <a href=\"http://phpcvsview.sourceforge.net/\">phpCVSView</a> in ".number_format(microtime_diff($StartTime, $EndTime), 3)." seconds.";
 	$PageFoot .= "<p><a href=\"http://validator.w3.org/check?uri=referer\"><img src=\"http://www.w3.org/Icons/valid-xhtml11\" alt=\"Valid XHTML 1.1!\" height=\"31\" width=\"88\" /></a>&nbsp;&nbsp;";
-	$PageFoot .= "<a href=\"http://jigsaw.w3.org/css-validator/check/referer\"><img style=\"border:0;width:88px;height:31px\" src=\"http://jigsaw.w3.org/css-validator/images/vcss\" alt=\"Valid CSS!\" /></a></p>";
+	$PageFoot .= "<a href=\"http://jigsaw.w3.org/css-validator/check/referer\"><img style=\"border:0;width:88px;height:31px\" src=\"http://www.w3c.org/Icons/valid-css\" alt=\"Valid CSS!\" /></a></p>";
 	$PageFoot .= "</div>";
 	$PageFoot .= "</body></html>";
 	return $PageFoot;
@@ -127,6 +128,28 @@ function addFolders($ModPath, $Folders)
 		echo "  <tr class=\"$RowClass\">\n";
 		echo "    <td align=\"center\"><a href=\"$HREF\"><img alt=\"DIR\" src=\"".$env['script_path']."/$FolderIcon\" /></a></td>\n";
 		echo "    <td><a href=\"$HREF\">".$Folder["Name"]."</a></td>\n";
+		echo "    <td>&nbsp;</td>\n";
+		echo "    <td>&nbsp;</td>\n";
+		echo "    <td>&nbsp;</td>\n";
+		echo "    <td>&nbsp;</td>\n";
+		echo "  </tr>\n";
+		if ($RowClass == "row1") {
+		    $RowClass = "row2";
+		} else {
+			$RowClass = "row1";
+		}
+	}
+}
+
+function addModules($ModPath, $Modules)
+{
+	global $RowClass, $ModuleIcon, $env;
+	foreach ($Modules as $Key => $Val) {
+		// Add the row data here.
+		$HREF = str_replace("//", "/", $env['script_name']."?mp=$ModPath/".$Val."/");
+		echo "  <tr class=\"$RowClass\">\n";
+		echo "    <td align=\"center\"><a href=\"$HREF\"><img alt=\"MOD\" src=\"".$env['script_path']."/$ModuleIcon\" /></a></td>\n";
+		echo "    <td><a href=\"$HREF\">".$Key."</a></td>\n";
 		echo "    <td>&nbsp;</td>\n";
 		echo "    <td>&nbsp;</td>\n";
 		echo "    <td>&nbsp;</td>\n";

@@ -1044,6 +1044,42 @@ class CVS_PServer
 
 		return true;
 	}
+	
+	// ***************************************************************************
+	//     Function: getModuleList()
+	//       Author: Brian Cheeseman.
+	//   Parameters: None.
+	// Return Value: Array			- contains list of module names and paths
+	// ***************************************************************************
+	function getModuleList()
+	{
+		// Create our resultant Array.
+		$Results = array();
+	
+		// Save the current FILECONTENTS just in case.
+		$TempFileContents = $this->FILECONTENTS;
+		
+		// Get a copy of the current modules definition file.
+		$this->ExportFile("/CVSROOT/modules", gmmktime());
+		$Lines = explode("\n", $this->FILECONTENTS);
+		
+		// Process each line of the modules file looking for module definitions.
+		foreach ($Lines as $Line) {
+			if (strncmp($Line, '#', 1) != 0) {
+			    // Process the line.
+				$Elements = explode(" ", $Line);
+				if (count($Elements) > 1) {
+				    $Results[$Elements[0]] = $Elements[1];
+				}
+			}
+		}
+		
+		// Restore the saved FILECONTENTS.
+		$this->FILECONTENTS = $TempFileContents;
+		
+		// Return our work.
+		return $Results;
+	}
 
 	// ***************************************************************************
 	//     Function: debug()
