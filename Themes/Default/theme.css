@@ -7,8 +7,8 @@ body
 	padding:0px;
 	font-family: Verdana, arial, sans-serif;
 	font-size: 10pt;
-	background-color: #ffffff;
-	color: #000000;
+	background-color: #000000;
+	color: #ffff99;
 }
 img
 {
@@ -16,19 +16,27 @@ img
 }
 a:link,a:active,a:visited
 {
-	color: #6666ff;
+	color: #9999ff;
 	text-decoration: none;
 	font-weight: bold;
 }
 a:hover
 {
-	color: #9966ff;
+	color: #ff99ff;
 	text-decoration: underline;
 	font-weight: bold;
 }
 .head
 {
-	background-color: #cccccc;
+	background-color: #666677;
+}
+.row1
+{
+	background-color: #000011;
+}
+.row2
+{
+	background-color: #222233;
 }
 .footer
 {
@@ -37,27 +45,21 @@ a:hover
 }
 .quicknav
 {
-	font-size: 10pt;
+	font-size: 8pt;
 	text-align: left;
+	font-weight: bold;
 }
 .title
 {
 	text-align: center;
 	font-size: 18pt;
 	font-weight: bold;
-}
-.row1
-{
-	background-color: #ffffff;
-}
-.row2
-{
-	background-color: #ddddff;
+	font-style: italic;
+	color: white;
 }
 table
 {
-/*	margin:0px 0px 0px 0px;   */
-	font-size: 10pt;
+	font-size: 8pt;
 	border: 0px none;
 	width: 100%;
 	border-spacing: 0px 0px;
@@ -66,5 +68,4 @@ table
 td
 {
 	padding: 3px;
-	white-space: nowrap;
 }

@@ -10,6 +10,10 @@
  * @version $Id$
  * @copyright 2003-2004 Brian A Cheeseman
  **/
+ 
+$FolderIcon = "Themes/Default/Images/folder.gif";
+$FileIcon = "Themes/Default/Images/file.gif";
+$ParentIcon = "Themes/Default/Images/parent.gif";
 
 function GetPageHeader($Title="", $Heading="") {
 	global $StartTime;
@@ -42,5 +46,124 @@ function GetPageFooter() {
 	$PageFoot .= "</body></html>";
 	return $PageFoot;
 } // End of function GetPageFooter()
+
+function GetQuickLinkBar($ModPath = "/", $Prefix = "Navigate to: ", $LinkLast = false, $LastIsFile = false, $Revision = "")
+{
+	// Add the quick link navigation bar.
+	$Dirs = explode("/", $ModPath);
+	$QLOut = "<div class=\"quicknav\">$Prefix<a href=\"$ScriptName\">Root</a>&nbsp;";
+	$intCount = 1;
+	$OffSet = 2;
+	if ($LastIsFile) {
+	    $OffSet = 1;
+	}
+	while($intCount < count($Dirs)-$OffSet){
+		if (($intCount != count($Dirs)-$OffSet)) {
+			$QLOut .= "/&nbsp;<a href=\"$ScriptName?mp=".ImplodeToPath($Dirs, "/", $intCount)."/\">".$Dirs[$intCount]."</a>&nbsp;";
+		}
+		else
+		{
+			$QLOut .= "/&nbsp;".$Dirs[$intCount]."&nbsp;";
+		}
+		$intCount++;
+	} // while
+	$QLOut .= "/&nbsp;";
+	if ($LinkLast) {
+	    $QLOut .= "<a href=\"$ScriptName?mp=".ImplodeToPath($Dirs, "/", $intCount);
+		if ($LastIsFile) {
+		    $QLOut .= "&amp;fh#rd$Revision\">";
+		}
+		else 
+		{
+			$QLOut .= "/";
+		}
+	}
+	$QLOut .= $Dirs[$intCount];
+	if ($LinkLast) {
+	    $QLOut .= "</a>";
+	}
+	$QLOut .= "</div>\n";
+	return $QLOut;
+}
+
+function startDirList()
+{
+	global $RowClass;
+	echo "<hr />\n";
+	echo "<table>\n";
+	echo "  <tr class=\"head\">\n    <th>&nbsp;</th>\n    <th>File</th>\n    <th>Rev.</th>\n    <th>Age</th>\n    <th>Author</th>\n    <th>Last Log Entry</th>\n  </tr>\n";
+	$RowClass = "row1";
+}
+
+function endDirList()
+{
+	echo "  </table>\n";
+	echo "<hr />";
+}
+
+function addParentDirectory($ModPath)
+{
+	global $RowClass, $ParentIcon, $ScriptName, $ScriptPath;
+	$HREF = str_replace("//", "/", "$ScriptName?mp=".substr($ModPath, 0, strrpos(substr($ModPath, 0, -1), "/"))."/"); 
+	echo "  <tr class=\"$RowClass\">\n";
+	echo "    <td align=\"center\"><a href=\"$HREF\"><img alt=\"parent\" src=\"$ScriptPath/$ParentIcon\" /></a></td>\n";
+	echo "    <td><a href=\"$HREF\">Up one folder</a></td>\n";
+	echo "    <td>&nbsp;</td>\n";
+	echo "    <td>&nbsp;</td>\n";
+	echo "    <td>&nbsp;</td>\n";
+	echo "    <td>&nbsp;</td>\n";
+	echo "  </tr>\n";
+	$RowClass = "row2";
+}
+
+function addFolders($ModPath, $Folders)
+{
+	global $RowClass, $FolderIcon, $ScriptName, $ScriptPath;
+	foreach ($Folders as $Folder)
+	{
+		$HREF = str_replace("//", "/", "$ScriptName?mp=$ModPath/".$Folder["Name"]."/"); 
+		echo "  <tr class=\"$RowClass\">\n";
+		echo "    <td align=\"center\"><a href=\"$HREF\"><img alt=\"DIR\" src=\"$ScriptPath/$FolderIcon\" /></a></td>\n";
+		echo "    <td><a href=\"$HREF\">".$Folder["Name"]."</a></td>\n";
+		echo "    <td>&nbsp;</td>\n";
+		echo "    <td>&nbsp;</td>\n";
+		echo "    <td>&nbsp;</td>\n";
+		echo "    <td>&nbsp;</td>\n";
+		echo "  </tr>\n";
+		if ($RowClass == "row1") {
+		    $RowClass = "row2";
+		}
+		else
+		{
+			$RowClass = "row1";
+		}
+	}
+}
+
+function addFiles($ModPath, $Files)
+{
+	global $RowClass, $FileIcon, $ScriptName, $ScriptPath;
+	foreach ($Files as $File)
+	{
+		$HREF = str_replace("//", "/", "$ScriptName?mp=$ModPath/".$File["Name"]); 
+		$DateTime = strtotime($File["Revisions"][$File["Head"]]["date"]);
+		$AGE = CalculateDateDiff($DateTime, strtotime(gmdate("M d Y H:i:s")));
+		echo "  <tr class=\"$RowClass\" valign=\"top\">\n";
+		echo "    <td align=\"center\"><a href=\"$HREF&amp;fh\"><img alt=\"FILE\" src=\"$ScriptPath/$FileIcon\" /></a></td>\n";
+		echo "    <td><a href=\"$HREF&amp;fh\">".$File["Name"]."</a></td>\n";
+		echo "    <td align=\"center\"><a href=\"$HREF&amp;fv&amp;dt=$DateTime\">".$File["Head"]."</a></td>\n";
+		echo "    <td align=\"center\">".$AGE." ago</td>\n";
+		echo "    <td align=\"center\">".$File["Revisions"][$File["Head"]]["author"]."</td>\n";
+		echo "    <td>".str_replace("\n", "<br />", $File["Revisions"][$File["Head"]]["LogMessage"])."</td>\n";
+		echo "  </tr>\n";
+		if ($RowClass == "row1") {
+		    $RowClass = "row2";
+		}
+		else
+		{
+			$RowClass = "row1";
+		}
+	}
+}
 
 ?>
