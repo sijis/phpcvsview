@@ -48,7 +48,7 @@ function DisplayFileDiff($Rev1, $Rev2)
 		}
 		
 		$CVSServer->Disconnect();
-		$CVSServer = new CVS_PServer($config['cvsroot'], $config['pserver'], $config['username'], $config['password']);
+		$CVSServer = new CVS_PServer($env['CVSSettings']['cvsroot'], $env['CVSSettings']['server'], $env['CVSSettings']['username'], $env['CVSSettings']['password']);
 		$CVSServer->Connect();
 		$CVSServer->Authenticate();
 		
