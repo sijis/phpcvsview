@@ -1055,6 +1055,8 @@ class CVS_PServer
 			$this->sendValidRequests();
 			$this->INITIALISED = true;
 		}
+		
+		$this->FILECONTENTS = "";
 
 		if (strncmp($FileName, "/", 1) == 0) {
 		    $FName = substr($FileName, 1);

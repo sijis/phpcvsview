@@ -15,6 +15,7 @@ $FolderIcon = "Themes/".$config['theme']."/Images/folder.png";
 $FileIcon = "Themes/".$config['theme']."/Images/file.png";
 $ParentIcon = "Themes/".$config['theme']."/Images/parent.png";
 $ModuleIcon = "Themes/".$config['theme']."/Images/module.png";
+$DownloadIcon = "Themes/".$config['theme']."/Images/download.png";
 
 function GetPageHeader($Title="", $Heading="") {
 	global $StartTime, $config, $env, $lang;
@@ -142,7 +143,7 @@ function startDirList()
 	global $RowClass, $lang;
 	echo "<hr />";
 	echo "<table>";
-	echo "<tr class=\"head\"><th>&nbsp;</th><th>".$lang['file']."</th><th>".$lang['rev']."</th><th>".$lang['age']."</th><th>".$lang['author']."</th><th>".$lang['last_log']."</th></tr>";
+	echo "<tr class=\"head\"><th>&nbsp;</th><th>&nbsp;</th><th>".$lang['file']."</th><th>".$lang['rev']."</th><th>".$lang['age']."</th><th>".$lang['author']."</th><th>".$lang['last_log']."</th></tr>";
 	$RowClass = "row1";
 }
 
@@ -157,6 +158,7 @@ function addParentDirectory($ModPath)
 	global $RowClass, $ParentIcon, $env, $lang;
 	$HREF = str_replace("//", "/", $env['script_name']."?mp=".substr($ModPath, 0, strrpos(substr($ModPath, 0, -1), "/"))."/");
 	echo "<tr class=\"$RowClass\">";
+	echo "<td class=\"min\">&nbsp;</td>";
 	echo "<td class=\"min\"><a href=\"$HREF\"><img alt=\"parent\" src=\"".$env['script_path']."/$ParentIcon\" /></a></td>";
 	echo "<td class=\"min\"><a href=\"$HREF\">".$lang['up_folder']."</a></td>";
 	echo "<td>&nbsp;</td>";
@@ -169,10 +171,15 @@ function addParentDirectory($ModPath)
 
 function addFolders($ModPath, $Folders)
 {
-	global $RowClass, $FolderIcon, $env;
+	global $RowClass, $DownloadIcon, $FolderIcon, $env;
 	foreach ($Folders as $Folder) {
 		$HREF = str_replace("//", "/", $env['script_name']."?mp=$ModPath/".$Folder["Name"]."/");
 		echo "<tr class=\"$RowClass\">";
+		if ($Folder["Name"] != "CVSROOT" && $Folder["Name"] != "Attic") {
+			echo "<td class=\"min\"><a href=\"$HREF&dp\"><img alt=\"D/L\" src=\"".$env['script_path']."/$DownloadIcon\" /></a></td>";
+		} else {
+			echo "<td class=\"min\">&nbsp;</td>";
+		}
 		echo "<td class=\"min\"><a href=\"$HREF\"><img alt=\"DIR\" src=\"".$env['script_path']."/$FolderIcon\" /></a></td>";
 		echo "<td class=\"min\"><a href=\"$HREF\">".$Folder["Name"]."</a></td>";
 		echo "<td>&nbsp;</td>";
@@ -195,6 +202,7 @@ function addModules($ModPath, $Modules)
 		// Add the row data here.
 		$HREF = str_replace("//", "/", $env['script_name']."?mp=$ModPath/".$Val."/");
 		echo "<tr class=\"$RowClass\">";
+		echo "<td class=\"min\">&nbsp;</td>";
 		echo "<td class=\"min\"><a href=\"$HREF\"><img alt=\"MOD\" src=\"".$env['script_path']."/$ModuleIcon\" /></a></td>";
 		echo "<td class=\"min\"><a href=\"$HREF\">".$Key."</a></td>";
 		echo "<td>&nbsp;</td>";
@@ -218,6 +226,7 @@ function addFiles($ModPath, $Files)
 		$DateTime = strtotime($File["Revisions"][$File["Head"]]["date"]);
 		$AGE = CalculateDateDiff($DateTime, strtotime(gmdate("M d Y H:i:s")));
 		echo "<tr class=\"$RowClass\">";
+		echo "<td class=\"min\">&nbsp;</td>";
 		echo "<td align=\"center\"><a href=\"$HREF&amp;fh\"><img alt=\"FILE\" src=\"".$env['script_path']."/$FileIcon\" /></a></td>";
 		echo "<td><a href=\"$HREF&amp;fh\">".$File["Name"]."</a></td>";
 		echo "<td align=\"center\"><a href=\"$HREF&amp;fv&amp;dt=$DateTime\">".$File["Head"]."</a></td>";

@@ -71,6 +71,7 @@ require_once 'func_FileAnnotation.php';
 require_once 'func_FileView.php';
 require_once 'func_FileDownload.php';
 require_once 'func_DiffFile.php';
+require_once 'func_ArchiveDownload.php';
 
 
 // Check for a module path
@@ -92,7 +93,11 @@ if (isset($_GET["fh"])) {
 				if (isset($_GET["df"])) {
 				    DisplayFileDiff($_GET["r1"], $_GET["r2"]);
 				} else {
-					DisplayDirListing();
+					if (isset($_GET["dp"])) {
+					    DownloadArchive();
+					} else {
+						DisplayDirListing();
+					}
 				}
 			}
 		}
