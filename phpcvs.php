@@ -416,20 +416,29 @@ class CVS_PServer
 	//   Parameters: None.
 	// Return Value: boolean		- Successfully sent.
 	// ***************************************************************************
-	function processResponse()
+	function processResponse($Debug = false)
 	{
 		$this->MESSAGE_CONTENT = "";
 		$this->STDERR = "";
 		$KeepGoing = true;
+		if ($Debug) {
+		    echo "<pre>";
+		}
 		while($KeepGoing){
 			$ResponseLine = $this->SOCKET->readLine();
 			$Response = explode(" ", $ResponseLine);
+			if ($Debug) {
+				echo $ResponseLine."\n";
+			}
 			if ($Response[0] != "") {
 				$Func = $this->ALLOWED_RESPONSES[$Response[0]];
     			if (method_exists($this, $Func)) {
 				    $KeepGoing = $this->$Func($ResponseLine);
 				}
 			}
+		}
+		if ($Debug) {
+			echo "</pre>";
 		}
 	}
 
@@ -681,6 +690,38 @@ class CVS_PServer
 	{
 		if ($this->ALLOWED_REQUESTS["export"] == true) {
 		    if ($this->SOCKET->write("export\n") != true) {
+		        return false;
+		    }
+		}
+		$this->processResponse();
+
+		// Here the first line is the length, the remaining (upto the 'ok')
+		// is the content of the file.
+		if ($this->FINAL_RESPONSE) {
+			$ContentLength = $this->SOCKET->readLine();
+			$CharsToGo = $ContentLength;
+			while($CharsToGo > 0){
+				$Buffer = $this->SOCKET->read($CharsToGo);
+				$this->FILECONTENTS .= $Buffer;
+				$CharsToGo -= strlen($Buffer);
+			}
+			$ReadLine = $this->SOCKET->readLine();
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	// ***************************************************************************
+	//     Function: sendCO()
+	//       Author: Brian A Cheeseman.
+	//   Parameters: None.
+	// Return Value: boolean		- Successfully sent.
+	// ***************************************************************************
+	function sendCO()
+	{
+		if ($this->ALLOWED_REQUESTS["co"] == true) {
+		    if ($this->SOCKET->write("co\n") != true) {
 		        return false;
 		    }
 		}

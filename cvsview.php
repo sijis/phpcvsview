@@ -16,6 +16,15 @@ require_once 'utils.php';
 
 global $config, $env;
 
+if (phpversion() <= "4.1.0") { 
+	global $HTTP_ENV_VARS;
+	$_ENVIRON = $HTTP_ENV_VARS;
+}
+else
+{
+	$_ENVIRON = $_ENV;
+}
+
 $REPOS = "";
 $env['script_name'] = $_SERVER['PHP_SELF'];
 $env['script_path'] = substr($env['script_name'], 0, strrpos($env['script_name'], "/"));
@@ -25,8 +34,8 @@ $env['theme_path'] = 'Themes/';
 
 // check if cookie exist, if so use cookie, otherwise use config value
 // then verify that config value is a valid entry
-$config['language'] = (empty($_COOKIE['config']['lang'])) ? $config['language'] : $_COOKIE['config']['lang'];
-$config['language'] = (in_array($config['language'], GetLanguagesList(), false)) ? $config['language'] : 'en';
+$config['language'] = (empty($_COOKIE['config']['lang'])) ? SetDefaultLanguage() : $_COOKIE['config']['lang'];
+$config['language'] = (in_array($config['language'], GetLanguagesList(), false)) ? $config['language'] : "en";
 
 $config['theme'] = (empty($_COOKIE['config']['theme'])) ? $config['theme'] : $_COOKIE['config']['theme'];
 $config['theme'] = (in_array($config['theme'], GetThemeList(), false)) ? $config['theme'] : 'Default';

@@ -146,6 +146,20 @@ function GetLanguagesList()
 	return $lang;
 }
 
+function SetDefaultLanguage()
+{
+	global $env, $config, $_ENVIRON;
+	// en_AU:en_GB:en
+	$PreferredLangs = explode(":", $_ENVIRON['LANGUAGE']);
+	foreach ($PreferredLangs as $Lang) {
+		$FileToCheck = $env['language_path']."$Lang.php";
+		if (file_exists($FileToCheck)) {
+		    return $Lang;
+		}
+	}
+	return $config['language'];
+}
+
 function InsertIntoArray(&$Array, $Value, $Position)
 {
 	if (!is_array($Array)) return false;
@@ -155,4 +169,3 @@ function InsertIntoArray(&$Array, $Value, $Position)
 }
 
 ?>
-
