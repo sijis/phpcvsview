@@ -18,7 +18,7 @@ $lang['file']			= 'File';
 $lang['rev']			= 'Rev.';
 $lang['age']			= 'Age';
 $lang['author']			= 'Author';
-$lang['last_log']		= 'Last Lost Entry';
+$lang['last_log']		= 'Last Log Entry';
 
 // customization options
 $lang['language']		= 'English';
