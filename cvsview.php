@@ -13,14 +13,14 @@
 
 require_once 'config.php';
 
-global $config;
+global $config, $env;
 
 $REPOS = "";
-$ScriptName = $_SERVER['PHP_SELF'];
-$ScriptPath = substr($ScriptName, 0, strrpos($ScriptName, "/"));
+$env['script_name'] = $_SERVER['PHP_SELF'];
+$env['script_path'] = substr($env['script_name'], 0, strrpos($env['script_name'], "/"));
 
-if ($ScriptPath == "") {
-    $ScriptPath = "/";
+if ($env['script_path'] == "") {
+    $env['script_path'] = "/";
 }
 
 if (isset($_GET["tm"])) {
@@ -41,21 +41,21 @@ require_once 'func_FileView.php';
 
 // Check for a module path
 if (isset($_GET["mp"])) {
-    $config['mod_path'] = $_GET["mp"];
+    $env['mod_path'] = $_GET["mp"];
 } else {
-	$config['mod_path'] = "/";
+	$env['mod_path'] = "/";
 }
 
-$config['mod_path'] = str_replace("//", "/", $config['mod_path']);
+$env['mod_path'] = str_replace("//", "/", $env['mod_path']);
 
 if (isset($_GET["fh"])) {
     DisplayFileHistory();
 } else {
 	if (isset($_GET["fa"])) {
-	    DisplayFileAnnotation($config['mod_path'], $_GET["fa"]);
+	    DisplayFileAnnotation($env['mod_path'], $_GET["fa"]);
 	} else {
 		if (isset($_GET["fv"])) {
-		    DisplayFileContents($config['mod_path'], $_GET["dt"]);
+		    DisplayFileContents($env['mod_path'], $_GET["dt"]);
 		} else {
 			DisplayDirListing();
 		}
