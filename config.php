@@ -49,4 +49,8 @@ $config['language'] = "en";
 // Settings for TAR creation.
 $config['TempFileLocation'] = "/tmp";
 
+// Settings for Output Cache.
+$config['Cache']['Enable'] = true;
+$config['Cache']['Location'] = "/tmp/phpCVSViewCache";
+
 ?>
