@@ -11,26 +11,26 @@
  * @copyright 2003-2004 Brian A Cheeseman
  **/
 
-// The CVSROOT path to access. For sourceforge you need the usual expansion 
+// The CVSROOT path to access. For sourceforge you need the usual expansion
 // of the path based on the project name.
-$CVSROOT = "/cvsroot/phpcvsview";
+$config['cvsroot'] = "/cvsroot/phpcvsview";
 
 // The hostname (or IP Address) of the server providing the PServer services.
-$PServer = "cvs.sourceforge.net";
+$config['pserver'] = "cvs.sourceforge.net";
 
 // The username to pass to the PServer for authentication purposes.
-$UserName = "anonymous";
+$config['username'] = "anonymous";
 
 // The password associated with the username above for authentication process.
-$Password = "";
+$config['password'] = "";
 
-// The HTMLTitle and HTMLHeading are used purely for the generation of the 
+// The HTMLTitle and HTMLHeading are used purely for the generation of the
 // resultant web pages.
-$HTMLTitle = "phpCVSView Source Code Library";
-$HTMLHeading = "phpCVSView Source Code Library";
+$config['html_title'] = "phpCVSView Source Code Library";
+$config['html_header'] = "phpCVSView Source Code Library";
 
-$HTMLTblHdBg  = "#CCCCCC";
-$HTMLTblCell1 = "#FFFFFF";
-$HTMLTblCell2 = "#CCCCEE";
+$config['html_tbl_head_bg'] = "#CCCCCC";
+$config['html_tbl_cell_one'] = "#FFFFFF";
+$config['html_tbl_cell_two'] = "#CCCCEE";
 
 ?>
