@@ -49,17 +49,33 @@ function DisplayFileAnnotation($File, $Revision = "") {
 
 		$search = array('<', '>', '\n'); 
 		$replace = array("&lt;", "&gt;", ""); 
+		$PrevRev = "";
+		$FirstLine = true;
 		foreach ($CVSServer->ANNOTATION as $Annotation)
 		{
-			echo "<tr class=\"$RowClass\"><td><pre>".$Annotation["Revision"]."</pre></td><td><pre>".$Annotation["Author"];
-			echo "</pre></td><td><pre>".$Annotation["Date"]."</pre></td><td><pre>".str_replace($search, $replace, $Annotation["Line"])."</pre></td></tr>\n";
-			if ($RowClass == "row1") {
-			    $RowClass = "row2";
+			if (strcmp($PrevRev, $Annotation["Revision"]) != 0) {
+				if (!$FirstLine) {
+				    "</pre></td></tr>\n";
+				}
+				else
+				{
+					$FirstLine = false;
+				}
+				echo "<tr class=\"$RowClass\"><td>".$Annotation["Revision"]."</td><td>".$Annotation["Author"];
+				echo "</td><td>".$Annotation["Date"]."</td><td><pre>".str_replace($search, $replace, $Annotation["Line"]);
+				if ($RowClass == "row1") {
+				    $RowClass = "row2";
+				}
+				else
+				{
+					$RowClass = "row1";
+				}
 			}
 			else
 			{
-				$RowClass = "row1";
+				echo "\n".str_replace($search, $replace, $Annotation["Line"]);
 			}
+			$PrevRev = $Annotation["Revision"];
 		}
 		echo "</table><hr />\n";
 		
