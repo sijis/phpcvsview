@@ -23,9 +23,42 @@ class CVS_PServer {
 	var $CVS_TIMEOUT;			// Timeout in seconds for all socket operations.
 	var $CVS_VALID_REQUESTS;	// List of valid requests the PServer accepts.
 	var $SOCKET;				// The socket handle for communicating with the PServer.
-	var $ALLOWED_RESPONSES = array();	// A hashed array of responses that we are capable of 
-								// processing and the contents is the name of the function
-								// to process it through.
+	var $ALLOWED_RESPONSES = array(		// A hashed array of responses that we are capable of 
+										// processing and the contents is the name of the function
+										// to process it through.
+		"ok" => "processOk", 
+		"error" => "processError",
+		"Valid-requests" => "processValidRequests",
+		"Checked-in" => "processCheckedIn",
+		"New-entry" => "processNewEntry",
+		"Checksum" => "processChecksum",
+		"Copy-file" => "processCopyFile",
+		"Updated" => "processUpdated",
+		"Created" => "processCreated",
+		"Update-existing" => "processUpdateExisting",
+		"Merged" => "processMerged",
+		"Patched" => "processPatched",
+		"Rcs-diff" => "processRcsDiff",
+		"Mode" => "processMode",
+		"Mod-time" => "processModTime",
+		"Removed" => "processRemoved",
+		"Remove-entry" => "processRemoveEntry",
+		"Set-static-directory" => "processSetStaticDirectory",
+		"Clear-static-directory" => "processClearStaticDirectory",
+		"Set-sticky" => "processSetSticky",
+		"Clear-sticky" => "processClearSticky",
+		"Template" => "processTemplate",
+		"Set-checkin-prog" => "processSetCheckinProg",
+		"Set-update-prog" => "processSetUpdateProg",
+		"Notified" => "processNotified",
+		"Module-expansion" => "processModuleExpansion",
+		"Wrapper-rcsOption" => "processWrapperRcsOption",
+		"M" => "processM",
+		"Mbinary" => "processMBinary",
+		"E" => "processE",
+		"F" => "processF",
+		"MT" => "processMT");
+
 	var $ALLOWED_REQUESTS = array();	// A hashed array of requests we are allowed to send.
 	var $FINAL_RESPONSE;		// A state variable for tracking whether the final response 
 								// in a chain of lines was a success or failure.
@@ -113,47 +146,17 @@ class CVS_PServer {
 	* Class Constructor.
 	* 
 	**/
-	function CVS_PServer() {
+	function CVS_PServer(	$CVSROOT = "/cvsroot/p/ph/phpcvsview", 
+							$PServer = "cvs.sourceforge.net", 
+							$UserName = "anonymous", 
+							$Password = "") {
 					
-		$this->CVS_REPOSITORY = '';
-		$this->CVS_PSERVER = '';
+		$this->CVS_REPOSITORY = $CVSROOT;
+		$this->CVS_PSERVER = $PServer;
 		$this->CVS_PORT = 2401;
-		$this->CVS_USERNAME = '';
-		$this->CVS_PASSWORD = '';
+		$this->CVS_USERNAME = $UserName;
+		$this->CVS_PASSWORD = Password;
 		$this->SOCKET = new Net_Socket();
-		
-		$this->ALLOWED_RESPONSES["ok"] = "processOk";
-		$this->ALLOWED_RESPONSES["error"] = "processError";
-		$this->ALLOWED_RESPONSES["Valid-requests"] = "processValidRequests";
-		$this->ALLOWED_RESPONSES["Checked-in"] = "processCheckedIn";
-		$this->ALLOWED_RESPONSES["New-entry"] = "processNewEntry";
-		$this->ALLOWED_RESPONSES["Checksum"] = "processChecksum";
-		$this->ALLOWED_RESPONSES["Copy-file"] = "processCopyFile";
-		$this->ALLOWED_RESPONSES["Updated"] = "processUpdated";
-		$this->ALLOWED_RESPONSES["Created"] = "processCreated";
-		$this->ALLOWED_RESPONSES["Update-existing"] = "processUpdateExisting";
-		$this->ALLOWED_RESPONSES["Merged"] = "processMerged";
-		$this->ALLOWED_RESPONSES["Patched"] = "processPatched";
-		$this->ALLOWED_RESPONSES["Rcs-diff"] = "processRcsDiff";
-		$this->ALLOWED_RESPONSES["Mode"] = "processMode";
-		$this->ALLOWED_RESPONSES["Mod-time"] = "processModTime";
-		$this->ALLOWED_RESPONSES["Removed"] = "processRemoved";
-		$this->ALLOWED_RESPONSES["Remove-entry"] = "processRemoveEntry";
-		$this->ALLOWED_RESPONSES["Set-static-directory"] = "processSetStaticDirectory";
-		$this->ALLOWED_RESPONSES["Clear-static-directory"] = "processClearStaticDirectory";
-		$this->ALLOWED_RESPONSES["Set-sticky"] = "processSetSticky";
-		$this->ALLOWED_RESPONSES["Clear-sticky"] = "processClearSticky";
-		$this->ALLOWED_RESPONSES["Template"] = "processTemplate";
-		$this->ALLOWED_RESPONSES["Set-checkin-prog"] = "processSetCheckinProg";
-		$this->ALLOWED_RESPONSES["Set-update-prog"] = "processSetUpdateProg";
-		$this->ALLOWED_RESPONSES["Notified"] = "processNotified";
-		$this->ALLOWED_RESPONSES["Module-expansion"] = "processModuleExpansion";
-		$this->ALLOWED_RESPONSES["Wrapper-rcsOption"] = "processWrapperRcsOption";
-		$this->ALLOWED_RESPONSES["M"] = "processM";
-		$this->ALLOWED_RESPONSES["Mbinary"] = "processMBinary";
-		$this->ALLOWED_RESPONSES["E"] = "processE";
-		$this->ALLOWED_RESPONSES["F"] = "processF";
-		$this->ALLOWED_RESPONSES["MT"] = "processMT";
 	}
 	
 	/**
@@ -653,14 +656,15 @@ class CVS_PServer {
 						$LineProcessed = true;
 					}
 					
-					// Deal with the blank lines.
-					
 					// Get any lines not already processed and assume they are the log message.
 					if (!$LineProcessed) {
 						if (strlen($this->FILES[$FileCount]["Revisions"]["$CurrentRevision"]["LogMessage"]) > 0) {
 						    $this->FILES[$FileCount]["Revisions"]["$CurrentRevision"]["LogMessage"] .= "\n";
 						}
-					    $this->FILES[$FileCount]["Revisions"]["$CurrentRevision"]["LogMessage"] .= trim($Line);
+						$Line = trim($Line);
+						if ($Line != "") {
+						    $this->FILES[$FileCount]["Revisions"]["$CurrentRevision"]["LogMessage"] .= trim($Line);
+						}
 					}
 				}
 			}
