@@ -210,11 +210,12 @@ function DisplayDirListing() {
 		foreach ($CVSServer->FILES as $File)
 		{
 			$HREF = str_replace("//", "/", "$ScriptName?mp=$ModPath/".$File["Name"]); 
-			$AGE = CalculateDateDiff(strtotime($File["Revisions"][$File["Head"]]["date"]), time());
+			$DateTime = strtotime($File["Revisions"][$File["Head"]]["date"]);
+			$AGE = CalculateDateDiff($DateTime, time());
 			echo "  <tr bgcolor=\"$BGColor\" valign=\"top\">\n";
 			echo "    <td align=\"center\" valign=\"center\"><a href=\"$HREF&fh\"><img border=\"0\" src=\"$ScriptPath/images/file.png\"></a></td>\n";
 			echo "    <td><a href=\"$HREF&fh\">".$File["Name"]."</a></td>\n";
-			echo "    <td align=\"center\"><a href=\"$HREF&fv&fr=".$File["Head"]."\">".$File["Head"]."</td>\n";
+			echo "    <td align=\"center\"><a href=\"$HREF&fv&dt=$DateTime\">".$File["Head"]."</td>\n";
 			echo "    <td align=\"center\">".$AGE." ago</td>\n";
 			echo "    <td align=\"center\">".$File["Revisions"][$File["Head"]]["author"]."</td>\n";
 			echo "    <td>".str_replace("\n", "<br>", $File["Revisions"][$File["Head"]]["LogMessage"])."</td>\n";
@@ -279,24 +280,24 @@ function DisplayFileHistory()
 		foreach ($CVSServer->FILES[0]["Revisions"] as $Revision)
 		{
 			$HREF = str_replace("//", "/", "$ScriptName?mp=$ModPath");
+			$DateTime = strtotime($Revision["date"]);
 			echo "<hr>\n";
 			echo "<b>Revision</b> ".$Revision["Revision"]." -";
-			echo " (<a href=\"$HREF&fv&fr=".$Revision["Revision"]."\">view</a>)";
-			echo " (<a href=\"$HREF&fd&fr=".$Revision["Revision"]."\">download</a>)<br>\n";
-			echo "<b>Last Checkin:</b> ".strftime("%A %d %b %Y %T %Z", strtotime($Revision["date"]))." (".CalculateDateDiff(strtotime($Revision["date"]), time())." ago) by ".$Revision["author"]."<br>\n";
+			echo " (<a href=\"$HREF&fv&dt=$DateTime\">view</a>)";
+			echo " (<a href=\"$HREF&fd&dt=$DateTime\">download</a>)";
+			echo " (<a href=\"$HREF&df&r1=".strtotime($Revision["Revision"]["date"])."&r2=";
+			echo strtotime($CVSServer->FILES[0]["Revisions"][$Revision["PrevRevision"]]["date"])."\">diff to previous</a>)";
+			echo " (<a href=\"$HREF&fa=".$Revision["Revision"]."\">annotate</a>)<br>\n";
+			echo "<b>Last Checkin:</b> ".strftime("%A %d %b %Y %T %Z", strtotime($Revision["date"]))." (".CalculateDateDiff(strtotime($Revision["date"]), time())." ago)<br>\n";
 			echo "<b>Branch:</b> ".$Revision["Branches"]."<br>\n";
-			$DateTime = strtotime($Revision["date"]);
 			echo "<b>Date:</b> ".strftime("%B %d, %Y", $DateTime)."<br>\n";
 			echo "<b>Time:</b> ".strftime("%H:%M:%S", $DateTime)."<br>\n";
 			echo "<b>Author:</b> ".$Revision["author"]."<br>\n";
 			echo "<b>State:</b> ".$Revision["state"]."<br>\n";
+			if ($Revision["PrevRevision"] != "") {
+			    echo "<b>Changes since ".$Revision["PrevRevision"].":</b> ".$Revision["lines"]."<br>";
+			}
 			echo "<b>Log Message:</b><pre>".$Revision["LogMessage"]."</pre>\n";
-
-//			if (($i + 1) < $Elements[0]["TotalRevisions"]) {
-//				echo "Changes since ".$Elements[$i+1]["Revision"].": ";
-//			    echo "+".$Elements[$i]["LinesAdd"]." -".$Elements[$i]["LinesSub"]."<br>\n";
-//			} // End of if (($i + 1) < $Elements[0]["TotalRevisions"])
-
 		}
 		
 		echo "<hr>\n";
@@ -308,6 +309,70 @@ function DisplayFileHistory()
 	echo GetPageFooter();
 }
 
+function DisplayFileAnnotation($File, $Revision = "") {
+	global $ModPath, $CVSROOT, $PServer, $UserName, $Password, $ScriptName, 
+	       $HTMLTitle, $HTMLHeading, $HTMLTblHdBg, $HTMLTblCell1, $HTMLTblCell2;
+
+	// Calculate the path from the $ScriptName variable.
+	$ScriptPath = substr($ScriptName, 0, strrpos($ScriptName, "/"));
+	if ($ScriptPath == "") {
+	    $ScriptPath = "/";
+	}
+		  
+	// Create our CVS connection object and set the required properties.
+	$CVSServer = new CVS_PServer($CVSROOT, $PServer, $UserName, $Password);
+	
+	// Start the output process.
+	echo GetPageHeader($HTMLTitle, $HTMLHeading);
+	
+	// Connect to the CVS server.
+	if ($CVSServer->Connect() === true) {
+	
+		// Authenticate against the server.
+		$Response = $CVSServer->Authenticate();
+		if ($Response !== true) {
+			return;
+		}
+		
+		// Annotate the file.
+		$Response = $CVSServer->Annotate($File, $Revision);
+		if ($Response !== true) {
+		    return;
+		}
+		
+		//print_r($CVSServer->ANNOTATION);
+
+		// Start the output for the table.
+		echo "<hr>\n";
+		echo "<table border=\"0\" cellpadding=\"2\" cellspacing=\"0\" width=\"100%\">\n";
+		$BGColor = $HTMLTblCell1;
+
+		$search = array('<', '>', '\n'); 
+		$replace = array("&lt;", "&gt;", ""); 
+		foreach ($CVSServer->ANNOTATION as $Annotation)
+		{
+			$result = str_replace($search, $replace, $email); 
+			echo "<tr bgcolor=\"$BGColor\"><td nowrap><pre>".$Annotation["Revision"]."</pre></td><td nowrap><pre>".$Annotation["Author"];
+			echo "</pre></td><td nowrap><pre>".$Annotation["Date"]."</pre></td><td nowrap><pre>".str_replace($search, $replace, $Annotation["Line"])."</pre></td></tr>\n";
+			if ($BGColor == $HTMLTblCell1) {
+			    $BGColor = $HTMLTblCell2;
+			}
+			else
+			{
+				$BGColor = $HTMLTblCell1;
+			}
+		}
+		echo "</table>\n";
+		
+		// Close the connection.
+		$CVSServer->Disconnect();
+	}
+	else
+	{
+		echo "ERROR: Could not connect to the PServer.<br>\n";
+	}
+}
+		
 // Check for a module path
 if (isset($_GET["mp"])) {
     $ModPath = $_GET["mp"];
@@ -318,7 +383,15 @@ $ModPath = str_replace("//", "/", $ModPath);
 
 if (isset($_GET["fh"])) {
     DisplayFileHistory();
-} else {
-	DisplayDirListing();
+}
+else
+{
+	if (isset($_GET["fa"])) {
+	    DisplayFileAnnotation($ModPath, $_GET["fa"]);
+	}
+	else
+	{
+		DisplayDirListing();
+	}
 }
 ?>
