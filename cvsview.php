@@ -52,6 +52,7 @@ require_once 'func_FileHistory.php';
 require_once 'func_FileAnnotation.php';
 require_once 'func_FileView.php';
 require_once 'func_FileDownload.php';
+require_once 'func_DiffFile.php';
 
 
 // Check for a module path
@@ -68,11 +69,13 @@ if (isset($_GET["fh"])) {
 			DisplayFileContents($env['mod_path'], $_GET["dt"]);
 		} else {
 			if (isset($_GET["fd"])) {
-				DownloadFile($env['mod_path'], $_GET["dt"]);
-			}
-			else
-			{
-				DisplayDirListing();
+			    DownloadFile($env['mod_path'], $_GET["dt"]);
+			} else {
+				if (isset($_GET["df"])) {
+				    DisplayFileDiff($_GET["r1"], $_GET["r2"]);
+				} else {
+					DisplayDirListing();
+				}
 			}
 		}
 	}
