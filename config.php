@@ -6,9 +6,9 @@
  *
  * Purpose: To store the configuration for this instance of phpCVSView
  *
- * @author Brian A Cheeseman <brian@bcheese.homeip.net>
+ * @author Brian A Cheeseman <bcheesem@users.sourceforge.net>
  * @version $Id$
- * @copyright 2003 Brian A Cheeseman
+ * @copyright 2003-2004 Brian A Cheeseman
  **/
 
 // The CVSROOT path to access. For sourceforge you need the usual expansion 

@@ -6,9 +6,9 @@
  *
  * Purpose: To provide the mime translations required for downloading
  *
- * @author Brian A Cheeseman <brian@bcheese.homeip.net>
+ * @author Brian A Cheeseman <bcheesem@users.sourceforge.net>
  * @version $Id$
- * @copyright 2003 Brian A Cheeseman
+ * @copyright 2003-2004 Brian A Cheeseman
  **/
 
 $MIME_TYPES = array(

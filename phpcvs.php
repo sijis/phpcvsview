@@ -6,9 +6,9 @@
  *
  * Purpose: To provide the main class required to access a CVS repository
  *
- * @author Brian A Cheeseman <brian@bcheese.homeip.net>
+ * @author Brian A Cheeseman <bcheesem@users.sourceforge.net>
  * @version $Id$
- * @copyright 2003 Brian A Cheeseman
+ * @copyright 2003-2004 Brian A Cheeseman
  **/
  
 require_once 'Net/Socket.php';
