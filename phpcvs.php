@@ -775,6 +775,15 @@ class CVS_PServer
 						$CurrentDecode = 2;
 						$LineProcessed = true;
 
+						// Start by initialising the array.
+						$this->FILES[$FileCount]["Head"] = "";
+						$this->FILES[$FileCount]["Branch"] = "";
+						$this->FILES[$FileCount]["Locks"] = "";
+						$this->FILES[$FileCount]["Access"] = "";
+						$this->FILES[$FileCount]["KeywordSubst"] = "";
+						$this->FILES[$FileCount]["TotalRevs"] = "";
+						$this->FILES[$FileCount]["SelectedRevs"] = "";
+						$this->FILES[$FileCount]["Description"] = "";
 					}
 				}
 				// Lets continue, but only if we have a CurrentDecode type of 2 (ie a file).
