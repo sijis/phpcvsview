@@ -13,12 +13,12 @@
 
 function DisplayFileAnnotation($File, $Revision = "")
 {
-	global $config;
+	global $config, $env;
 
-	// Calculate the path from the $ScriptName variable.
-	$ScriptPath = substr($ScriptName, 0, strrpos($ScriptName, "/"));
-	if ($ScriptPath == "") {
-	    $ScriptPath = "/";
+	// Calculate the path from the $env['script_name'] variable.
+	$env['script_path'] = substr($env['script_name'], 0, strrpos($env['script_name'], "/"));
+	if ($env['script_path'] == "") {
+	    $env['script_path'] = "/";
 	}
 
 	// Create our CVS connection object and set the required properties.

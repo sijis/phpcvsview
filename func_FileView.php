@@ -13,12 +13,12 @@
 
 function DisplayFileContents($File, $Revision = "")
 {
-	global $config;
+	global $config, $env;
 
-	// Calculate the path from the $ScriptName variable.
-	$ScriptPath = substr($ScriptName, 0, strrpos($ScriptName, "/"));
-	if ($ScriptPath == ""){
-	    $ScriptPath = "/";
+	// Calculate the path from the $env['script_name'] variable.
+	$env['script_path'] = substr($env['script_name'], 0, strrpos($env['script_name'], "/"));
+	if ($env['script_path'] == ""){
+	    $env['script_path'] = "/";
 	}
 
 	// Create our CVS connection object and set the required properties.
@@ -36,8 +36,8 @@ function DisplayFileContents($File, $Revision = "")
 			return;
 		}
 
-		// Get a RLOG of the module path specified in $config['mod_path'].
-		$CVSServer->RLog($config['mod_path']);
+		// Get a RLOG of the module path specified in $env['mod_path'].
+		$CVSServer->RLog($env['mod_path']);
 
 		// "Export" the file.
 		$Response = $CVSServer->ExportFile($File, $Revision);
@@ -46,7 +46,7 @@ function DisplayFileContents($File, $Revision = "")
 		}
 
 		// Add the quick link navigation bar.
-		echo GetQuickLinkBar($config['mod_path'], "Code view for: ", true, true, $Revision);
+		echo GetQuickLinkBar($env['mod_path'], "Code view for: ", true, true, $Revision);
 
 		// Display the file contents.
 		echo "<hr />\n";

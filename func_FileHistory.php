@@ -13,12 +13,12 @@
 
 function DisplayFileHistory()
 {
-	global $config;
+	global $config, $env;
 
-	// Calculate the path from the $ScriptName variable.
-	$ScriptPath = substr($ScriptName, 0, strrpos($ScriptName, "/"));
-	if ($ScriptPath == "") {
-	    $ScriptPath = "/";
+	// Calculate the path from the $env['script_name'] variable.
+	$env['script_path'] = substr($env['script_name'], 0, strrpos($env['script_name'], "/"));
+	if ($env['script_path'] == "") {
+	    $env['script_path'] = "/";
 	}
 
 	// Create our CVS connection object and set the required properties.
@@ -37,15 +37,15 @@ function DisplayFileHistory()
 		}
 
 		// Get a RLOG of the module path specified in $config['mod_path'].
-		$CVSServer->RLog($config['mod_path']);
+		$CVSServer->RLog($env['mod_path']);
 
 		$Files = $CVSServer->FILES;
 
 		// Add the quick link navigation bar.
-		echo GetQuickLinkBar($config['mod_path'], "Revision History for: ", false, true, "");
+		echo GetQuickLinkBar($env['mod_path'], "Revision History for: ", false, true, "");
 
 		foreach ($CVSServer->FILES[0]["Revisions"] as $Revision) {
-			$HREF = str_replace("//", "/", "$ScriptName?mp=".$config['mod_path']);
+			$HREF = str_replace("//", "/", $env['script_name']."?mp=".$env['mod_path']);
 			$DateTime = strtotime($Revision["date"]);
 			echo "<hr /><p><a id=\"rd$DateTime\" />\n";
 			echo "<b>Revision</b> ".$Revision["Revision"]." -";

@@ -13,7 +13,7 @@
 
 function DisplayDirListing()
 {
-	global $config;
+	global $config, $env;
 
 	// Create our CVS connection object and set the required properties.
 	$CVSServer = new CVS_PServer($config['cvsroot'], $config['pserver'], $config['username'], $config['password']);
@@ -31,24 +31,24 @@ function DisplayDirListing()
 		}
 
 		// Get a RLOG of the module path specified in $config['mod_path'].
-		$CVSServer->RLog($config['mod_path']);
+		$CVSServer->RLog($env['mod_path']);
 
 		// Add the quick link navigation bar.
-		echo GetQuickLinkBar($config['mod_path']);
+		echo GetQuickLinkBar($env['mod_path']);
 
 		// Start the output for the table.
 		startDirList();
 
 		// Do we need the "Back" operation.
-		if (strlen($config['mod_path']) > 1) {
-			addParentDirectory($ScriptName, $ScriptPath, $config['mod_path']);
+		if (strlen($env['mod_path']) > 1) {
+			addParentDirectory($env['script_name'], $env['script_path'], $env['mod_path']);
 		}
 
 		// Display the folders within the table.
-		addFolders($config['mod_path'], $CVSServer->FOLDERS);
+		addFolders($env['mod_path'], $CVSServer->FOLDERS);
 
 		// Display the files within the table.
-		addFiles($config['mod_path'], $CVSServer->FILES);
+		addFiles($env['mod_path'], $CVSServer->FILES);
 
 		// Close off our HTML table.
 		endDirList();
