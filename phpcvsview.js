@@ -13,6 +13,21 @@ function postBackThemeChange(form)
 	location=newlocation;
 }
 
+function postBackLangChange(form)
+{
+	var ddLang=form.langSelect.value;
+	var hfRequest=form.URLRequest.value;
+	if (hfRequest.indexOf("?") == -1)
+	{
+		newlocation=hfRequest+'?lg='+ddLang;
+	}
+	else
+	{
+		newlocation=hfRequest+'&lg='+ddLang;
+	}
+	location=newlocation;
+}
+
 function postBackDiffRequest(form)
 {
 	var ddRev1=form.DiffRev1.value;
