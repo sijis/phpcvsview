@@ -41,52 +41,52 @@ function DisplayDirListing() {
 		
 		// Add the quick link navigation bar.
 		$Dirs = explode("/", $ModPath);
-		echo "Navigate to: <a href=\"$ScriptName\">Root</a>&nbsp;";
+		echo "<div class=\"quicknav\">Navigate to: <a href=\"$ScriptName\">Root</a>&nbsp;";
 		$intCount = 1;
 		while($intCount < count($Dirs)-2){
 			echo "/&nbsp;<a href=\"$ScriptName?mp=".ImplodeToPath($Dirs, "/", $intCount)."/\">".$Dirs[$intCount]."</a>&nbsp;";
 			$intCount++;
 		} // while
-		echo "/&nbsp;".$Dirs[$intCount]."<br>\n";
+		echo "/&nbsp;".$Dirs[$intCount]."</div>\n";
 		
 		// Start the output for the table.
-		echo "<hr>\n";
-		echo "<table border=\"0\" cellpadding=\"2\" cellspacing=\"1\" width=\"100%\">\n";
-		echo "  <tr bgcolor=\"$HTMLTblHdBg\">\n    <th width=\"30\">&nbsp;</th>\n    <th>File</th>\n    <th>Rev.</th>\n    <th>Age</th>\n    <th>Author</th>\n    <th>Last Log Entry</th>\n  </tr>\n";
-		$BGColor = $HTMLTblCell1;
+		echo "<hr />\n";
+		echo "<table>\n";
+		echo "  <tr class=\"head\">\n    <th>&nbsp;</th>\n    <th>File</th>\n    <th>Rev.</th>\n    <th>Age</th>\n    <th>Author</th>\n    <th>Last Log Entry</th>\n  </tr>\n";
+		$RowClass = "row1";
 		
 		// Do we need the "Back" operation.
 		if (strlen($ModPath) > 1) {
 			$HREF = str_replace("//", "/", "$ScriptName?mp=".substr($ModPath, 0, strrpos(substr($ModPath, 0, -1), "/"))."/"); 
-			echo "  <tr bgcolor=\"$BGColor\">\n";
-			echo "    <td align=\"center\" valign=\"center\"><a href=\"$HREF\"><img border=\"0\" src=\"$ScriptPath/images/parent.png\"></a></td>\n";
+			echo "  <tr class=\"$RowClass\">\n";
+			echo "    <td align=\"center\"><a href=\"$HREF\"><img alt=\"parent\" src=\"$ScriptPath/images/parent.png\" /></a></td>\n";
 			echo "    <td><a href=\"$HREF\">Previous Level</a></td>\n";
 			echo "    <td>&nbsp;</td>\n";
 			echo "    <td>&nbsp;</td>\n";
 			echo "    <td>&nbsp;</td>\n";
 			echo "    <td>&nbsp;</td>\n";
 			echo "  </tr>\n";
-			$BGColor = $HTMLTblCell2;
+			$RowClass = "row2";
 		}
 
 		// Process each folder and display a single row in a table.		
 		foreach ($CVSServer->FOLDERS as $Folder)
 		{
 			$HREF = str_replace("//", "/", "$ScriptName?mp=$ModPath/".$Folder["Name"]."/"); 
-			echo "  <tr bgcolor=\"$BGColor\">\n";
-			echo "    <td align=\"center\" valign=\"center\"><a href=\"$HREF\"><img border=\"0\" src=\"$ScriptPath/images/folder.png\"></a></td>\n";
+			echo "  <tr class=\"$RowClass\">\n";
+			echo "    <td align=\"center\"><a href=\"$HREF\"><img alt=\"DIR\" src=\"$ScriptPath/images/folder.png\" /></a></td>\n";
 			echo "    <td><a href=\"$HREF\">".$Folder["Name"]."</a></td>\n";
 			echo "    <td>&nbsp;</td>\n";
 			echo "    <td>&nbsp;</td>\n";
 			echo "    <td>&nbsp;</td>\n";
 			echo "    <td>&nbsp;</td>\n";
 			echo "  </tr>\n";
-			if ($BGColor == $HTMLTblCell1) {
-			    $BGColor = $HTMLTblCell2;
+			if ($RowClass == "row1") {
+			    $RowClass = "row2";
 			}
 			else
 			{
-				$BGColor = $HTMLTblCell1;
+				$RowClass = "row1";
 			}
 		}
 
@@ -95,20 +95,20 @@ function DisplayDirListing() {
 			$HREF = str_replace("//", "/", "$ScriptName?mp=$ModPath/".$File["Name"]); 
 			$DateTime = strtotime($File["Revisions"][$File["Head"]]["date"]);
 			$AGE = CalculateDateDiff($DateTime, strtotime(gmdate("M d Y H:i:s")));
-			echo "  <tr bgcolor=\"$BGColor\" valign=\"top\">\n";
-			echo "    <td align=\"center\" valign=\"center\"><a href=\"$HREF&fh\"><img border=\"0\" src=\"$ScriptPath/images/file.png\"></a></td>\n";
-			echo "    <td><a href=\"$HREF&fh\">".$File["Name"]."</a></td>\n";
-			echo "    <td align=\"center\"><a href=\"$HREF&fv&dt=$DateTime\">".$File["Head"]."</td>\n";
+			echo "  <tr class=\"$RowClass\" valign=\"top\">\n";
+			echo "    <td align=\"center\"><a href=\"$HREF&amp;fh\"><img alt=\"FILE\" src=\"$ScriptPath/images/file.png\" /></a></td>\n";
+			echo "    <td><a href=\"$HREF&amp;fh\">".$File["Name"]."</a></td>\n";
+			echo "    <td align=\"center\"><a href=\"$HREF&amp;fv&amp;dt=$DateTime\">".$File["Head"]."</a></td>\n";
 			echo "    <td align=\"center\">".$AGE." ago</td>\n";
 			echo "    <td align=\"center\">".$File["Revisions"][$File["Head"]]["author"]."</td>\n";
-			echo "    <td>".str_replace("\n", "<br>", $File["Revisions"][$File["Head"]]["LogMessage"])."</td>\n";
+			echo "    <td>".str_replace("\n", "<br />", $File["Revisions"][$File["Head"]]["LogMessage"])."</td>\n";
 			echo "  </tr>\n";
-			if ($BGColor == $HTMLTblCell1) {
-			    $BGColor = $HTMLTblCell2;
+			if ($RowClass == "row1") {
+			    $RowClass = "row2";
 			}
 			else
 			{
-				$BGColor = $HTMLTblCell1;
+				$RowClass = "row1";
 			}
 		}
 		
@@ -116,7 +116,7 @@ function DisplayDirListing() {
 		
 		// Close off our HTML table.
 		echo "  </table>\n";
-		echo "<hr>";
+		echo "<hr />";
 
 	} else { // Else of if ($Response !== true)
 		echo "Connection Failed.";

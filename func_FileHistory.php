@@ -47,26 +47,26 @@ function DisplayFileHistory()
 		{
 			$HREF = str_replace("//", "/", "$ScriptName?mp=$ModPath");
 			$DateTime = strtotime($Revision["date"]);
-			echo "<a name=\"$DateTime\"><hr>\n";
+			echo "<hr /><p><a id=\"rd$DateTime\" />\n";
 			echo "<b>Revision</b> ".$Revision["Revision"]." -";
-			echo " (<a href=\"$HREF&fv&dt=$DateTime\">view</a>)";
-			echo " (<a href=\"$HREF&fd&dt=$DateTime\">download</a>)";
-			echo " (<a href=\"$HREF&df&r1=".strtotime($Revision["date"])."&r2=";
+			echo " (<a href=\"$HREF&amp;fv&amp;dt=$DateTime\">view</a>)";
+			echo " (<a href=\"$HREF&amp;fd&amp;dt=$DateTime\">download</a>)";
+			echo " (<a href=\"$HREF&amp;df&amp;r1=".strtotime($Revision["date"])."&amp;r2=";
 			echo strtotime($CVSServer->FILES[0]["Revisions"][$Revision["PrevRevision"]]["date"])."\">diff to previous</a>)";
-			echo " (<a href=\"$HREF&fa=".$Revision["Revision"]."\">annotate</a>)<br>\n";
-			echo "<b>Last Checkin:</b> ".strftime("%A %d %b %Y %T -0000", strtotime($Revision["date"]))." (".CalculateDateDiff(strtotime($Revision["date"]), strtotime(gmdate("M d Y H:i:s")))." ago)<br>\n";
-			echo "<b>Branch:</b> ".$Revision["Branches"]."<br>\n";
-			echo "<b>Date:</b> ".strftime("%B %d, %Y", $DateTime)."<br>\n";
-			echo "<b>Time:</b> ".strftime("%H:%M:%S", $DateTime)."<br>\n";
-			echo "<b>Author:</b> ".$Revision["author"]."<br>\n";
-			echo "<b>State:</b> ".$Revision["state"]."<br>\n";
+			echo " (<a href=\"$HREF&amp;fa=".$Revision["Revision"]."\">annotate</a>)<br />\n";
+			echo "<b>Last Checkin:</b> ".strftime("%A %d %b %Y %T -0000", strtotime($Revision["date"]))." (".CalculateDateDiff(strtotime($Revision["date"]), strtotime(gmdate("M d Y H:i:s")))." ago)<br />\n";
+			echo "<b>Branch:</b> ".$Revision["Branches"]."<br />\n";
+			echo "<b>Date:</b> ".strftime("%B %d, %Y", $DateTime)."<br />\n";
+			echo "<b>Time:</b> ".strftime("%H:%M:%S", $DateTime)."<br />\n";
+			echo "<b>Author:</b> ".$Revision["author"]."<br />\n";
+			echo "<b>State:</b> ".$Revision["state"]."<br />\n";
 			if ($Revision["PrevRevision"] != "") {
-			    echo "<b>Changes since ".$Revision["PrevRevision"].":</b> ".$Revision["lines"]."<br>";
+			    echo "<b>Changes since ".$Revision["PrevRevision"].":</b> ".$Revision["lines"]."<br />";
 			}
-			echo "<b>Log Message:</b><pre>".$Revision["LogMessage"]."</pre>\n";
+			echo "<b>Log Message:</b></p><pre>".$Revision["LogMessage"]."</pre>\n";
 		}
 		
-		echo "<hr>\n";
+		echo "<hr />\n";
 		
 		$CVSServer->Disconnect();
 	} else { // Else of if ($CVSServer->Connect() === true)

@@ -47,12 +47,12 @@ function DisplayFileContents($File, $Revision = "") {
 		
 		// Start the output for the file.
 		$Dirs = explode("/", $ModPath);
-		echo "Navigate to: <a href=\"$ScriptName\">Root</a>&nbsp;";
+		echo "<div class=\"quicknav\">Navigate to: <a href=\"$ScriptName\">Root</a>&nbsp;";
 		$intCount = 1;
 		while($intCount < count($Dirs)){
 			echo "/&nbsp;<a href=\"$ScriptName?mp=".ImplodeToPath($Dirs, "/", $intCount);
 			if ($intCount == (count($Dirs) - 1)) {
-				echo "&fh#$Revision";
+				echo "&amp;fh#rd$Revision";
 			}
 			else
 			{
@@ -61,11 +61,11 @@ function DisplayFileContents($File, $Revision = "") {
 			echo "\">".$Dirs[$intCount]."</a>&nbsp;";
 			$intCount++;
 		} // while
-		echo "<br>\n";
+		echo "</div>\n";
 		
 		
 		// Display the file contents.
-		echo "<hr>\n";
+		echo "<hr />\n";
 		if (strpos($File, ".php")) {
 			$search = array('\t'); 
 			$replace = array("    "); 
@@ -88,6 +88,7 @@ function DisplayFileContents($File, $Revision = "") {
 	{
 		echo "ERROR: Could not connect to the PServer.<br>\n";
 	}
+	echo GetPageFooter();
 }
 
 

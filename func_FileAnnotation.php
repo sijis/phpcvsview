@@ -43,33 +43,34 @@ function DisplayFileAnnotation($File, $Revision = "") {
 		}
 		
 		// Start the output for the table.
-		echo "<hr>\n";
+		echo "<hr />\n";
 		echo "<table border=\"0\" cellpadding=\"2\" cellspacing=\"0\" width=\"100%\">\n";
-		$BGColor = $HTMLTblCell1;
+		$RowClass = "row1";
 
 		$search = array('<', '>', '\n'); 
 		$replace = array("&lt;", "&gt;", ""); 
 		foreach ($CVSServer->ANNOTATION as $Annotation)
 		{
-			echo "<tr bgcolor=\"$BGColor\"><td nowrap><pre>".$Annotation["Revision"]."</pre></td><td nowrap><pre>".$Annotation["Author"];
-			echo "</pre></td><td nowrap><pre>".$Annotation["Date"]."</pre></td><td nowrap><pre>".str_replace($search, $replace, $Annotation["Line"])."</pre></td></tr>\n";
-			if ($BGColor == $HTMLTblCell1) {
-			    $BGColor = $HTMLTblCell2;
+			echo "<tr class=\"$RowClass\"><td><pre>".$Annotation["Revision"]."</pre></td><td><pre>".$Annotation["Author"];
+			echo "</pre></td><td><pre>".$Annotation["Date"]."</pre></td><td><pre>".str_replace($search, $replace, $Annotation["Line"])."</pre></td></tr>\n";
+			if ($RowClass == "row1") {
+			    $RowClass = "row2";
 			}
 			else
 			{
-				$BGColor = $HTMLTblCell1;
+				$RowClass = "row1";
 			}
 		}
-		echo "</table>\n";
+		echo "</table><hr />\n";
 		
 		// Close the connection.
 		$CVSServer->Disconnect();
 	}
 	else
 	{
-		echo "ERROR: Could not connect to the PServer.<br>\n";
+		echo "ERROR: Could not connect to the PServer.<br />\n";
 	}
+	echo GetPageFooter();
 }
 
 
