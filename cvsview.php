@@ -17,10 +17,11 @@
  * 
  **/
 include_once 'config.php';
- 
+
+global $CVSROOT, $PServer, $UserName, $Password, $HTMLTitle, $HTMLHeading, $HTMLTblHdBg, $HTMLTblCell1, $HTMLTblCell2;
+
 /**
- * 
- * End of phpCVSView Configuration Parameters.
+ *  * End of phpCVSView Configuration Parameters.
  * 
  **/
 
@@ -206,10 +207,6 @@ function DisplayDirListing() {
 			}
 		}
 		
-		$Output = print_r($CVSServer->FILES, true);
-		$Output2 = str_replace("\n", "<br>", $Output);
-		echo "<hr><h1>Files Present</h1><pre>$Output2</pre><br><hr>";
-		
 		$CVSServer->Disconnect();
 		
 		// Close off our HTML table.
@@ -256,13 +253,14 @@ function DisplayFileHistory()
 		echo "<h1>History for ".$ModPath."</h1>\n";
 		foreach ($CVSServer->FILES[0]["Revisions"] as $Revision)
 		{
+			print_r($Revision);
 			$HREF = str_replace("//", "/", "$ScriptName?mp=$ModPath");
 			$DateTime = strtotime($Revision["date"]);
 			echo "<hr>\n";
 			echo "<b>Revision</b> ".$Revision["Revision"]." -";
 			echo " (<a href=\"$HREF&fv&dt=$DateTime\">view</a>)";
 			echo " (<a href=\"$HREF&fd&dt=$DateTime\">download</a>)";
-			echo " (<a href=\"$HREF&df&r1=".strtotime($Revision["Revision"]["date"])."&r2=";
+			echo " (<a href=\"$HREF&df&r1=".strtotime($Revision["date"])."&r2=";
 			echo strtotime($CVSServer->FILES[0]["Revisions"][$Revision["PrevRevision"]]["date"])."\">diff to previous</a>)";
 			echo " (<a href=\"$HREF&fa=".$Revision["Revision"]."\">annotate</a>)<br>\n";
 			echo "<b>Last Checkin:</b> ".strftime("%A %d %b %Y %T %Z", strtotime($Revision["date"]))." (".CalculateDateDiff(strtotime($Revision["date"]), time())." ago)<br>\n";

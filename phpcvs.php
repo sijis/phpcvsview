@@ -156,7 +156,7 @@ class CVS_PServer {
 		$this->CVS_PSERVER = $PServer;
 		$this->CVS_PORT = 2401;
 		$this->CVS_USERNAME = $UserName;
-		$this->CVS_PASSWORD = Password;
+		$this->CVS_PASSWORD = $Password;
 		$this->SOCKET = new Net_Socket();
 	}
 	
