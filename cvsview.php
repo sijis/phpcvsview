@@ -37,6 +37,7 @@ require_once 'func_DirListing.php';
 require_once 'func_FileHistory.php';
 require_once 'func_FileAnnotation.php';
 require_once 'func_FileView.php';
+require_once 'func_FileDownload.php';
 
 
 // Check for a module path
@@ -57,7 +58,13 @@ if (isset($_GET["fh"])) {
 		if (isset($_GET["fv"])) {
 		    DisplayFileContents($env['mod_path'], $_GET["dt"]);
 		} else {
-			DisplayDirListing();
+			if (isset($_GET["fd"])) {
+			    DownloadFile($env['mod_path'], $_GET["dt"]);
+			}
+			else
+			{
+				DisplayDirListing();
+			}
 		}
 	}
 }
