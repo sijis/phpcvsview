@@ -10,7 +10,7 @@
  * @version $Id$
  * @copyright 2003-2005 Brian A Cheeseman
  **/
- 
+
 $FolderIcon = "Themes/".$config['theme']."/Images/folder.png";
 $FileIcon = "Themes/".$config['theme']."/Images/file.png";
 $ParentIcon = "Themes/".$config['theme']."/Images/parent.png";
@@ -20,22 +20,21 @@ $DownloadIcon = "Themes/".$config['theme']."/Images/download.png";
 function GetPageHeader($Title="", $Heading="") {
 	global $StartTime, $config, $env, $lang;
 	$StartTime = microtime();
-	$PageHead = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">";
-	$PageHead .= "<html><head>";
+	$PageHead = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">';
+	$PageHead .= '<html><head>';
 	if ($Title != "") {
-		$PageHead .= "<title>$Title</title>";
+		$PageHead .= '<title>'.$Title.'</title>';
 	}
-	$PageHead .= "<link href=\"Themes/".$config['theme']."/theme.css\" rel=\"stylesheet\" type=\"text/css\" />";
+	$PageHead .= '<link href="Themes/'.$config['theme'].'/theme.css" rel="stylesheet" type="text/css" />';
 	// Add JavaScript to postback the change in theme selection.
-	$PageHead .= "<script src=\"./phpcvsview.js\"></script>";
-	$PageHead .= "</head>";
-	$PageHead .= "<body>";
+	$PageHead .= '<script src="./phpcvsview.js"></script>';
+	$PageHead .= '</head>';
+	$PageHead .= '<body>';
 	if ($Heading != "") {
-		$PageHead .= "<div class=\"title\">$Heading</div>";
+		$PageHead .= '<div class="title">'.$Heading.'</div>';
 	}
 	$PageHead .= $lang['message'];
-	$PageHead .= "<form class=\"themechanger\">";
-
+	$PageHead .= '<form class="themechanger">';
 	$PageHead .= ' '.$lang['change_cvsroot'].' <select name="reposSelect" class="reposchanger" onchange="postBackReposChange(this.form)">';
 	foreach($config['cvs'] as $key => $value){
 		$PageHead .= '<option value="'.$key.'"';
@@ -89,22 +88,23 @@ function GetPageHeader($Title="", $Heading="") {
 function GetPageFooter() {
 	global $StartTime, $lang;
 	$EndTime = microtime();
-	$PageFoot = "<div class=\"footer\">".$lang['generated']." ".number_format(microtime_diff($StartTime, $EndTime), 3)." ".$lang['seconds']."<br />";
+	$PageFoot = '<div class="footer">'.$lang['generated'].' '.number_format(microtime_diff($StartTime, $EndTime), 3).' '.$lang['seconds'].'<br />';
 	$PageFoot .= $lang['created_by'];
-	$PageFoot .= "<p><a href=\"http://validator.w3.org/check?uri=referer\"><img src=\"http://www.w3.org/Icons/valid-xhtml11\" alt=\"Valid XHTML 1.1!\" height=\"31\" width=\"88\" /></a>&nbsp;&nbsp;";
-	$PageFoot .= "<a href=\"http://jigsaw.w3.org/css-validator/check/referer\"><img style=\"border:0;width:88px;height:31px\" src=\"http://www.w3c.org/Icons/valid-css\" alt=\"Valid CSS!\" /></a></p>";
-	$PageFoot .= "</div>";
-	$PageFoot .= "</body></html>";
+	$PageFoot .= '<p><a href="http://validator.w3.org/check?uri=referer"><img src="http://www.w3.org/Icons/valid-xhtml11" alt="Valid XHTML 1.1!" height="31" width="88" /></a>&nbsp;&nbsp;';
+	$PageFoot .= '<a href="http://jigsaw.w3.org/css-validator/check/referer"><img style="border:0;width:88px;height:31px" src="http://www.w3c.org/Icons/valid-css" alt="Valid CSS!" /></a></p>';
+	$PageFoot .= '</div>';
+	$PageFoot .= '</body></html>';
 	return $PageFoot;
 }
 
-function GetQuickLinkBar($ModPath = "/", $Prefix = "", $LinkLast = false, $LastIsFile = false, $Revision = "")
+function GetQuickLinkBar($Prefix = "", $LinkLast = false, $LastIsFile = false, $Revision = "")
 {
 	global $env, $lang;
 
+	if(empty($Prefix)){ $Prefix = $lang['navigate_to'];}
 	// Add the quick link navigation bar.
-	$Dirs = explode("/", $ModPath);
-	$QLOut = "<div class=\"quicknav\">".$lang['navigate_to']."<a href=\"".$env['script_name']."\">".$lang['root']."</a>&nbsp;";
+	$Dirs = explode("/", $env['mod_path']);
+	$QLOut = '<div class="quicknav">'.$Prefix.'<a href="'.$env['script_name'].'">'.$lang['root'].'</a>&nbsp;';
 	$intCount = 1;
 	$OffSet = 2;
 	if ($LastIsFile) {
@@ -113,80 +113,81 @@ function GetQuickLinkBar($ModPath = "/", $Prefix = "", $LinkLast = false, $LastI
 
 	while($intCount < count($Dirs)-$OffSet) {
 		if (($intCount != count($Dirs)-$OffSet)) {
-			$QLOut .= "/&nbsp;<a href=\"".$env['script_name']."?mp=".ImplodeToPath($Dirs, "/", $intCount)."/\">".$Dirs[$intCount]."</a>&nbsp;";
+			$QLOut .= '/&nbsp;<a href="'.$env['script_name'].'?mp='.ImplodeToPath($Dirs, "/", $intCount).'/">'.$Dirs[$intCount].'</a>&nbsp;';
 		} else {
-			$QLOut .= "/&nbsp;".$Dirs[$intCount]."&nbsp;";
+			$QLOut .= '/&nbsp;'.$Dirs[$intCount].'&nbsp;';
 		}
 		$intCount++;
 	}
 
-	$QLOut .= "/&nbsp;";
+	$QLOut .= '/&nbsp;';
 	if ($LinkLast) {
-		$QLOut .= "<a href=\"".$env['script_name']."?mp=".ImplodeToPath($Dirs, "/", $intCount);
+		$QLOut .= '<a href="'.$env['script_name'].'?mp='.ImplodeToPath($Dirs, "/", $intCount);
 		if ($LastIsFile) {
-			$QLOut .= "&amp;fh#rd$Revision\">";
+			$QLOut .= '&amp;fh#rd'.$Revision.'">';
 		} else {
-			$QLOut .= "/";
+			$QLOut .= '/';
 		}
 	}
 
 	$QLOut .= $Dirs[$intCount];
 	if ($LinkLast) {
-		$QLOut .= "</a>";
+		$QLOut .= '</a>';
 	}
-	$QLOut .= "</div>";
+	$QLOut .= '</div>';
 	return $QLOut;
 }
 
 function startDirList()
 {
 	global $RowClass, $lang;
-	echo "<hr />";
-	echo "<table>";
-	echo "<tr class=\"head\"><th>&nbsp;</th><th>&nbsp;</th><th>".$lang['file']."</th><th>".$lang['rev']."</th><th>".$lang['age']."</th><th>".$lang['author']."</th><th>".$lang['last_log']."</th></tr>";
+	echo '<hr />';
+	echo '<table>';
+	echo '<tr class="head"><th>&nbsp;</th><th>&nbsp;</th><th>'.$lang['file'].'</th><th>'.$lang['rev'].'</th><th>'.$lang['age'].'</th><th>'.$lang['author'].'</th><th>'.$lang['last_log'].'</th></tr>';
 	$RowClass = "row1";
 }
 
 function endDirList()
 {
-	echo "</table>";
-	echo "<hr />";
+	echo '</table>';
+	echo '<hr />';
 }
 
-function addParentDirectory($ModPath)
+function addParentDirectory()
 {
 	global $RowClass, $ParentIcon, $env, $lang;
-	$HREF = str_replace("//", "/", $env['script_name']."?mp=".substr($ModPath, 0, strrpos(substr($ModPath, 0, -1), "/"))."/");
-	echo "<tr class=\"$RowClass\">";
-	echo "<td class=\"min\">&nbsp;</td>";
-	echo "<td class=\"min\"><a href=\"$HREF\"><img alt=\"parent\" src=\"".$env['script_path']."/$ParentIcon\" /></a></td>";
-	echo "<td class=\"min\"><a href=\"$HREF\">".$lang['up_folder']."</a></td>";
-	echo "<td>&nbsp;</td>";
-	echo "<td>&nbsp;</td>";
-	echo "<td>&nbsp;</td>";
-	echo "<td>&nbsp;</td>";
-	echo "</tr>";
+
+	$HREF = str_replace("//", "/", $env['script_name']."?mp=".substr($env['mod_path'], 0, strrpos(substr($env['mod_path'], 0, -1), "/"))."/");
+	echo '<tr class="'.$RowClass.'">';
+	echo '<td class="min">&nbsp;</td>';
+	echo '<td class="min"><a href="'.$HREF.'"><img alt="parent" src="'.$env['script_path'].'/'.$ParentIcon.'" /></a></td>';
+	echo '<td class="min"><a href="'.$HREF.'">'.$lang['up_folder'].'</a></td>';
+	echo '<td>&nbsp;</td>';
+	echo '<td>&nbsp;</td>';
+	echo '<td>&nbsp;</td>';
+	echo '<td>&nbsp;</td>';
+	echo '</tr>';
 	$RowClass = "row2";
 }
 
-function addFolders($ModPath, $Folders)
+function addFolders($Folders)
 {
 	global $RowClass, $DownloadIcon, $FolderIcon, $env;
 	foreach ($Folders as $Folder) {
-		$HREF = str_replace("//", "/", $env['script_name']."?mp=$ModPath/".$Folder["Name"]."/");
-		echo "<tr class=\"$RowClass\">";
+		$HREF = str_replace("//", "/", $env['script_name']."?mp=".$env['mod_path']."/".$Folder["Name"]."/");
+		echo '<tr class="'.$RowClass.'">';
 		if ($Folder["Name"] != "CVSROOT" && $Folder["Name"] != "Attic") {
-			echo "<td class=\"min\"><a href=\"$HREF&dp\"><img alt=\"D/L\" src=\"".$env['script_path']."/$DownloadIcon\" /></a></td>";
+			echo '<td class="min"><a href="'.$HREF.'&dp"><img alt="D/L" src="'.$env['script_path'].'/'.$DownloadIcon.'" /></a></td>';
 		} else {
-			echo "<td class=\"min\">&nbsp;</td>";
+			echo '<td class="min">&nbsp;</td>';
 		}
-		echo "<td class=\"min\"><a href=\"$HREF\"><img alt=\"DIR\" src=\"".$env['script_path']."/$FolderIcon\" /></a></td>";
-		echo "<td class=\"min\"><a href=\"$HREF\">".$Folder["Name"]."</a></td>";
-		echo "<td>&nbsp;</td>";
-		echo "<td>&nbsp;</td>";
-		echo "<td>&nbsp;</td>";
-		echo "<td>&nbsp;</td>";
-		echo "</tr>";
+		echo '<td class="min"><a href="'.$HREF.'"><img alt="DIR" src="'.$env['script_path'].'/'.$FolderIcon.'" /></a></td>';
+		echo '<td class="min"><a href="'.$HREF.'">'.$Folder["Name"].'</a></td>';
+		echo '<td>&nbsp;</td>';
+		echo '<td>&nbsp;</td>';
+		echo '<td>&nbsp;</td>';
+		echo '<td>&nbsp;</td>';
+		echo '</tr>';
 		if ($RowClass == "row1") {
 			$RowClass = "row2";
 		} else {
@@ -195,25 +196,26 @@ function addFolders($ModPath, $Folders)
 	}
 }
 
-function addModules($ModPath, $Modules)
+function addModules($Modules)
 {
 	global $RowClass, $DownloadIcon, $ModuleIcon, $env;
+
 	foreach ($Modules as $Key => $Val) {
 		// Add the row data here.
-		$HREF = str_replace("//", "/", $env['script_name']."?mp=$ModPath/".$Val."/");
-		echo "<tr class=\"$RowClass\">";
+		$HREF = str_replace("//", "/", $env['script_name']."?mp=".$env['mod_path'].$Val."/");
+		echo '<tr class="'.$RowClass.'">';
 		if ($Val != "CVSROOT" && $Val != "Attic") {
-			echo "<td class=\"min\"><a href=\"$HREF&dp\"><img alt=\"D/L\" src=\"".$env['script_path']."/$DownloadIcon\" /></a></td>";
+			echo '<td class="min"><a href="'.$HREF.'&dp"><img alt="D/L" src="'.$env['script_path'].'/'.$DownloadIcon.'" /></a></td>';
 		} else {
-			echo "<td class=\"min\">&nbsp;</td>";
+			echo '<td class="min">&nbsp;</td>';
 		}
-		echo "<td class=\"min\"><a href=\"$HREF\"><img alt=\"MOD\" src=\"".$env['script_path']."/$ModuleIcon\" /></a></td>";
-		echo "<td class=\"min\"><a href=\"$HREF\">".$Key."</a></td>";
-		echo "<td>&nbsp;</td>";
-		echo "<td>&nbsp;</td>";
-		echo "<td>&nbsp;</td>";
-		echo "<td>&nbsp;</td>";
-		echo "</tr>";
+		echo '<td class="min"><a href="'.$HREF.'"><img alt="MOD" src="'.$env['script_path'].'/'.$ModuleIcon.'" /></a></td>';
+		echo '<td class="min"><a href="'.$HREF.'">'.$Key.'</a></td>';
+		echo '<td>&nbsp;</td>';
+		echo '<td>&nbsp;</td>';
+		echo '<td>&nbsp;</td>';
+		echo '<td>&nbsp;</td>';
+		echo '</tr>';
 		if ($RowClass == "row1") {
 			$RowClass = "row2";
 		} else {
@@ -222,22 +224,23 @@ function addModules($ModPath, $Modules)
 	}
 }
 
-function addFiles($ModPath, $Files)
+function addFiles($Files)
 {
 	global $RowClass, $FileIcon, $env, $lang;
+
 	foreach ($Files as $File) {
-		$HREF = str_replace("//", "/", $env['script_name']."?mp=$ModPath/".$File["Name"]);
+		$HREF = str_replace("//", "/", $env['script_name']."?mp=".$env['mod_path'].$File["Name"]);
 		$DateTime = strtotime($File["Revisions"][$File["Head"]]["date"]);
 		$AGE = CalculateDateDiff($DateTime, strtotime(gmdate("M d Y H:i:s")));
-		echo "<tr class=\"$RowClass\">";
-		echo "<td class=\"min\">&nbsp;</td>";
-		echo "<td align=\"center\"><a href=\"$HREF&amp;fh\"><img alt=\"FILE\" src=\"".$env['script_path']."/$FileIcon\" /></a></td>";
-		echo "<td><a href=\"$HREF&amp;fh\">".$File["Name"]."</a></td>";
-		echo "<td align=\"center\"><a href=\"$HREF&amp;fv&amp;dt=$DateTime\">".$File["Head"]."</a></td>";
-		echo "<td align=\"center\">".str_replace(" ", "&nbsp;", $AGE)."&nbsp;".$lang['ago']."</td>";
-		echo "<td align=\"center\">".$File["Revisions"][$File["Head"]]["author"]."</td>";
-		echo "<td>".str_replace(array("\n", " "), array("<br />", "&nbsp;"), $File["Revisions"][$File["Head"]]["LogMessage"])."</td>";
-		echo "</tr>";
+		echo '<tr class="'.$RowClass.'">';
+		echo '<td class="min">&nbsp;</td>';
+		echo '<td align="center"><a href="'.$HREF.'&amp;fh"><img alt="FILE" src="'.$env['script_path'].'/'.$FileIcon.'" /></a></td>';
+		echo '<td><a href="'.$HREF.'&amp;fh">'.$File["Name"].'</a></td>';
+		echo '<td align="center"><a href="'.$HREF.'&amp;fv&amp;dt='.$DateTime.'">'.$File["Head"].'</a></td>';
+		echo '<td align="center">'.str_replace(" ", "&nbsp;", $AGE).'&nbsp;'.$lang['ago'].'</td>';
+		echo '<td align="center">'.$File["Revisions"][$File["Head"]]["author"].'</td>';
+		echo '<td>'.str_replace(array("\n", " "), array("<br />", "&nbsp;"), $File["Revisions"][$File["Head"]]["LogMessage"]).'</td>';
+		echo '</tr>';
 		if ($RowClass == "row1") {
 			$RowClass = "row2";
 		} else {
@@ -249,22 +252,23 @@ function addFiles($ModPath, $Files)
 function GetDiffForm()
 {
 	global $CVSServer, $env;
+
 	$HREF = str_replace("//", "/", $env['script_name']."?mp=".$env['mod_path']);
 	
-	$DiffForm = "<form class=\"diffform\">";
-	$DiffForm .= "Diff between: <select name=\"DiffRev1\" class=\"diffform\">";
+	$DiffForm = '<form class="diffform">';
+	$DiffForm .= 'Diff between: <select name="DiffRev1" class="diffform">';
 	foreach ($CVSServer->FILES[0]["Revisions"] as $Revision)
 	{
-		$DiffForm .= "<option value=\"".$Revision["Revision"]."\">".$Revision["Revision"]."</option>";
+		$DiffForm .= '<option value="'.$Revision["Revision"].'">'.$Revision["Revision"].'</option>';
 	}
-	$DiffForm .= "</select> and <select name=\"DiffRev2\" class=\"diffform\">";
+	$DiffForm .= '</select> and <select name="DiffRev2" class="diffform">';
 	foreach ($CVSServer->FILES[0]["Revisions"] as $Revision)
 	{
-		$DiffForm .= "<option value=\"".$Revision["Revision"]."\">".$Revision["Revision"]."</option>";
+		$DiffForm .= '<option value="'.$Revision["Revision"].'">'.$Revision["Revision"].'</option>';
 	}
-	$DiffForm .= "</select><input type=\"hidden\" name=\"URLDiffReq\" value=\"".$HREF."\">";
-	$DiffForm .= "<input type=\"button\" value=\"Get Diff\" onclick=\"postBackDiffRequest(this.form)\">";
-	$DiffForm .= "</form>";
+	$DiffForm .= '</select><input type="hidden" name="URLDiffReq" value="'.$HREF.'">';
+	$DiffForm .= '<input type="button" value="Get Diff" onclick="postBackDiffRequest(this.form);">';
+	$DiffForm .= '</form>';
 	
 	return $DiffForm;
 }
