@@ -27,6 +27,11 @@ global $CVSROOT, $PServer, $UserName, $Password, $HTMLTitle, $HTMLHeading, $HTML
 
 $REPOS = "";
 $ScriptName = $_SERVER['PHP_SELF'];
+$ScriptPath = substr($ScriptName, 0, strrpos($ScriptName, "/"));
+if ($ScriptPath == "") {
+    $ScriptPath = "/";
+}
+		  
 if (isset($_GET["tm"])) {
     $ThemeName = $_GET["tm"];
 }
