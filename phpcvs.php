@@ -277,7 +277,9 @@ class phpcvs {
 										$RecvLN = fgets($this->SOCKET_HANDLE, 8192);
 										while((strpos($RecvLN, "M ======") === false) && (strpos($RecvLN, "M ------") === false)){
 											if (strlen(trim($RecvLN)) > 1) {
-												$Elements[$FileName2]["LOG"] .= substr($RecvLN, 2, strlen($RecvLN)-1);
+												if (strncmp($RecvLN, "M branches:", 11) != 0) {
+													$Elements[$FileName2]["LOG"] .= substr($RecvLN, 2, strlen($RecvLN)-1);
+												} // End of if (strncmp($RecvLN, "M branches:", 11) == 0)
 											} // End of if (strlen(trim($RecvLN)) > 1)
 											$RecvLN = fgets($this->SOCKET_HANDLE, 8192);
 										} // End of while ((strpos($RecvLN, "M ======") === false) && (strpos($RecvLN, "M ------") === false))

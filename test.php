@@ -8,7 +8,7 @@
  **/
 
 $REPOS = "";
-$CVSROOT = "/cvsroot/o/op/openposs";
+$CVSROOT = "/cvsroot/d/de/denet";
 $PServer = "cvs.sourceforge.net";
 $UserName = "anonymous";
 $Password = "";
@@ -34,14 +34,14 @@ function DisplayDirListing () {
 		    echo "  <TR BGCOLOR=\"$BGColor\" COLSPAN=\"5\">\n    <TD><A HREF=\"/test.php?CVSROOT=";
 			$UpDirPath = substr($REPOS, 0, strlen($REPOS)-1);
 			echo strrev(strchr(strrev($UpDirPath), "/"));
-			echo "\"><IMG SRC=\"/icons/back.gif\">&nbsp;Parent&nbsp;Directory</A>&nbsp;</TD>\n";
+			echo "\"><IMG SRC=\"/icons/back.gif\" border=\"0\">&nbsp;Parent&nbsp;Directory</A>&nbsp;</TD>\n";
 			$BGColor="#CCCCFF";
 		} // End of if (strcmp($REPOS, "/") != 0)
 		while(list($key, $val) = each($Elements)){
 			if ($val == "DIR") {
 				echo "  <TR BGCOLOR=\"$BGColor\">\n";
 				echo "    <TD><A HREF=\"/test.php?CVSROOT=$REPOS".substr($key, 0, strlen($key))."\">";
-				echo "<IMG SRC=\"/icons/dir.gif\" WIDTH=\"20\" HEIGHT=\"22\">&nbsp;".$key."</A></TD>\n";
+				echo "<IMG SRC=\"/icons/dir.gif\" WIDTH=\"20\" HEIGHT=\"22\" border=\"0\">&nbsp;".$key."</A></TD>\n";
 				echo "    <TD>&nbsp;</TD>\n    <TD>&nbsp;</TD>\n    <TD>&nbsp;</TD>\n    <TD>&nbsp;</TD>\n";
 				echo "  </TR>\n";
 				if (strcmp($BGColor, "#FFFFFF") == 0) {
@@ -56,8 +56,8 @@ function DisplayDirListing () {
 			if ($val != "DIR") {
 				$FileOut .= "  <TR BGCOLOR=\"$BGColor\">\n";
 				$FileOut .= "    <TD><A HREF=\"/test.php?CVSROOT=$REPOS&ShowHist=".$val["FILENAME"]."\">";
-				$FileOut .= "<IMG SRC=\"/icons/text.gif\" WIDTH=\"20\" HEIGHT=\"22\">&nbsp;".$val["FILENAME"]."</A>&nbsp;</TD>\n";
-				$FileOut .= "    <TD>&nbsp;".$val["HEAD"]."&nbsp;</TD>\n";
+				$FileOut .= "<IMG SRC=\"/icons/text.gif\" WIDTH=\"20\" HEIGHT=\"22\" border=\"0\">&nbsp;".$val["FILENAME"]."</A>&nbsp;</TD>\n";
+				$FileOut .= "    <TD>&nbsp;<A HREF=\"/test.php?CVSROOT=$REPOS&ShowFile=".$val["FILENAME"]."&Rev=".$val["HEAD"]."\">".$val["HEAD"]."</A>&nbsp;</TD>\n";
 				$FileOut .= "    <TD>&nbsp;".str_replace(" ", "&nbsp;", strftime("%d %b %Y %H:%M:%S", $val["DATE"]))."&nbsp;</TD>\n";
 				$FileOut .= "    <TD>&nbsp;".$val["AUTHOR"]."&nbsp;</TD>\n";
 				$FileOut .= "    <TD>".str_replace("\n", "<BR>", substr($val["LOG"], 0, strlen($val["LOG"])-1))."</TD>\n";
