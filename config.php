@@ -8,7 +8,7 @@
  *
  * @author Brian A Cheeseman <bcheesem@users.sourceforge.net>
  * @version $Id$
- * @copyright 2003-2004 Brian A Cheeseman
+ * @copyright 2003-2005 Brian A Cheeseman
  **/
 
 // The CVSROOT path to access as it is on the server, ie for this projects
@@ -29,9 +29,15 @@ $config['password'] = "";
 $config['html_title'] = "phpCVSView Source Code Library";
 $config['html_header'] = "phpCVSView Source Code Library";
 
+// The default theme
+$config['theme'] = "Default";
+
 // Setup whether to use GeSHi project code for syntax highlighting or not.
 $config['GeSHi']['Enable'] = true;
 $config['GeSHi']['Path'] = "geshi";
 $config['GeSHi']['HighlightersPath'] = "geshi/geshi";
+
+// The default language
+$config['language'] = "en";
 
 ?>
