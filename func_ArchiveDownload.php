@@ -92,7 +92,7 @@ function DownloadArchive()
 	// Get a unique string to create a directory for storing this request.
 	$jobpath = $config['TempFileLocation']."/".md5(uniqid(rand(), true));
 	mkdir($jobpath, 0700);
-    $buildpath = $jobpath."/".$config['CVSROOT'];
+    $buildpath = $jobpath."/".$env['CVSROOT'];
 	mkdir($buildpath, 0700);	
 	$ReposFolders = explode("/", $env['mod_path']);
 	if (count($ReposFolders) > 0 && $ReposFolders[count($ReposFolders) - 2] != "") {
@@ -103,16 +103,16 @@ function DownloadArchive()
 	DAProcessDirectory($env['mod_path'], $buildpath);
 	
 	// Create the tar file.
-	$FileName = $jobpath."/".$config['CVSROOT'].".tar.gz";
+	$FileName = $jobpath."/".$env['CVSROOT'].".tar.gz";
 	$tar = new Archive_Tar($FileName, "gz");
 	$cwd = getcwd();
 	chdir($jobpath);
-	$tar->create($config['CVSROOT']);
+	$tar->create($env['CVSROOT']);
 	chdir($cwd);
 	
 	header('Content-Type: application/x-tar');
-	header("Content-Disposition: attachment; filename=\"".$config['CVSROOT'].".tar.gz\"");
-	header("Content-Length: " . filesize($FileName));
+	header('Content-Disposition: attachment; filename="'.$env['CVSROOT'].'.tar.gz"');
+	header('Content-Length: ' . filesize($FileName));
 	$tarfile = fopen($FileName, "rb");
 
 	// Dump the contents of the file to the client.
