@@ -149,11 +149,7 @@ function DisplayDirListing() {
 	}
 		  
 	// Create our CVS connection object and set the required properties.
-	$CVSServer = new CVS_PServer();
-	$CVSServer->set_PServer($PServer);
-	$CVSServer->set_Repository($CVSROOT);
-	$CVSServer->set_UserName($UserName);
-	$CVSServer->set_Password($Password);
+	$CVSServer = new CVS_PServer($CVSROOT, $PServer, $UserName, $Password);
 	
 	// Start the output process.
 	echo GetPageHeader($HTMLTitle, $HTMLHeading);
@@ -242,9 +238,9 @@ function DisplayDirListing() {
 		echo "  </table>\n";
 		echo "<hr>";
 
-	} else { // Else of if ($CVSServer->ConnectTcpAndLogon())
+	} else { // Else of if ($Response !== true)
 		echo "Connection Failed.";
-	} // End of if ($CVSServer->ConnectTcpAndLogon())
+	} // End of if ($Response !== true)
 	echo GetPageFooter();
 } // End of function DisplayDirListing()
 
@@ -260,11 +256,7 @@ function DisplayFileHistory()
 	}
 		  
 	// Create our CVS connection object and set the required properties.
-	$CVSServer = new CVS_PServer();
-	$CVSServer->set_PServer($PServer);
-	$CVSServer->set_Repository($CVSROOT);
-	$CVSServer->set_UserName($UserName);
-	$CVSServer->set_Password($Password);
+	$CVSServer = new CVS_PServer($CVSROOT, $PServer, $UserName, $Password);
 	
 	// Start the output process.
 	echo GetPageHeader($HTMLTitle, $HTMLHeading);
@@ -310,9 +302,9 @@ function DisplayFileHistory()
 		echo "<hr>\n";
 		
 		$CVSServer->Disconnect();
-	} else { // Else of if ($CVSServer->ConnectTcpAndLogon())
+	} else { // Else of if ($CVSServer->Connect() === true)
 		echo "Connection Failed.";
-	} // End of if ($CVSServer->ConnectTcpAndLogon())
+	} // End of if ($CVSServer->Connect() === true)
 	echo GetPageFooter();
 }
 
@@ -326,9 +318,7 @@ $ModPath = str_replace("//", "/", $ModPath);
 
 if (isset($_GET["fh"])) {
     DisplayFileHistory();
-}
-else
-{
-DisplayDirListing();
+} else {
+	DisplayDirListing();
 }
 ?>
