@@ -8,18 +8,16 @@
  *
  * @author Brian A Cheeseman <bcheesem@users.sourceforge.net>
  * @version $Id$
- * @copyright 2003-2004 Brian A Cheeseman
+ * @copyright 2003-2005 Brian A Cheeseman
  **/
 
 function DisplayFileAnnotation($File, $Revision = "")
 {
-	global $config, $env;
+	global $config, $env, $lang;
 
 	// Calculate the path from the $env['script_name'] variable.
-	$env['script_path'] = substr($env['script_name'], 0, strrpos($env['script_name'], "/"));
-	if ($env['script_path'] == "") {
-	    $env['script_path'] = "/";
-	}
+	$env['script_path'] = substr($env['script_name'], 0, strrpos($env['script_name'], '/'));
+	$env['script_path'] = (empty($env['script_path']))? '/' : $env['script_path'];
 
 	// Create our CVS connection object and set the required properties.
 	$CVSServer = new CVS_PServer($config['cvsroot'], $config['pserver'], $config['username'], $config['password']);
@@ -39,43 +37,43 @@ function DisplayFileAnnotation($File, $Revision = "")
 		// Annotate the file.
 		$Response = $CVSServer->Annotate($File, $Revision);
 		if ($Response !== true) {
-		    return;
+			return;
 		}
 
 		// Start the output for the table.
-		echo "<hr />\n";
-		echo "<table border=\"0\" cellpadding=\"2\" cellspacing=\"0\" width=\"100%\">\n";
-		$RowClass = "row1";
+		echo '<hr />'."\n";
+		echo '<table border="0" cellpadding="2" cellspacing="0" width="100%">' ."\n";
+		$RowClass = 'row1';
 
 		$search = array('<', '>', '\n');
-		$replace = array("&lt;", "&gt;", "");
+		$replace = array('&lt;', '&gt;', '');
 		$PrevRev = "";
 		$FirstLine = true;
 		foreach ($CVSServer->ANNOTATION as $Annotation)	{
 			if (strcmp($PrevRev, $Annotation["Revision"]) != 0) {
 				if (!$FirstLine) {
-				    "</pre></td></tr>\n";
+					echo "</pre></td></tr>\n";
 				} else {
 					$FirstLine = false;
 				}
-				echo "<tr class=\"$RowClass\"><td>".$Annotation["Revision"]."</td><td>".$Annotation["Author"];
-				echo "</td><td>".$Annotation["Date"]."</td><td><pre>".str_replace($search, $replace, $Annotation["Line"]);
-				if ($RowClass == "row1") {
-				    $RowClass = "row2";
+				echo '<tr class="'.$RowClass.'"><td>'.$Annotation["Revision"].'</td><td>'.$Annotation["Author"];
+				echo '</td><td>'.$Annotation["Date"].'</td><td><pre>'.str_replace($search, $replace, $Annotation["Line"]);
+				if ($RowClass == 'row1') {
+					$RowClass = 'row2';
 				} else {
-					$RowClass = "row1";
+					$RowClass = 'row1';
 				}
 			} else{
 				echo "\n".str_replace($search, $replace, $Annotation["Line"]);
 			}
 			$PrevRev = $Annotation["Revision"];
 		}
-		echo "</table><hr />\n";
+		echo '</table><hr />'."\n";
 
 		// Close the connection.
 		$CVSServer->Disconnect();
 	} else{
-		echo "ERROR: Could not connect to the PServer.<br />\n";
+		echo $lang['err_connect'];
 	}
 	echo GetPageFooter();
 }

@@ -8,22 +8,20 @@
  *
  * @author Brian A Cheeseman <bcheesem@users.sourceforge.net>
  * @version $Id$
- * @copyright 2003-2004 Brian A Cheeseman
+ * @copyright 2003-2005 Brian A Cheeseman
  **/
 
 if ($config['GeSHi']['Enable']) {
-    include_once($config['GeSHi']['Path'].'/geshi.php');
+	include_once($config['GeSHi']['Path'].'/geshi.php');
 }
 
 function DisplayFileContents($File, $Revision = "")
 {
-	global $config, $env;
+	global $config, $env, $lang;
 
 	// Calculate the path from the $env['script_name'] variable.
-	$env['script_path'] = substr($env['script_name'], 0, strrpos($env['script_name'], "/"));
-	if ($env['script_path'] == ""){
-	    $env['script_path'] = "/";
-	}
+	$env['script_path'] = substr($env['script_name'], 0, strrpos($env['script_name'], '/'));
+	$env['script_path'] = (empty($env['script_path']))? '/' : $env['script_path'];
 
 	// Create our CVS connection object and set the required properties.
 	$CVSServer = new CVS_PServer($config['cvsroot'], $config['pserver'], $config['username'], $config['password']);
@@ -46,21 +44,21 @@ function DisplayFileContents($File, $Revision = "")
 		// "Export" the file.
 		$Response = $CVSServer->ExportFile($File, $Revision);
 		if ($Response !== true) {
-		    return;
+			return;
 		}
 
 		// Add the quick link navigation bar.
-		echo GetQuickLinkBar($env['mod_path'], "Code view for: ", true, true, $Revision);
+		echo GetQuickLinkBar($env['mod_path'], $lang['code_view'], true, true, $Revision);
 
 		echo "<hr />\n";
 
 		if ($config['GeSHi']['Enable']) {
-    		// Create the GeSHi instance and parse the output.
+			// Create the GeSHi instance and parse the output.
 			// TODO: setup code to auto identify the highlighting class to use for current file.
-			$FileExt = substr($File, strrpos($File, ".")+1);
+			$FileExt = substr($File, strrpos($File, '.')+1);
 			$Language = guess_highlighter($FileExt);
 			if (is_array($Language)) {
-			    $Language = $Language[0];
+				$Language = $Language[0];
 			}
 			
 			$geshi = new GeSHi($CVSServer->FILECONTENTS, $Language, $config['GeSHi']['HighlightersPath']);
@@ -70,16 +68,16 @@ function DisplayFileContents($File, $Revision = "")
 			$hlcontent = $geshi->parse_code();
 
 			// Display the file contents.
-			echo "<table class=\"source\"><tr><td>";
+			echo '<table class="source"><tr><td>';
 			echo $hlcontent;
-			echo "</td></tr></table>";
+			echo '</td></tr></table>';
 		}
 		else
 		{
 			$search = array('<', '>', '\n', '\t');
-			$replace = array("&lt;", "&gt;", "", " ");
+			$replace = array('&lt;', '&gt;', '', ' ');
 			$content = str_replace($search, $replace, $CVSServer->FILECONTENTS);
-			$source = explode("\n", $content);
+			$source = explode('\n', $content);
 			$soure_size = sizeof($source);
 			
 			echo "<pre>\n";
@@ -93,7 +91,7 @@ function DisplayFileContents($File, $Revision = "")
 		// Close the connection.
 		$CVSServer->Disconnect();
 	} else {
-		echo "ERROR: Could not connect to the PServer.<br>\n";
+		echo $lang['err_connect'];
 	}
 	echo GetPageFooter();
 }

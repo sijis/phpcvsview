@@ -8,20 +8,16 @@
  *
  * @author Brian A Cheeseman <bcheesem@users.sourceforge.net>
  * @version $Id
- * @copyright 2003-2004 Brian A Cheeseman
+ * @copyright 2003-2005 Brian A Cheeseman
  **/
  
-include_once("phpcvsmime.php");
-
 function DownloadFile($File, $Revision = "")
 {
-	global $config, $env, $MIME_TYPES;
+	global $config, $env, $lang, $MIME_TYPES;
 
 	// Calculate the path from the $env['script_name'] variable.
-	$env['script_path'] = substr($env['script_name'], 0, strrpos($env['script_name'], "/"));
-	if ($env['script_path'] == ""){
-	    $env['script_path'] = "/";
-	}
+	$env['script_path'] = substr($env['script_name'], 0, strrpos($env['script_name'], '/'));
+	$env['script_path'] = (empty($env['script_path']))? '/' : $env['script_path'];
 
 	// Create our CVS connection object and set the required properties.
 	$CVSServer = new CVS_PServer($config['cvsroot'], $config['pserver'], $config['username'], $config['password']);
@@ -41,23 +37,23 @@ function DownloadFile($File, $Revision = "")
 		// "Export" the file.
 		$Response = $CVSServer->ExportFile($File, $Revision);
 		if ($Response !== true) {
-		    return;
+			return;
 		}
 		
 		// Get the mime type for the file.
-		$FileExt = substr($File, strrpos($File, ".")+1);
+		$FileExt = substr($File, strrpos($File, '.')+1);
 		$MimeType = $MIME_TYPES[$FileExt];
-		if ($MimeType == "") {
-		    $MimeType = "text/plain";
+		if ($MimeType == '') {
+			$MimeType = 'text/plain';
 		}
 		
 		// Send the appropriate http header.
-		header("Content-Type: $MimeType");
+		header('Content-Type: '.$MimeType);
 		
 		// Send the file contents.
 		echo $CVSServer->FILECONTENTS;
-		echo "<br />File Extension: $FileExt<br />";
-		echo "MIME TYPE IS: $MimeType";
+		echo '<br />'.$lang['file_ext'].' '.$FileExt;
+		echo '<br />'.$lang['mime_type'].' '. $MimeType;
 
 		// Close the connection.
 		$CVSServer->Disconnect();

@@ -8,12 +8,12 @@
  *
  * @author Brian A Cheeseman <bcheesem@users.sourceforge.net>
  * @version $Id$
- * @copyright 2003-2004 Brian A Cheeseman
+ * @copyright 2003-2005 Brian A Cheeseman
  **/
 
 function DisplayDirListing()
 {
-	global $config, $env;
+	global $config, $env, $lang;
 
 	// Create our CVS connection object and set the required properties.
 	$CVSServer = new CVS_PServer($config['cvsroot'], $config['pserver'], $config['username'], $config['password']);
@@ -35,7 +35,7 @@ function DisplayDirListing()
 		
 		// If we are in the Root of the CVS Repository then lets get the Module list.
 		if (strlen($env['mod_path']) < 2) {
-		    $Modules = $CVSServer->getModuleList();
+			$Modules = $CVSServer->getModuleList();
 		}
 		else
 		{
@@ -58,7 +58,7 @@ function DisplayDirListing()
 		
 		// Display the Modules if we have them.
 		if ($Modules !== false) {
-		    addModules($env['mod_path'], $Modules);
+			addModules($env['mod_path'], $Modules);
 		}
 
 		// Display the files within the table.
@@ -69,7 +69,7 @@ function DisplayDirListing()
 
 		$CVSServer->Disconnect();
 	} else {
-		echo "Connection Failed.";
+		echo $lang['err_connect'];
 	}
 	echo GetPageFooter();
 }
