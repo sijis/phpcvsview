@@ -157,12 +157,13 @@ function SetDefaultLanguage()
 	return $config['language'];
 }
 
-function InsertIntoArray(&$Array, $Value, $Position)
+function InsertIntoArray($Array, $Value, $Position)
 {
-	if (!is_array($Array)) return false;
+	if (!is_array($Array)) {return $Array;}
 	$Last = array_splice($Array, $Position);
 	$Array[] = $Value;
 	$Array = array_merge($Array, $Last);
+	return $Array;
 }
 
 ?>
