@@ -37,8 +37,8 @@ function DisplayFileContents($File, $Revision = "")
 		if (!file_exists($CachedFileName)) {
 		    mkdir($CachedFileName, 0750);
 		}
+		$CachedFileName .= "/".str_replace("/", "_", $File).",$Revision";
 	}
-	$CachedFileName .= "/".str_replace("/", "_", $File).",$Revision";
 	if (file_exists($CachedFileName) && $config['Cache']['Enable']) {
 		$fd = fopen($CachedFileName, "r");
 		if ($fd !== false) {
@@ -81,12 +81,14 @@ function DisplayFileContents($File, $Revision = "")
 				$geshi->set_tab_width(4);
 				$hlcontent = $geshi->parse_code();
 	
-				// Store in the current cache.				
-				$fd = fopen($CachedFileName, "w");
-				if ($fd !== false) {
-					fwrite($fd, '<table class="source"><tr><td>'.$hlcontent.'</td></tr></table>');
-					fclose($fd);
-				}
+				// Store in the current cache.		
+				if ($config['Cache']['Enable']) {
+					$fd = fopen($CachedFileName, "w");
+					if ($fd !== false) {
+						fwrite($fd, '<table class="source"><tr><td>'.$hlcontent.'</td></tr></table>');
+						fclose($fd);
+					}
+				}		
 
 				// Display the file contents.
 				echo '<table class="source"><tr><td>';
@@ -101,9 +103,15 @@ function DisplayFileContents($File, $Revision = "")
 				$source = explode('\n', $content);
 				$soure_size = sizeof($source);
 				
-				$fd = fopen($CachedFileName, "w");
-				if ($fd !== false) {
-					fwrite($fd, "<pre>\n");
+				if ($config['Cache']['Enable']) {
+					$fd = fopen($CachedFileName, "w");
+					if ($fd !== false) {
+						fwrite($fd, "<pre>\n");
+					}
+				}
+				else
+				{
+					$fd = false;
 				}
 				echo "<pre>\n";
 				for($i = 1; $i <= $soure_size; $i++) {
