@@ -30,9 +30,11 @@ $lang['change_lang']	= 'Language: ';
 $lang['change_cvsroot'] = 'CVS Repository: ';
 $lang['up_folder']		= 'Up one folder';
 $lang['rev_history']	= 'Revision history for: ';
+$lang['rev_diff']		= 'Revision Diff for: ';
 $lang['code_view']		= 'Code view for: ';
 $lang['navigate_to']	= 'Navigate to: ';
 $lang['file_ext']		= 'File Extension: ';
+$lang['annotate_history']	= 'Annotation history for: ';
 $lang['mime_type']		= 'Mime Type is: ';
 
 // time and date related
@@ -79,5 +81,6 @@ $lang['log_message']	= 'Log Message:';
 
 // error messages
 $lang['err_connect']	= '<h2>ERROR: Could not connect to the PServer.</h2>'."\n";
+$lang['err_get_rev']	= '<h3>ERROR: Getting Revision for file:</h3>';
 
 ?>
