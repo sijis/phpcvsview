@@ -27,15 +27,15 @@ function GetPageHeader($Title="", $Heading="") {
 	}
 	$PageHead .= '<link href="Themes/'.$config['theme'].'/theme.css" rel="stylesheet" type="text/css" />';
 	// Add JavaScript to postback the change in theme selection.
-	$PageHead .= '<script src="./phpcvsview.js"></script>';
+	$PageHead .= '<script src="./phpcvsview.js" type="text/javascript"></script>';
 	$PageHead .= '</head>';
 	$PageHead .= '<body>';
 	if ($Heading != "") {
 		$PageHead .= '<div class="title">'.$Heading.'</div>';
 	}
 	$PageHead .= $lang['message'];
-	$PageHead .= '<form class="themechanger">';
-	$PageHead .= ' '.$lang['change_cvsroot'].' <select name="reposSelect" class="reposchanger" onchange="postBackReposChange(this.form)">';
+	$PageHead .= '<form class="themechanger" action="'.$_SERVER['PHP_SELF'].'">';
+	$PageHead .= ' '.$lang['change_cvsroot'].' <select name="reposSelect" class="reposchanger" onchange="postBackReposChange(this.form);">';
 	foreach($config['cvs'] as $key => $value){
 		$PageHead .= '<option value="'.$key.'"';
 		if ($key == $env['CVSROOT']) {
@@ -45,7 +45,7 @@ function GetPageHeader($Title="", $Heading="") {
 	}
 	$PageHead .= '</select><br />';
 
-	$PageHead .= $lang['change_theme'].' <select name="ThemeSelect" class="themechanger" onchange="postBackThemeChange(this.form)">';
+	$PageHead .= $lang['change_theme'].' <select name="ThemeSelect" class="themechanger" onchange="postBackThemeChange(this.form);">';
 	foreach (GetThemeList() as $key=>$value)
 	{
 		$PageHead .= '<option value="'.$value.'"';
@@ -55,7 +55,7 @@ function GetPageHeader($Title="", $Heading="") {
 		$PageHead .= '>'.$value.'</option>';
 	}
 	$PageHead .= '</select>';
-	$PageHead .= ' '.$lang['change_lang'].' <select name="langSelect" class="langchanger" onchange="postBackLangChange(this.form)">';
+	$PageHead .= ' '.$lang['change_lang'].' <select name="langSelect" class="langchanger" onchange="postBackLangChange(this.form);">';
 	foreach(getLanguagesList() as $key => $value){
 		$PageHead .= '<option value="'.$value.'"';
 		if ($value == $config['language']) {
@@ -65,7 +65,7 @@ function GetPageHeader($Title="", $Heading="") {
 	}
 	$PageHead .= '</select>';
 
-	$PageHead .= '<input type="hidden" name="URLRequest" value="'.$env['script_name'].'"';
+	$PageHead .= '<input type="hidden" name="URLRequest" value="'.$env['script_name'];
 	$first = true;
 	foreach ($_GET as $key=>$value)
 	{
@@ -255,7 +255,7 @@ function GetDiffForm()
 
 	$HREF = str_replace("//", "/", $env['script_name']."?mp=".$env['mod_path']);
 	
-	$DiffForm = '<form class="diffform">';
+	$DiffForm = '<form class="diffform" action="'.$_SERVER['PHP_SELF'].'">';
 	$DiffForm .= 'Diff between: <select name="DiffRev1" class="diffform">';
 	foreach ($CVSServer->FILES[0]["Revisions"] as $Revision)
 	{
