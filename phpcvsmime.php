@@ -1,10 +1,14 @@
 <?php
 
 /**
- * 
+ * This source code is distributed under the terms as layed out in the
+ * GNU General Public License.
  *
+ * Purpose: To provide the mime translations required for downloading
+ *
+ * @author Brian A Cheeseman <brian@bcheese.homeip.net>
  * @version $Id$
- * @copyright 2002 ARECOM International
+ * @copyright 2003 Brian A Cheeseman
  **/
 
 $MIME_TYPES["ez"] = "application/andrew-inset";

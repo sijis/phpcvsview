@@ -8,8 +8,8 @@
  **/
 
 $REPOS = "";
-$CVSROOT = "/cvsroot/d/de/denet/";
-//$CVSROOT = "/cvsroot/p/ph/phpcvsview/";
+//$CVSROOT = "/cvsroot/d/de/denet/";
+$CVSROOT = "/cvsroot/p/ph/phpcvsview/";
 $PServer = "cvs.sourceforge.net";
 $UserName = "anonymous";
 $Password = "";
