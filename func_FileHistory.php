@@ -50,8 +50,8 @@ function DisplayFileHistory()
 			echo ' (<a href="'.$HREF.'&amp;fv&amp;dt='.$DateTime.'">'.$lang['view'].'</a>)';
 			echo ' (<a href="'.$HREF.'&amp;fd&amp;dt='.$DateTime.'">'.$lang['download'].'</a>)';
 			if ($Revision["PrevRevision"] != '') {
-				echo ' (<a href="'.$HREF.'&amp;df&amp;r1='.$Revision["Revision"].'&amp;r2=';
-				echo $Revision["PrevRevision"].'">'.$lang['diff'].'</a>)';
+				echo ' (<a href="'.$HREF.'&amp;df&amp;r1='.$Revision["PrevRevision"].'&amp;r2=';
+				echo $Revision["Revision"].'">'.$lang['diff'].'</a>)';
 			}
 			echo ' (<a href="'.$HREF.'&amp;fa='.$Revision["Revision"].'">'.$lang['annotate'].'</a>)<br />'."\n";
 			echo '<b>'.$lang['last_checkin'].'</b> '.strftime("%A %d %b %Y %T -0000", $DateTime).' ('.CalculateDateDiff($DateTime, strtotime(gmdate("M d Y H:i:s"))).' '.$lang['ago'].')<br />'."\n";
