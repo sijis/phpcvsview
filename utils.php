@@ -83,9 +83,6 @@ function CalculateDateDiff($DateEarlier, $DateLater)
 		if ($date['weeks'] > 0) {
 		    $Result .= ', '.$date['weeks'].' ';
 			$Result .= ($date['weeks'] > 1)? $lang['weeks'] : $lang['week'];
-			if ($date['weeks'] > 1) {
-			    $Result .= "s";
-			}
 		}
 	}
 	return $Result;
