@@ -25,10 +25,15 @@ else
 	$_ENVIRON = $_ENV;
 }
 
-$REPOS = "";
+// set enviroment paths and defaults
 $env['script_name'] = $_SERVER['PHP_SELF'];
+
 $env['script_path'] = substr($env['script_name'], 0, strrpos($env['script_name'], "/"));
 $env['script_path'] = (empty($env['script_path']))? '/' : $env['script_path'];
+
+$env['mod_path'] = (isset($_GET["mp"])) ? $_GET["mp"] : "/";
+$env['mod_path'] = str_replace("//", "/", $env['mod_path']);
+
 $env['language_path'] = 'languages/';
 $env['theme_path'] = 'Themes/';
 
@@ -61,6 +66,7 @@ if(isset($_GET["lg"])){
 	setcookie('config[lang]', $config['language'], time()+31536000, "/");
 }
 
+// include required files and functions
 require_once $env['theme_path'] . $config['theme']."/theme.php";
 require_once $env['language_path'] . $config['language'] .'.php';
 require_once 'phpcvs.php';
@@ -73,11 +79,7 @@ require_once 'func_FileDownload.php';
 require_once 'func_DiffFile.php';
 require_once 'func_ArchiveDownload.php';
 
-
-// Check for a module path
-$env['mod_path'] = (isset($_GET["mp"])) ? $_GET["mp"] : "/";
-$env['mod_path'] = str_replace("//", "/", $env['mod_path']);
-
+// begin display logic
 if (isset($_GET["fh"])) {
 	DisplayFileHistory();
 } else {
