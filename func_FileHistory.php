@@ -13,7 +13,7 @@
 
 function DisplayFileHistory()
 {
-	global $config, $env;
+	global $config, $env, $CVSServer;
 
 	// Calculate the path from the $env['script_name'] variable.
 	$env['script_path'] = substr($env['script_name'], 0, strrpos($env['script_name'], "/"));
@@ -51,8 +51,10 @@ function DisplayFileHistory()
 			echo "<b>Revision</b> ".$Revision["Revision"]." -";
 			echo " (<a href=\"$HREF&amp;fv&amp;dt=$DateTime\">view</a>)";
 			echo " (<a href=\"$HREF&amp;fd&amp;dt=$DateTime\">download</a>)";
-			echo " (<a href=\"$HREF&amp;df&amp;r1=".strtotime($Revision["date"])."&amp;r2=";
-			echo strtotime($CVSServer->FILES[0]["Revisions"][$Revision["PrevRevision"]]["date"])."\">diff to previous</a>)";
+			if ($Revision["PrevRevision"] != "") {
+				echo " (<a href=\"$HREF&amp;df&amp;r1=".$Revision["Revision"]."&amp;r2=";
+				echo $Revision["PrevRevision"]."\">diff to previous</a>)";
+			}
 			echo " (<a href=\"$HREF&amp;fa=".$Revision["Revision"]."\">annotate</a>)<br />\n";
 			echo "<b>Last Checkin:</b> ".strftime("%A %d %b %Y %T -0000", strtotime($Revision["date"]))." (".CalculateDateDiff(strtotime($Revision["date"]), strtotime(gmdate("M d Y H:i:s")))." ago)<br />\n";
 			echo "<b>Branch:</b> ".$Revision["Branches"]."<br />\n";
@@ -72,6 +74,7 @@ function DisplayFileHistory()
 	} else {
 		echo "Connection Failed.";
 	}
+	echo GetDiffForm();
 	echo GetPageFooter();
 }
 
