@@ -7,17 +7,13 @@
  * Purpose: To provide File Download capability.
  *
  * @author Brian A Cheeseman <bcheesem@users.sourceforge.net>
- * @version $Id
+ * @version $Id$
  * @copyright 2003-2005 Brian A Cheeseman
  **/
  
 function DownloadFile($File, $Revision = "")
 {
 	global $config, $env, $lang, $MIME_TYPES;
-
-	// Calculate the path from the $env['script_name'] variable.
-	$env['script_path'] = substr($env['script_name'], 0, strrpos($env['script_name'], '/'));
-	$env['script_path'] = (empty($env['script_path']))? '/' : $env['script_path'];
 
 	// Create our CVS connection object and set the required properties.
 	$CVSServer = new CVS_PServer($env['CVSSettings']['cvsroot'], $env['CVSSettings']['server'], $env['CVSSettings']['username'], $env['CVSSettings']['password']);
