@@ -10,45 +10,54 @@ body
 	background-color: #000000;
 	color: #ffff99;
 }
+
 img
 {
 	border: none;
 }
+
 a:link,a:active,a:visited
 {
 	color: #9999ff;
 	text-decoration: none;
 	font-weight: bold;
 }
+
 a:hover
 {
 	color: #ff99ff;
 	text-decoration: underline;
 	font-weight: bold;
 }
+
 .head
 {
 	background-color: #666677;
 }
+
 .row1
 {
 	background-color: #000011;
 }
+
 .row2
 {
 	background-color: #222233;
 }
+
 .footer
 {
 	font-size: 8pt;
 	text-align: center;
 }
+
 .quicknav
 {
 	font-size: 8pt;
 	text-align: left;
 	font-weight: bold;
 }
+
 .title
 {
 	text-align: center;
@@ -57,6 +66,7 @@ a:hover
 	font-style: italic;
 	color: white;
 }
+
 table
 {
 	font-size: 8pt;
@@ -65,7 +75,13 @@ table
 	border-spacing: 0px 0px;
 	border-collapse: collapse;
 }
+
 td
 {
 	padding: 3px;
+}
+
+.numberedLine
+{
+	color: #666;
 }
