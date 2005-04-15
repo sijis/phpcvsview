@@ -32,7 +32,8 @@ function DisplayFileDiff($Rev1, $Rev2)
 
 		// Add the quick link navigation bar.
 		echo GetQuickLinkBar($lang['rev_diff'], true, true, "");
-		echo "<hr />";
+		echo '<hr />'."\n";
+		echo '<div id="filediff">'."\n";
 
 		// Get the DIFF from the server.
 		$DiffLines = explode("\n", $CVSServer->getFileDiff($env['mod_path'], $Rev1, $Rev2));
@@ -134,12 +135,11 @@ function DisplayFileDiff($Rev1, $Rev2)
 			$linenumber++;
 		} // while
 		
-		echo "<table><tr><td>";
 		$search = array("<", ">", "\n", "\t", " ");
 		$replace = array("&lt;", "&gt;", "", "&nbsp;&nbsp;&nbsp;&nbsp;", "&nbsp;");
 		foreach ($FilePatching as $Line)
 		{
-			echo "<div class=\"";
+			echo '	<p class="';
 			switch($Line['mode']){
 				case '+': 
 					echo "added";
@@ -150,9 +150,10 @@ function DisplayFileDiff($Rev1, $Rev2)
 				default:
 					echo "normal";
 			} // switch
-			echo "\">".str_replace($search, $replace, $Line['text'])."&nbsp;</div>\n";
+			echo '">'.str_replace($search, $replace, $Line['text']).'</p>'."\n";
 		}
-		echo "</td></tr></table><hr />";
+		echo '</div>'."\n";
+		echo '<hr />'."\n";
 
 		$CVSServer->Disconnect();
 	} else {

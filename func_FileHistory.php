@@ -37,33 +37,40 @@ function DisplayFileHistory()
 
 		// Add the quick link navigation bar.
 		echo GetQuickLinkBar($lang['rev_history'], false, true, "");
+		
+		echo '<div id="filehistory">'."\n";
 
 		foreach ($CVSServer->FILES[0]["Revisions"] as $Revision) {
 			$HREF = str_replace('//', '/', $env['script_name'].'?mp='.$env['mod_path']);
 			$DateTime = strtotime($Revision["date"]);
-			echo '<hr /><p><a id="rd'.$DateTime.'" />'."\n";
-			echo '<b>'.$lang['revision'].'</b> '.$Revision["Revision"].' -';
+			echo '<hr />'."\n";
+			//echo '<a name="rd'.$DateTime.'" />&nbsp;</a>'."\n";
+			echo '<div class="filerevision">'."\n";
+			echo '	<p><b>'.$lang['revision'].'</b> '.$Revision["Revision"].' -';
 			echo ' (<a href="'.$HREF.'&amp;fv&amp;dt='.$DateTime.'">'.$lang['view'].'</a>)';
 			echo ' (<a href="'.$HREF.'&amp;fd&amp;dt='.$DateTime.'">'.$lang['download'].'</a>)';
 			if ($Revision["PrevRevision"] != '') {
 				echo ' (<a href="'.$HREF.'&amp;df&amp;r1='.$Revision["PrevRevision"].'&amp;r2=';
 				echo $Revision["Revision"].'">'.$lang['diff'].'</a>)';
 			}
-			echo ' (<a href="'.$HREF.'&amp;fa='.$Revision["Revision"].'">'.$lang['annotate'].'</a>)<br />'."\n";
-			echo '<b>'.$lang['last_checkin'].'</b> '.strftime("%A %d %b %Y %T -0000", $DateTime).' ('.CalculateDateDiff($DateTime, strtotime(gmdate("M d Y H:i:s"))).' '.$lang['ago'].')<br />'."\n";
-			echo '<b>'.$lang['branch'].'</b> '.$Revision["Branches"].'<br />'."\n";
-			echo '<b>'.$lang['date'].'</b> '.strftime("%B %d, %Y", $DateTime).'<br />'."\n";
-			echo '<b>'.$lang['time'].'</b> '.strftime("%H:%M:%S", $DateTime).'<br />'."\n";
-			echo '<b>'.$lang['author'].'</b> '.$Revision["author"].'<br />'."\n";
-			echo '<b>'.$lang['state'].'</b> '.$Revision["state"].'<br />'."\n";
+			echo ' (<a href="'.$HREF.'&amp;fa='.$Revision["Revision"].'">'.$lang['annotate'].'</a>)</p>'."\n";
+			echo '	<p><b>'.$lang['last_checkin'].'</b> '.strftime("%A %d %b %Y %T -0000", $DateTime).' ('.CalculateDateDiff($DateTime, strtotime(gmdate("M d Y H:i:s"))).' '.$lang['ago'].')</p>'."\n";
+			echo '	<p><b>'.$lang['branch'].'</b> '.$Revision["Branches"].'</p>'."\n";
+			echo '	<p><b>'.$lang['date'].'</b> '.strftime("%B %d, %Y", $DateTime).'</p>'."\n";
+			echo '	<p><b>'.$lang['time'].'</b> '.strftime("%H:%M:%S", $DateTime).'</p>'."\n";
+			echo '	<p><b>'.$lang['author'].'</b> '.$Revision["author"].'</p>'."\n";
+			echo '	<p><b>'.$lang['state'].'</b> '.$Revision["state"].'</p>'."\n";
 			if ($Revision["PrevRevision"] != '') {
-				echo '<b>'.$lang['changes'].$Revision["PrevRevision"].':</b> '.$Revision["lines"].'<br />'."\n";
+				echo '	<p><b>'.$lang['changes'].$Revision["PrevRevision"].':</b> '.$Revision["lines"].'</p>'."\n";
 			}
-			echo '<b>'.$lang['log_message'].'</b></p><pre>'.$Revision["LogMessage"].'</pre>'."\n";
+			echo '	<p><b>'.$lang['log_message'].'</b></p>'."\n";
+			echo '	<p class="logmsg">'.$Revision["LogMessage"].'</p>'."\n";
+			echo '</div>'."\n";
 		}
 
+		echo '</div>'."\n";
 		echo '<hr />'."\n";
-		
+
 		echo GetDiffForm();
 		$CVSServer->Disconnect();
 	} else {

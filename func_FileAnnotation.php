@@ -40,7 +40,8 @@ function DisplayFileAnnotation($File, $Revision = "")
 
 		// Start the output for the table.
 		echo '<hr />'."\n";
-		echo '<table border="0" cellpadding="2" cellspacing="0" width="100%">' ."\n";
+		echo '<div id="fileannotation">'."\n";
+		echo '	<table>' ."\n";
 		$RowClass = 'row1';
 
 		$search = array('<', '>', '\n');
@@ -50,23 +51,29 @@ function DisplayFileAnnotation($File, $Revision = "")
 		foreach ($CVSServer->ANNOTATION as $Annotation)	{
 			if (strcmp($PrevRev, $Annotation["Revision"]) != 0) {
 				if (!$FirstLine) {
-					echo "</pre></td></tr>\n";
+					echo '</pre></td>'."\n";
+					echo '		</tr>'."\n";
 				} else {
 					$FirstLine = false;
 				}
-				echo '<tr class="'.$RowClass.'"><td>'.$Annotation["Revision"].'</td><td>'.$Annotation["Author"];
-				echo '</td><td>'.$Annotation["Date"].'</td><td><pre>'.str_replace($search, $replace, $Annotation["Line"]);
-				if ($RowClass == 'row1') {
-					$RowClass = 'row2';
-				} else {
-					$RowClass = 'row1';
-				}
+				echo '		<tr class="'.$RowClass.'">'."\n";
+				echo '			<td>'.$Annotation["Revision"].'</td>'."\n";
+				echo '			<td>'.$Annotation["Author"].'</td>'."\n";
+				echo '			<td>'.$Annotation["Date"].'</td>'."\n";
+				echo '			<td><pre>'.str_replace($search, $replace, $Annotation["Line"]);
+
+				$RowClass = ($RowClass == "row1")? "row2" : "row1";
+
 			} else{
 				echo "\n".str_replace($search, $replace, $Annotation["Line"]);
 			}
 			$PrevRev = $Annotation["Revision"];
 		}
-		echo '</table><hr />'."\n";
+		echo '</pre></td>'."\n";
+		echo '		</tr>'."\n";
+		echo '	</table>'."\n";
+		echo '</div>'."\n";
+		echo '<hr />'."\n";
 
 		// Close the connection.
 		$CVSServer->Disconnect();
