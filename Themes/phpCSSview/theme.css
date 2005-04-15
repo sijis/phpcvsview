@@ -1,0 +1,337 @@
+/*
+	$Id$
+*/
+
+/*
+ ***********************************
+	base html tag defaults
+ ***********************************
+*/
+html {
+	background-color: #eee;
+}
+
+body {
+	margin: 0;
+	padding: 0;
+	font-family: Arial, Verdana, sans-serif;
+	font-size: .86em;
+	color: #000;
+	background: url("images/wires.gif") #eee no-repeat fixed top right;
+}
+
+img {
+	border: none;
+}
+
+hr {
+	display: none;
+}
+
+table {
+	border: 0 none;
+	width: 100%; 
+	border-spacing: 0 0;
+	border-collapse: collapse;
+}
+
+td {
+	padding: 1px 4px;
+}
+
+h1 {
+	margin: 0;
+}
+
+abbr, acronym {
+	border-bottom: 1px #000 dotted;
+	cursor: help;
+	font-weight: bold;
+}
+
+/*
+ ***********************************
+	base link defaults
+ ***********************************
+*/
+
+a:link, a:active, a:visited {
+	color: #009;
+	text-decoration: none;
+}
+
+a:hover {
+	color: #009;
+	text-decoration: underline;
+}
+
+/*
+ ***********************************
+	combined elements
+ ***********************************
+*/
+#cvscontent ,#filehistory, #fileview, #fileannotation, #filediff {
+	background-color: #fff;
+}
+
+p#reposForm, p#themeForm, p#quicknav {
+	margin-left: 7px;
+}
+
+/*
+ ***********************************
+	page header
+ ***********************************
+
+#header
+	.title
+	#headmsg
+*/
+
+#header {
+}
+
+.title {
+	background-image: url("images/phpcvsview.gif");
+	width: 300px;
+	height: 100px;
+}
+
+.title span {
+	display: none;
+}
+
+#headmsg {
+	background-image: url("images/slogan.gif");
+	width: 400px;
+	height: 75px;
+}
+
+#headmsg p {
+	display: none;
+}
+/*
+ ***********************************
+	user forms for settings
+ ***********************************
+
+#userOptions
+	#reposForm
+		#reposSelect
+		.reposchanger
+	#themeForm
+		#ThemeSelect
+		.themechanger
+	#langForm
+		#langSelect
+		.langchanger
+*/
+
+#userOptions {
+}
+
+#reposForm {
+	padding: 0;
+	margin: 0;
+}
+
+.reposchanger {
+	text-align: left;
+	padding: 0;
+	margin: 0;
+}
+
+#themeForm {
+	float: left;
+}
+
+.themechanger {
+	text-align: left;
+	padding: 0;
+	margin: 0;
+}
+
+#langForm {
+	margin-left: 5px;
+	float: left;
+}
+
+.langchanger {
+	text-align: left;
+	padding: 0;
+	margin: 0;
+}
+
+/*
+ ***********************************
+	navigation path
+ ***********************************
+
+#quicknav
+*/
+
+#quicknav {
+	text-align: left;
+	font-weight: bold;
+	clear: both;
+}
+
+/*
+ ***********************************
+	page contents
+ ***********************************
+
+#cvscontent
+	.head
+#filehistory
+	.filerevision
+	.logmsg
+#fileview
+	.source
+#fileannotation
+#filediff
+
+*/
+
+#cvscontent {
+	border: 0 none;
+}
+
+/* directory listing table header */
+.head {
+	background-color: #ddf;
+}
+
+#filehistory {
+	border-bottom: 1px solid;
+}
+
+/* handles ul of file attributes */
+.filerevision {
+	border-top: 1px solid;
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+
+.filerevision p {
+	margin: 0 0 0 7px;
+	padding: 0;
+}
+
+p.logmsg {
+	padding: 0;
+	margin: 0 0 0 10px;
+}
+
+.logmsg {
+	white-space: pre;
+}
+
+#fileview {
+	border-top: 1px solid;
+	border-bottom: 1px solid;
+}
+
+#filediff {
+	border-top: 1px solid;
+	border-bottom: 1px solid;
+}
+
+#filediff p {
+	margin: 0;
+	padding: 1px;
+}
+
+table.source {
+	width: 100%; 
+}
+
+.normal {
+	background-color: #fff;
+}
+
+.added {
+	width: 100%; 
+	background-color: #dfd;
+}
+
+.removed {
+	width: 100%; 
+	background-color: #fdd;
+}
+
+#fileannotation {
+	border-top: 1px solid;
+	border-bottom: 1px solid;
+}
+
+/*
+ ***********************************
+	bottom options
+ ***********************************
+	#diffOptions
+		.diffform
+
+*/
+#diffOptions p {
+	margin: 0;
+	padding: 0;
+}
+
+.diffform {
+	text-align: left;
+	padding: 0;
+	margin: 0;
+}
+
+/*
+ ***********************************
+	footer
+ ***********************************
+	#footer
+
+*/
+
+#footer {
+	text-align: center;
+}
+
+#footer p {
+	padding: 0;
+	margin: 0;
+}
+/*
+ ***********************************
+	miscleanous/common classes
+ ***********************************
+	.row1
+	.row2
+
+*/
+
+/* alternate row color in directory listing */
+.row1 {
+	background-color: #fff;
+}
+
+.row2 {
+	background-color: #eef;
+}
+
+/*
+table, td, tr {
+	border: 1px solid;
+}
+*/
+
+/*
+ ***********************************
+	print version of page(s)
+ ***********************************
+*/
+
+@media print {
+
+	html, body{
+	}
+}
