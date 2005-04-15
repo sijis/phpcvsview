@@ -29,20 +29,24 @@ function DisplayFileContents($File, $Revision = "")
 	echo GetPageHeader($env['CVSSettings']['html_title'], $env['CVSSettings']['html_header']);
 
 	// Add the quick link navigation bar.
-	echo GetQuickLinkBar($lang['code_view'], true, true, $Revision)."<hr />\n";
-	
+	echo GetQuickLinkBar($lang['code_view'], true, true, $Revision)."\n";
+	echo '<hr />'."\n";
+
+	echo '<div id="fileview">'."\n";
+
 	// Check and see if this file and version has already been viewed and exists in the cache.
+	$CachedFileName = $config['Cache']['Location'];
 	if ($config['Cache']['Enable']) {
-		$CachedFileName = $config['Cache']['Location'];
 		if (!file_exists($CachedFileName)) {
 		    mkdir($CachedFileName, 0750);
 		}
 		$CachedFileName .= "/".str_replace("/", "_", $File).",$Revision";
 	}
+
 	if (file_exists($CachedFileName) && $config['Cache']['Enable']) {
 		$fd = fopen($CachedFileName, "r");
 		if ($fd !== false) {
-			fpassthru($fd);	    
+			fpassthru($fd);
 			fclose($fd);
 		}
 	}
@@ -85,15 +89,15 @@ function DisplayFileContents($File, $Revision = "")
 				if ($config['Cache']['Enable']) {
 					$fd = fopen($CachedFileName, "w");
 					if ($fd !== false) {
-						fwrite($fd, '<table class="source"><tr><td>'.$hlcontent.'</td></tr></table>');
+						fwrite($fd, '<p class="source">'.$hlcontent.'</p>');
 						fclose($fd);
 					}
 				}		
 
 				// Display the file contents.
-				echo '<table class="source"><tr><td>';
+				echo '<p class="source">';
 				echo $hlcontent;
-				echo '</td></tr></table>';
+				echo '</p>';
 			}
 			else
 			{
@@ -113,6 +117,7 @@ function DisplayFileContents($File, $Revision = "")
 				{
 					$fd = false;
 				}
+
 				echo "<pre>\n";
 				for($i = 1; $i <= $soure_size; $i++) {
 					$line = '<a name="'.$i.'" class="numberedLine">&nbsp;'.str_repeat('&nbsp;', strlen($soure_size) - strlen($i)). $i.'.</a> ' . $source[$i-1] . "\n";
@@ -121,6 +126,7 @@ function DisplayFileContents($File, $Revision = "")
 					}
 					echo $line;
 				}
+
 				if ($fd !== false) {
 					fwrite($fd, "</pre>\n");
 				}
@@ -132,7 +138,8 @@ function DisplayFileContents($File, $Revision = "")
 			echo $lang['err_connect'];
 		}
 	}
-	echo "<hr />";
+	echo '</div>';
+	echo '<hr />'."\n";
 	echo GetPageFooter();
 }
 
