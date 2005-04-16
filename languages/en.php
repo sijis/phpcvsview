@@ -90,5 +90,6 @@ $lang['icon_dir']	= 'Dir';
 $lang['icon_dl']	= 'D/L';
 $lang['icon_file']	= 'File';
 $lang['icon_parent']	= 'Up';
+$lang['icon_mod']	= 'Mod';
 
 ?>
