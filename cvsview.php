@@ -48,6 +48,13 @@ $config['theme'] = (in_array($config['theme'], GetThemeList(), false)) ? $config
 // Determine the CVSROOT settings required for this instance.
 $env['CVSROOT'] = (empty($_COOKIE['config']['CVSROOT'])) ? $config['default_cvs'] : $_COOKIE['config']['CVSROOT'];
 if (isset($_GET["cr"])) {
+	$env['mod_path'] = "/";
+	unset($_GET["fh"]);
+        unset($_GET["fa"]);
+        unset($_GET["fv"]);
+        unset($_GET["fd"]);
+        unset($_GET["df"]);
+        unset($_GET["dp"]);
 	$env['CVSROOT'] = $_GET["cr"];
 	// Set cookie with theme info. This cookie is set to expire 1 year from today.
 	setcookie("config[CVSROOT]", $env['CVSROOT'], time()+31536000, "/");
