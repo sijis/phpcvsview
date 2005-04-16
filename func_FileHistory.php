@@ -49,9 +49,12 @@ function DisplayFileHistory()
 			echo '	<p><b>'.$lang['revision'].'</b> '.$Revision["Revision"].' -';
 			echo ' (<a href="'.$HREF.'&amp;fv&amp;dt='.$DateTime.'">'.$lang['view'].'</a>)';
 			echo ' (<a href="'.$HREF.'&amp;fd&amp;dt='.$DateTime.'">'.$lang['download'].'</a>)';
-			if ($Revision["PrevRevision"] != '') {
-				echo ' (<a href="'.$HREF.'&amp;df&amp;r1='.$Revision["PrevRevision"].'&amp;r2=';
-				echo $Revision["Revision"].'">'.$lang['diff'].'</a>)';
+			if (isset($Revision["PrevRevision"]))
+			{
+				if ($Revision["PrevRevision"] != '') {
+					echo ' (<a href="'.$HREF.'&amp;df&amp;r1='.$Revision["PrevRevision"].'&amp;r2=';
+					echo $Revision["Revision"].'">'.$lang['diff'].'</a>)';
+				}
 			}
 			echo ' (<a href="'.$HREF.'&amp;fa='.$Revision["Revision"].'">'.$lang['annotate'].'</a>)</p>'."\n";
 			echo '	<p><b>'.$lang['last_checkin'].'</b> '.strftime("%A %d %b %Y %T -0000", $DateTime).' ('.CalculateDateDiff($DateTime, strtotime(gmdate("M d Y H:i:s"))).' '.$lang['ago'].')</p>'."\n";
@@ -60,8 +63,13 @@ function DisplayFileHistory()
 			echo '	<p><b>'.$lang['time'].'</b> '.strftime("%H:%M:%S", $DateTime).'</p>'."\n";
 			echo '	<p><b>'.$lang['author'].'</b> '.$Revision["author"].'</p>'."\n";
 			echo '	<p><b>'.$lang['state'].'</b> '.$Revision["state"].'</p>'."\n";
-			if ($Revision["PrevRevision"] != '') {
-				echo '	<p><b>'.$lang['changes'].$Revision["PrevRevision"].':</b> '.$Revision["lines"].'</p>'."\n";
+			if (isset($Revision["PrevRevision"]))
+                        {
+				if ($Revision["PrevRevision"] != '') {
+					echo '	<p><b>'.$lang['changes'].$Revision["PrevRevision"].':</b> ';
+					if (isset($Revision["lines"])) echo $Revision["lines"];
+					echo '</p>'."\n";
+				}
 			}
 			echo '	<p><b>'.$lang['log_message'].'</b></p>'."\n";
 			echo '	<p class="logmsg">'.$Revision["LogMessage"].'</p>'."\n";
