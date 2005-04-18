@@ -80,16 +80,16 @@ $lang['changes']		= 'Changes since ';
 $lang['log_message']	= 'Log Message:';
 
 // error messages
-$lang['err_connect']	= '<h2>ERROR: Could not connect to the PServer.</h2>'."\n";
+$lang['err_connect']	= '<h2>ERROR: Could not connect to the PServer.</h2>';
 $lang['err_get_rev']	= '<h3>ERROR: Getting Revision for file:</h3>';
 
 // Image description texts.
-$lang['icon_xhtml'] 	= 'This page is XHTML 1.0 compliant.';
-$lang['icon_css']	= 'This page uses CSS 2.1 compliant external style sheets.';
-$lang['icon_dir']	= 'Dir';
-$lang['icon_dl']	= 'D/L';
-$lang['icon_file']	= 'File';
 $lang['icon_parent']	= 'Up';
-$lang['icon_mod']	= 'Mod';
+$lang['icon_dl']		= 'D/L';
+$lang['icon_dir']		= 'Dir';
+$lang['icon_mod']		= 'Mod';
+$lang['icon_file']		= 'File';
+$lang['icon_xhtml']		= 'Valid XHTML 1.1!';
+$lang['icon_css']		= 'Valid CSS!';
 
 ?>

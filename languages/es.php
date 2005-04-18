@@ -86,4 +86,13 @@ $lang['log_message']	= 'Mensaje de Log:';
 $lang['err_connect']	= '<h2>ERROR: No se puede conectar con el PServer.</h2>'."\n";
 $lang['err_get_rev']	= '<h3>ERROR: Obteniendo revisión para el archivo:</h3>';
 
+// Image description texts.
+$lang['icon_parent']	= 'Subir';
+$lang['icon_dl']		= 'D/L';
+$lang['icon_dir']		= 'Dir';
+$lang['icon_mod']		= 'Mod';
+$lang['icon_file']		= 'Archivo';
+$lang['icon_xhtml']		= 'Valido XHTML 1.1!';
+$lang['icon_css']		= 'Valido CSS!';
+
 ?>

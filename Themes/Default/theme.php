@@ -90,8 +90,8 @@ function GetPageFooter() {
 	$EndTime = microtime();
 	$PageFoot = '<div class="footer">'.$lang['generated'].' '.number_format(microtime_diff($StartTime, $EndTime), 3).' '.$lang['seconds'].'<br />';
 	$PageFoot .= $lang['created_by'];
-	$PageFoot .= '<p><a href="http://validator.w3.org/check?uri=referer"><img src="http://www.w3.org/Icons/valid-xhtml11" alt="Valid XHTML 1.1!" height="31" width="88" /></a>&nbsp;&nbsp;';
-	$PageFoot .= '<a href="http://jigsaw.w3.org/css-validator/check/referer"><img style="border:0;width:88px;height:31px" src="http://www.w3c.org/Icons/valid-css" alt="Valid CSS!" /></a></p>';
+	$PageFoot .= '<p><a href="http://validator.w3.org/check?uri=referer"><img src="http://www.w3.org/Icons/valid-xhtml11" alt="'.$lang['icon_xhtml'].'" height="31" width="88" /></a>&nbsp;&nbsp;';
+	$PageFoot .= '<a href="http://jigsaw.w3.org/css-validator/check/referer"><img style="border:0;width:88px;height:31px" src="http://www.w3c.org/Icons/valid-css" alt="'.$lang['icon_css'].'" /></a></p>';
 	$PageFoot .= '</div>';
 	$PageFoot .= '</body></html>';
 	return $PageFoot;
@@ -160,7 +160,7 @@ function addParentDirectory()
 	$HREF = str_replace("//", "/", $env['script_name']."?mp=".substr($env['mod_path'], 0, strrpos(substr($env['mod_path'], 0, -1), "/"))."/");
 	echo '<tr class="'.$RowClass.'">';
 	echo '<td class="min">&nbsp;</td>';
-	echo '<td class="min"><a href="'.$HREF.'"><img alt="parent" src="'.$env['script_path'].'/'.$ParentIcon.'" /></a></td>';
+	echo '<td class="min"><a href="'.$HREF.'"><img alt="'.$lang['icon_parent'].'" src="'.$env['script_path'].'/'.$ParentIcon.'" /></a></td>';
 	echo '<td class="min"><a href="'.$HREF.'">'.$lang['up_folder'].'</a></td>';
 	echo '<td>&nbsp;</td>';
 	echo '<td>&nbsp;</td>';
@@ -172,16 +172,16 @@ function addParentDirectory()
 
 function addFolders($Folders)
 {
-	global $RowClass, $DownloadIcon, $FolderIcon, $env;
+	global $RowClass, $DownloadIcon, $FolderIcon, $env, $lang;
 	foreach ($Folders as $Folder) {
 		$HREF = str_replace("//", "/", $env['script_name']."?mp=".$env['mod_path']."/".$Folder["Name"]."/");
 		echo '<tr class="'.$RowClass.'">';
 		if ($Folder["Name"] != "CVSROOT" && $Folder["Name"] != "Attic") {
-			echo '<td class="min"><a href="'.$HREF.'&dp"><img alt="D/L" src="'.$env['script_path'].'/'.$DownloadIcon.'" /></a></td>';
+			echo '<td class="min"><a href="'.$HREF.'&dp"><img alt="'.$lang['icon_dl'].'" src="'.$env['script_path'].'/'.$DownloadIcon.'" /></a></td>';
 		} else {
 			echo '<td class="min">&nbsp;</td>';
 		}
-		echo '<td class="min"><a href="'.$HREF.'"><img alt="DIR" src="'.$env['script_path'].'/'.$FolderIcon.'" /></a></td>';
+		echo '<td class="min"><a href="'.$HREF.'"><img alt="'.$lang['icon_dir'].'" src="'.$env['script_path'].'/'.$FolderIcon.'" /></a></td>';
 		echo '<td class="min"><a href="'.$HREF.'">'.$Folder["Name"].'</a></td>';
 		echo '<td>&nbsp;</td>';
 		echo '<td>&nbsp;</td>';
@@ -198,18 +198,18 @@ function addFolders($Folders)
 
 function addModules($Modules)
 {
-	global $RowClass, $DownloadIcon, $ModuleIcon, $env;
+	global $RowClass, $DownloadIcon, $ModuleIcon, $env, $lang;
 
 	foreach ($Modules as $Key => $Val) {
 		// Add the row data here.
 		$HREF = str_replace("//", "/", $env['script_name']."?mp=".$env['mod_path'].$Val."/");
 		echo '<tr class="'.$RowClass.'">';
 		if ($Val != "CVSROOT" && $Val != "Attic") {
-			echo '<td class="min"><a href="'.$HREF.'&dp"><img alt="D/L" src="'.$env['script_path'].'/'.$DownloadIcon.'" /></a></td>';
+			echo '<td class="min"><a href="'.$HREF.'&dp"><img alt="'.$lang['icon_dl'].'" src="'.$env['script_path'].'/'.$DownloadIcon.'" /></a></td>';
 		} else {
 			echo '<td class="min">&nbsp;</td>';
 		}
-		echo '<td class="min"><a href="'.$HREF.'"><img alt="MOD" src="'.$env['script_path'].'/'.$ModuleIcon.'" /></a></td>';
+		echo '<td class="min"><a href="'.$HREF.'"><img alt="'.$lang['icon_mod'].'" src="'.$env['script_path'].'/'.$ModuleIcon.'" /></a></td>';
 		echo '<td class="min"><a href="'.$HREF.'">'.$Key.'</a></td>';
 		echo '<td>&nbsp;</td>';
 		echo '<td>&nbsp;</td>';
@@ -234,7 +234,7 @@ function addFiles($Files)
 		$AGE = CalculateDateDiff($DateTime, strtotime(gmdate("M d Y H:i:s")));
 		echo '<tr class="'.$RowClass.'">';
 		echo '<td class="min">&nbsp;</td>';
-		echo '<td align="center"><a href="'.$HREF.'&amp;fh"><img alt="FILE" src="'.$env['script_path'].'/'.$FileIcon.'" /></a></td>';
+		echo '<td align="center"><a href="'.$HREF.'&amp;fh"><img alt="'.$lang['icon_file'].'" src="'.$env['script_path'].'/'.$FileIcon.'" /></a></td>';
 		echo '<td><a href="'.$HREF.'&amp;fh">'.$File["Name"].'</a></td>';
 		echo '<td align="center"><a href="'.$HREF.'&amp;fv&amp;dt='.$DateTime.'">'.$File["Head"].'</a></td>';
 		echo '<td align="center">'.str_replace(" ", "&nbsp;", $AGE).'&nbsp;'.$lang['ago'].'</td>';
