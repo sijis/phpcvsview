@@ -53,6 +53,8 @@ function DownloadFile($File, $Revision = "")
 
 		// Close the connection.
 		$CVSServer->Disconnect();
+	} else{
+		echo $lang['err_connect'];
 	}
 }
 
