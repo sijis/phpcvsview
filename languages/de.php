@@ -80,7 +80,16 @@ $lang['changes']                 = 'Änderungen seit ';
 $lang['log_message']             = 'Log Nachricht:';
 
 // error messages
-$lang['err_connect']             = '<h2>FEHLER: Verbindung zum PServer fehlgeschlagen.</h2>'."\n";
+$lang['err_connect']             = '<h2>FEHLER: Verbindung zum PServer fehlgeschlagen.</h2>';
 $lang['err_get_rev']             = '<h3>FEHLER: Empfange Revision für Datei:</h3>';
+
+// Image description texts.
+$lang['icon_parent']			= 'Herauf';
+$lang['icon_dl']				= 'D/L';
+$lang['icon_dir']				= 'Ver';
+$lang['icon_mod']				= 'Mod';
+$lang['icon_file']				= 'Akte';
+$lang['icon_xhtml']				= 'Gültiges XHTML 1.1!';
+$lang['icon_css']				= 'Gültiges CSS!';
 
 ?>
