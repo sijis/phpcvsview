@@ -172,7 +172,7 @@ function addParentDirectory()
 
 function addFolders($Folders)
 {
-	global $RowClass, $DownloadIcon, $FolderIcon, $env;
+	global $RowClass, $DownloadIcon, $FolderIcon, $env, $lang;
 	foreach ($Folders as $Folder) {
 		$HREF = str_replace("//", "/", $env['script_name']."?mp=".$env['mod_path']."/".$Folder["Name"]."/");
 		echo '<tr class="'.$RowClass.'">';
