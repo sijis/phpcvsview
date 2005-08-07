@@ -1,9 +1,6 @@
 body
 {
-	margin-top: 3px;
-	margin-bottom: 3px;
-	margin-left: 3px;
-	margin-right: 3px;
+	margin: 3px;
 	padding:0px;
 	font-family: Tahoma, arial, sans-serif;
 	font-size: 10pt;
@@ -154,3 +151,23 @@ div.removed
 	border-collapse: collapse;
 	background-color: #ffdddd;
 }
+.filerevision {
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+
+.filerevision p {
+	margin: 0 0 0 7px;
+	padding: 0;
+}
+
+p.logmsg {
+	font-family: courier;
+	padding: 0;
+	margin: 0 0 0 10px;
+}
+
+.logmsg {
+	white-space: pre;
+}
+

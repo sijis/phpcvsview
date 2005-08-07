@@ -1,6 +1,6 @@
 <?php
 
-/**
+/*
  * This source code is distributed under the terms as layed out in the
  * GNU General Public License.
  *
@@ -9,7 +9,7 @@
  * @author Brian A Cheeseman <bcheesem@users.sourceforge.net>
  * @version $Id$
  * @copyright 2003-2005 Brian A Cheeseman
- **/
+ */
 
 require_once 'config.php';
 require_once 'utils.php';

@@ -9,8 +9,16 @@
  * @author Brian A Cheeseman <bcheesem@users.sourceforge.net>
  * @version $Id$
  * @copyright 2003-2005 Brian A Cheeseman
- **/
+ */
 
+/**
+ * Special global variable holding a list of file extension to mime
+ * type conversion strings.
+ * @global array $MIME_TYPES
+ * @name $MIME_TYPES
+ */
+global $MIME_TYPES;
+ 
 $MIME_TYPES = array(
 	'ez' => 'application/andrew-inset',
 	'hqx' => 'application/mac-binhex40',

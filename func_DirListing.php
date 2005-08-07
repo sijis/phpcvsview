@@ -27,6 +27,8 @@ function DisplayDirListing()
 		// Authenticate against the server.
 		$Response = $CVSServer->Authenticate();
 		if ($Response !== true) {
+
+			echo "<h3>ERROR: ".$Response."</h3>";
 			return;
 		}
 

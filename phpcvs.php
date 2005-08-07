@@ -12,22 +12,76 @@ error_reporting(E_ALL);
  * @copyright 2003-2005 Brian A Cheeseman
  **/
 
+/**
+ * Part of the PEAR packages, and is used to enable TCP communication with the 
+ * hosting CVS pserver.
+ */
 require_once 'Net/Socket.php';
 
+/**
+ * The CVS_PServer class provides a simplified interface to the CVS pserver.
+ * @subpackage PServer
+ */
 class CVS_PServer
 {
-
-	var $CVS_REPOSITORY;				// Storage of the CVS Repository file system path.
-	var $CVS_USERNAME;					// Username to use when authenticating with the PServer.
-	var $CVS_PASSWORD;					// Password for the account above.
-	var $CVS_PSERVER;					// Hostname of the server running the PServer.
-	var $CVS_PORT;						// Port number the PServer listener is running on.
-	var $CVS_TIMEOUT;					// Timeout in seconds for all socket operations.
-	var $CVS_VALID_REQUESTS;			// List of valid requests the PServer accepts.
-	var $SOCKET;						// The socket handle for communicating with the PServer.
-	var $ALLOWED_RESPONSES = array(		// A hashed array of responses that we are capable of
-										// processing and the contents is the name of the function
-										// to process it through.
+    /**
+     * Storage of the CVS Repository file system path.
+     * @access private
+     * @var string
+     */
+	var $CVS_REPOSITORY;
+	
+	/**
+	 * Username to use when authenticating with the PServer.
+	 * @access private
+	 * @var string
+	 * @see $CVS_PASSWORD
+	 */
+	var $CVS_USERNAME;
+	
+	/**
+	 * Password for the account specified in $CVS_USERNAME.
+	 * @access private
+	 * @var string
+	 * @see $CVS_USERNAME
+	 */
+	var $CVS_PASSWORD;
+	
+	/**
+	 * Hostname of the server providing PServer services.
+	 * @access private
+	 * @var string
+	 */
+	var $CVS_PSERVER;
+	
+	/**
+	 * Port number the PServer listener is running on.
+	 * @access private
+	 * @var string
+	 */
+	var $CVS_PORT;
+	
+	/**
+	 * Timeout in seconds for all socket operations.
+	 * @access private
+	 * @var string
+	 */
+	var $CVS_TIMEOUT;
+	
+	/**
+	 * The socket handle for communicating with the PServer.
+	 * @access private
+	 * @var Net/Socket
+	 */
+	var $SOCKET;
+	
+	/**
+	 * A hashed array of responses that we are capable of processing and the 
+	 * contents is the name of the function to process it through.
+	 * @access private
+	 * @var array
+	 */
+	var $ALLOWED_RESPONSES = array( 
 		"ok" => "processOk",
 		"error" => "processError",
 		"Valid-requests" => "processValidRequests",
@@ -62,12 +116,41 @@ class CVS_PServer
 		"MT" => "processMT"
 		);
 
-	var $ALLOWED_REQUESTS = array();	// A hashed array of requests we are allowed to send.
-	var $FINAL_RESPONSE;				// A state variable for tracking whether the final response
-										// in a chain of lines was a success or failure.
-	var $STDERR;						// Standard Error output. (Does not mean that an error occured).
-	var $MESSAGE_CONTENT;				// Message contents. (Standard Out)
-	var $FOLDERS = array();				// An array of the folders in the current module.
+	/**
+	 * List of valid requests the PServer will accept from clients.
+	 * @access private
+	 * @var array
+	 */
+	var $ALLOWED_REQUESTS = array();
+	
+	/**
+	 * A state variable for track whether this is the final line we are expecting
+	 * to receive from the CVS PServer.
+	 * @access private
+	 * @var boolean
+	 */
+	var $FINAL_RESPONSE;
+
+	/*
+	 * Standard Error output. (Does not mean that an error occured).
+	 * @access private
+	 * @var string
+	 */
+	var $STDERR;
+	
+	/*
+	 * Message contents. (Standard Out)
+	 * @access private
+	 * @var string
+	 */
+	var $MESSAGE_CONTENT;
+	
+	/*
+	 * A list of the folders in the current module and/or directory.
+	 * @access public
+	 * @var array
+	 */
+	var $FOLDERS = array();
 	var $FILES = array();				// An array of the files in the current module.
 	var $CURRENT_FOLDER;				// The current folder we are building up.
 	var $CURRENT_FILE;					// The current file we are building up.
