@@ -1,156 +1,201 @@
-body
-{
-	margin-top: 3px;
-	margin-bottom: 3px;
-	margin-left: 3px;
-	margin-right: 3px;
+/**
+ * This source code is distributed under the terms as layed out in the
+ * GNU General Public License.
+ *
+ * Purpose: Provides style for a specific theme.
+ *
+ * @author Sijis Aviles <sijis@users.sourceforge.net>
+ * @version $Id$
+ * @copyright 2003-2005 Brian A Cheeseman
+ **/
+
+body {
+	margin: 3px;
 	padding:0px;
 	font-family: Tahoma, arial, sans-serif;
 	font-size: 10pt;
-	background-color: #ffffff;
-	color: #000000;
+	background-color: #fff;
+	color: #000;
 }
-img
-{
+
+img {
 	border: none;
 }
-a:link,a:active,a:visited
-{
-	color: #009900;
+
+a:link, a:active, a:visited {
+	color: #009;
 	text-decoration: none;
 }
-a:hover
-{
-	color: #009900;
+
+a:hover {
+	color: #009;
 	text-decoration: underline;
 }
-input
-{
+
+input {
 	font-size: 8pt;
 }
-.head
-{
-	background-color: #bbffbb;
+
+.head {
+	background-color: #bbf;
 }
-.row1
-{
-	background-color: #eeffee;
+
+.row1 {
+	background-color: #eef;
 }
-.row2
-{
-	background-color: #ddffdd;
+
+.row2 {
+	background-color: #ddf;
 }
-.footer
-{
+
+.footer {
 	font-size: 8pt;
 	text-align: center;
 }
-.quicknav
-{
+
+.quicknav {
 	font-size: 8pt;
 	text-align: left;
 	font-weight: bold;
 }
-.themechanger
-{
+
+.themechanger {
 	font-size: 8pt;
 	text-align: left;
 	padding: 0px;
 	margin: 0px;
 }
-.langchanger
-{
+
+.langchanger {
 	font-size: 8pt;
 	text-align: left;
 	padding: 0px;
 	margin: 0px;
 }
-.reposchanger
-{
+
+.reposchanger {
 	font-size: 8pt;
 	text-align: left;
 	padding: 0px;
 	margin: 0px;
 }
-.diffform
-{
+
+.diffform {
 	font-size: 8pt;
 	text-align: left;
 	padding: 0px;
 	margin: 0px;
 }
-.title
-{
+
+.title {
 	text-align: center;
 	font-size: 18pt;
 	font-weight: bold;
 	font-style: italic;
 	color: black;
 }
-table
-{
+
+table {
 	font-size: 8pt;
 	border: 0px none;
-	width: 100%; 
-	border-spacing: 0px 0px;
+	width: 100%;
+	border-spacing: 0;
 	border-collapse: collapse;
 }
-table.source
-{
+
+table.source {
 	border: 0px none;
-	width: 100%; 
-	border-spacing: 0px 0px;
+	width: 100%;
+	border-spacing: 0;
 	border-collapse: collapse;
 }
-td
-{
+
+td {
 	padding-left: 4px;
 	padding-right: 4px;
 	padding-top: 1px;
 	padding-bottom: 1px;
 }
-td.min
-{
+
+td.min {
 	width: 1px;
 }
-li
-{
-	font-family: 'Courier New', Courier, monospace; 
+
+li {
+	font-family: 'Courier New', Courier, monospace;
 	font-size: 12px;
 	font-weight: normal;
 }
-div.normal
-{
+
+div.normal {
 	font-family: courier;
-	color: #000000;
+	color: #000;
 	font-size: 10pt;
 	border: 0px none;
-	width: 100%; 
-	border-spacing: 0px 0px;
+	width: 100%;
+	border-spacing: 0;
 	border-collapse: collapse;
-	background-color: #ffffff;
+	background-color: #fff;
 }
 
-div.added
-{
+div.added {
 	font-family: courier;
-	color: #000000;
+	color: #000;
 	font-size: 10pt;
 	border: 0px none;
-	width: 100%; 
+	width: 100%;
 	border-spacing: 0px 0px;
 	border-collapse: collapse;
-	background-color: #ddffdd;
+	background-color: #dfd;
 }
 
-div.removed
-{
+div.removed {
 	font-family: courier;
-	color: #000000;
+	color: #000;
 	font-size: 10pt;
 	border: 0px none;
-	width: 100%; 
+	width: 100%;
 	border-spacing: 0px 0px;
 	border-collapse: collapse;
-	background-color: #ffdddd;
+	background-color: #fdd;
 }
+
+.filerevision p {
+	margin: 0 0 0 7px;
+	padding: 0;
+}
+
+div#filediff p {
+	padding: 0;
+	margin: 0;
+}
+
+.filerevision {
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+
+.normal {
+	background-color: #fff;
+}
+
+.added {
+	width: 100%;
+	background-color: #dfd;
+}
+
+.removed {
+	width: 100%;
+	background-color: #fdd;
+}
+
+p.logmsg {
+	font-family: courier;
+	padding: 0;
+	margin: 0 0 0 10px;
+}
+
+.logmsg {
+	white-space: pre;
+}
+
