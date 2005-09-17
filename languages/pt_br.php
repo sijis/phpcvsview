@@ -83,7 +83,7 @@ $lang['changes']		= 'Mudanças desde ';
 $lang['log_message']	= 'Mensagem do Log:';
 
 // error messages
-$lang['err_connect']	= '<h2>ERRO: Falha ao conectar ao PServer.</h2>'."\n";
+$lang['err_connect']	= '<h2>ERRO: Falha ao conectar ao PServer.</h2>';
 $lang['err_get_rev']	= '<h3>ERRO: Solicitando Revisão para o arquivo:</h3>';
 
 // Image description texts.
