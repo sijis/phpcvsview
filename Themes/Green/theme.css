@@ -23,12 +23,12 @@ img {
 }
 
 a:link, a:active, a:visited {
-	color: #009;
+	color: #090;
 	text-decoration: none;
 }
 
 a:hover {
-	color: #009;
+	color: #090;
 	text-decoration: underline;
 }
 
@@ -37,15 +37,15 @@ input {
 }
 
 .head {
-	background-color: #bbf;
+	background-color: #bfb;
 }
 
 .row1 {
-	background-color: #eef;
+	background-color: #efe;
 }
 
 .row2 {
-	background-color: #ddf;
+	background-color: #dfd;
 }
 
 .footer {
