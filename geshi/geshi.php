@@ -2029,14 +2029,14 @@ class GeSHi
 		// Get attributes needed
 		$attributes = $this->get_attributes();
 
-		if ( $this->use_classes )
-		{
+//		if ( $this->use_classes )
+//		{
 			$ol_attributes = '';
-		}
-		else
-		{
-			$ol_attributes = ' style="margin: 0;"';
-		}
+//		}
+//		else
+//		{
+//			$ol_attributes = ' style="margin: 0;"';
+//		}
 
 		if ( $this->line_numbers_start != 1 )
 		{
