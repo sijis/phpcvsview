@@ -253,7 +253,7 @@ function addFiles($Files)
 		echo '			<td align="center"><a href="'.$HREF.'&amp;fv&amp;dt='.$DateTime.'">'.$File["Head"].'</a></td>'."\n";
 		echo '			<td align="center">'.str_replace(" ", "&nbsp;", $AGE).'&nbsp;'.$lang['ago'].'</td>'."\n";
 		echo '			<td align="center">'.$File["Revisions"][$File["Head"]]["author"].'</td>'."\n";
-		echo '			<td>'.str_replace(array("\n", " "), array("<br />", "&nbsp;"), $File["Revisions"][$File["Head"]]["LogMessage"]).'</td>'."\n";
+		echo '			<td>'.str_replace(array(" ", "\n"), array("&nbsp;", "<br />"), $File["Revisions"][$File["Head"]]["LogMessage"]).'</td>'."\n";
 		echo '		</tr>'."\n";
 
 		$RowClass = ($RowClass == "row1")? "row2" : "row1";
