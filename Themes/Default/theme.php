@@ -37,7 +37,7 @@ function GetPageHeader($Title="phpCVSView Source Code Library", $Heading="phpCVS
 	$PageHead .= '</div>'."\n";
 	$PageHead .= '<div id="userOptions">'."\n";
 	$PageHead .= '	<form class="themechanger" action="'.$_SERVER['PHP_SELF'].'">'."\n";
-	$PageHead .= '		<p><label for="reposSelect">'.$lang['change_cvsroot'].'</label>'."\n";
+	$PageHead .= '		<p class="reposchanger"><label for="reposSelect">'.$lang['change_cvsroot'].'</label>'."\n";
 	$PageHead .= '		<select name="reposSelect" id="reposSelect" class="reposchanger" onchange="postBackReposChange(this.form);">'."\n";
 	foreach($config['cvs'] as $key => $value){
 		$PageHead .= '			<option value="'.$key.'"';
@@ -48,7 +48,7 @@ function GetPageHeader($Title="phpCVSView Source Code Library", $Heading="phpCVS
 	}
 	$PageHead .= '		</select></p>'."\n";
 
-	$PageHead .= '		<p><label for="ThemeSelect">'.$lang['change_theme'].'</label>'."\n";
+	$PageHead .= '		<p class="themechanger"><label for="ThemeSelect">'.$lang['change_theme'].'</label>'."\n";
 	$PageHead .= '		<select name="ThemeSelect" id="ThemeSelect" class="themechanger" onchange="postBackThemeChange(this.form);">'."\n";
 	foreach (GetThemeList() as $key=>$value){
 		$PageHead .= '			<option value="'.$value.'"';
