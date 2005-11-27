@@ -41,6 +41,7 @@ function DAProcessDirectory($ReposLoc, $BasePath)
 		{
 			if ($folder["Name"] != "Attic") {
 			    DAProcessDirectory($ReposLoc.$folder["Name"]."/", $BasePath."/".$folder["Name"]);
+				set_time_limit(30);
 			}
 		}
 		
@@ -50,9 +51,10 @@ function DAProcessDirectory($ReposLoc, $BasePath)
 			$filehandle = fopen($BasePath."/".$file["Name"], "wb");
 			fwrite($filehandle, $CVSServer->FILECONTENTS);
 			fclose($filehandle);
+			set_time_limit(30);
 		}
 		$CVSServer->Disconnect();
-
+		
 		// When we leave this function the contents should be in the File System.
 	}
 }
@@ -85,6 +87,7 @@ function rmdirr($dirname)
     $dir->close();
     return rmdir($dirname);
 }
+
 function DownloadArchive()
 {
 	global $config, $env, $lang;
