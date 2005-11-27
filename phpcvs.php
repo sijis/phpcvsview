@@ -510,6 +510,7 @@ class CVS_PServer
 		$debugMsg = "";
 
 		while($KeepGoing){
+			set_time_limit(30);
 			$ResponseLine = $this->SOCKET->readLine();
 			$Response = explode(" ", $ResponseLine);
 			if ($this->DEBUG) {
