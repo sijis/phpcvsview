@@ -9,7 +9,7 @@ error_reporting(E_ALL);
  *
  * @author Brian A Cheeseman <bcheesem@users.sourceforge.net>
  * @version $Id$
- * @copyright 2003-2005 Brian A Cheeseman
+ * @copyright 2003-2006 Brian A Cheeseman
  **/
 
 /**
@@ -82,38 +82,38 @@ class CVS_PServer
 	 * @var array
 	 */
 	var $ALLOWED_RESPONSES = array( 
-		"ok" => "processOk",
-		"error" => "processError",
-		"Valid-requests" => "processValidRequests",
-		"Checked-in" => "processCheckedIn",
-		"New-entry" => "processNewEntry",
-		"Checksum" => "processChecksum",
-		"Copy-file" => "processCopyFile",
-		"Updated" => "processUpdated",
-		"Created" => "processCreated",
-		"Update-existing" => "processUpdateExisting",
-		"Merged" => "processMerged",
-		"Patched" => "processPatched",
-		"Rcs-diff" => "processRcsDiff",
-		"Mode" => "processMode",
-		"Mod-time" => "processModTime",
-		"Removed" => "processRemoved",
-		"Remove-entry" => "processRemoveEntry",
-		"Set-static-directory" => "processSetStaticDirectory",
+		"ok"					=> "processOk",
+		"error"					=> "processError",
+		"Valid-requests"		=> "processValidRequests",
+		"Checked-in"			=> "processCheckedIn",
+		"New-entry"				=> "processNewEntry",
+		"Checksum"				=> "processChecksum",
+		"Copy-file"				=> "processCopyFile",
+		"Updated"				=> "processUpdated",
+		"Created"				=> "processCreated",
+		"Update-existing"		=> "processUpdateExisting",
+		"Merged"				=> "processMerged",
+		"Patched"				=> "processPatched",
+		"Rcs-diff"				=> "processRcsDiff",
+		"Mode"					=> "processMode",
+		"Mod-time"				=> "processModTime",
+		"Removed"				=> "processRemoved",
+		"Remove-entry"			=> "processRemoveEntry",
+		"Set-static-directory"	=> "processSetStaticDirectory",
 		"Clear-static-directory" => "processClearStaticDirectory",
-		"Set-sticky" => "processSetSticky",
-		"Clear-sticky" => "processClearSticky",
-		"Template" => "processTemplate",
-		"Set-checkin-prog" => "processSetCheckinProg",
-		"Set-update-prog" => "processSetUpdateProg",
-		"Notified" => "processNotified",
-		"Module-expansion" => "processModuleExpansion",
-		"Wrapper-rcsOption" => "processWrapperRcsOption",
-		"M" => "processM",
-		"Mbinary" => "processMBinary",
-		"E" => "processE",
-		"F" => "processF",
-		"MT" => "processMT"
+		"Set-sticky"			=> "processSetSticky",
+		"Clear-sticky"			=> "processClearSticky",
+		"Template"				=> "processTemplate",
+		"Set-checkin-prog"		=> "processSetCheckinProg",
+		"Set-update-prog"		=> "processSetUpdateProg",
+		"Notified"				=> "processNotified",
+		"Module-expansion"		=> "processModuleExpansion",
+		"Wrapper-rcsOption"		=> "processWrapperRcsOption",
+		"M"						=> "processM",
+		"Mbinary"				=> "processMBinary",
+		"E"						=> "processE",
+		"F"						=> "processF",
+		"MT"					=> "processMT"
 		);
 
 	/**
@@ -150,14 +150,14 @@ class CVS_PServer
 	 * @access public
 	 * @var array
 	 */
-	var $FOLDERS = array();
-	var $FILES = array();				// An array of the files in the current module.
-	var $CURRENT_FOLDER;				// The current folder we are building up.
-	var $CURRENT_FILE;					// The current file we are building up.
-	var $ANNOTATION = array();			// An array of the lines in the file which has been annotated.
-	var $FILECONTENTS = "";				// A string to store the lines of the file contents in.
-	var $INITIALISED = false;			// A boolean to indicate whether we have already sent the Root/ValidRequests/ValidResponses.
-	var $DEBUG = false;					// A boolean to enable/disable debug output
+	var $FOLDERS			= array();
+	var $FILES				= array();	// An array of the files in the current module.
+	var $CURRENT_FOLDER		= "";		// The current folder we are building up.
+	var $CURRENT_FILE		= "";		// The current file we are building up.
+	var $ANNOTATION			= array();	// An array of the lines in the file which has been annotated.
+	var $FILECONTENTS		= "";		// A string to store the lines of the file contents in.
+	var $INITIALISED		= false;	// A boolean to indicate whether we have already sent the Root/ValidRequests/ValidResponses.
+	var $DEBUG				= false;	// A boolean to enable/disable debug output
 
 	/**
 	* Allowed Response Decoding functions.

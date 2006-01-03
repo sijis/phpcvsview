@@ -8,7 +8,7 @@
  *
  * @author Brian A Cheeseman <bcheesem@users.sourceforge.net>
  * @version $Id$
- * @copyright 2003-2005 Brian A Cheeseman
+ * @copyright 2003-2006 Brian A Cheeseman
  **/
 
 function DisplayFileDiff($Rev1, $Rev2)
@@ -62,38 +62,31 @@ function DisplayFileDiff($Rev1, $Rev2)
 		    echo $lang['err_get_rev'].'<h3>'. $Rev1 .'</h3>';
 		}
 		$Lines = explode("\n", $FileContents);
-		foreach ($Lines as $Line) 
-		{
+		foreach ($Lines as $Line) {
 			$FilePatching[] = array('mode' => "o", 'text' => $Line);
 		}
 		
 		$linenumber = 0;
-		while(strpos($DiffLines[$linenumber], "diff") === false)
-		{
+		while(strpos($DiffLines[$linenumber], "diff") === false){
 			$linenumber++;
 		} // while
 		
 		$linenumber++;
 		// We now have the line which starts the diff output.
 		$LineOffset = 0;
-		while($linenumber < count($DiffLines))
-		{
-			if (strpos($DiffLines[$linenumber], "a") !== false) 
-			{
+		while($linenumber < count($DiffLines)) {
+			if (strpos($DiffLines[$linenumber], "a") !== false) {
 			    // We have added a line or lines.
 				$Parts = explode("a", $DiffLines[$linenumber]);
 				$InsertLocation = explode(",", $Parts[0]);
 				$NewLineLocation = explode(",", $Parts[1]);
 				$InsertLength = count($NewLineLocation) == 2 ? $NewLineLocation[1]-$NewLineLocation[0]+1 : 1;
-				for ($LineCounter = 0; $LineCounter < $InsertLength; $LineCounter++)
-				{
+				for ($LineCounter = 0; $LineCounter < $InsertLength; $LineCounter++) {
 					$TempLine = array('mode' => "+", 'text' => substr($DiffLines[++$linenumber], 2));
 					$FilePatching = InsertIntoArray($FilePatching, $TempLine, $InsertLocation[0]+$LineCounter+1);
 					$LineOffset++;
 				}
-			}
-			else if (strpos($DiffLines[$linenumber], "c") !== false) 
-			{
+			} else if (strpos($DiffLines[$linenumber], "c") !== false) {
 			    // We have changed a line or lines.
 				$Parts = explode("c", $DiffLines[$linenumber]);
 				$InsertLocation = explode(",", $Parts[0]);
@@ -101,8 +94,7 @@ function DisplayFileDiff($Rev1, $Rev2)
 				$linenumber += $InsertLength + 1;
 				$NewFileLocation = explode(",", $Parts[1]);
 				$NewLineLength = count($NewFileLocation) == 2 ? $NewFileLocation[1]-$NewFileLocation[0]+1 : 1;
-				for ($LineCounter = 0; $LineCounter < $InsertLength; $LineCounter++)
-				{
+				for ($LineCounter = 0; $LineCounter < $InsertLength; $LineCounter++) {
 					if ($LineCounter < $NewLineLength) {
 						$linenumber++;
     					$TempLine = array('mode' => "+", 'text' => substr($DiffLines[$linenumber], 2));
@@ -111,22 +103,18 @@ function DisplayFileDiff($Rev1, $Rev2)
 					}
 					$FilePatching[$InsertLocation[0]-2+$LineCounter+$LineOffset]['mode'] = '-';
 				}
-				for ($LineCounter = $InsertLength; $LineCounter < $NewLineLength; $LineCounter++)
-				{
+				for ($LineCounter = $InsertLength; $LineCounter < $NewLineLength; $LineCounter++) {
 					$linenumber++;
 					$TempLine = array('mode' => "+", 'text' => substr($DiffLines[$linenumber], 2));
 					$FilePatching = InsertIntoArray($FilePatching, $TempLine, $InsertLocation[0]+$LineCounter+$LineOffset);
 				}
-			}
-			else if (strpos($DiffLines[$linenumber], "d") !== false) 
-			{
+			} else if (strpos($DiffLines[$linenumber], "d") !== false) {
 			    // we have removed a line or lines.
 				$Parts = explode("d", $DiffLines[$linenumber]);
 				$DeleteLocation = explode(",", $Parts[0]);
 				$OldLineLocation = explode(",", $Parts[1]);
 				$DeleteLength = count($DeleteLocation) == 2 ? $DeleteLocation[1]-$DeleteLocation[0]+1 : 1;
-				for ($LineCounter = 0; $LineCounter < $DeleteLength; $LineCounter++)
-				{
+				for ($LineCounter = 0; $LineCounter < $DeleteLength; $LineCounter++) {
 					$FilePatching[$OldLineLocation[0]+$LineCounter+$LineOffset]['mode'] = '-';
 					$LineOffset++;
 					$linenumber++;
@@ -137,8 +125,7 @@ function DisplayFileDiff($Rev1, $Rev2)
 		
 		$search = array("<", ">", "\n", "\t", " ");
 		$replace = array("&lt;", "&gt;", "", "&nbsp;&nbsp;&nbsp;&nbsp;", "&nbsp;");
-		foreach ($FilePatching as $Line)
-		{
+		foreach ($FilePatching as $Line) {
 			echo '	<p class="';
 			switch($Line['mode']){
 				case '+': 

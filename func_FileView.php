@@ -8,7 +8,7 @@
  *
  * @author Brian A Cheeseman <bcheesem@users.sourceforge.net>
  * @version $Id$
- * @copyright 2003-2005 Brian A Cheeseman
+ * @copyright 2003-2006 Brian A Cheeseman
  * 
  * Thanks To:
  * 		Nigel McNie - Suggestion of Caching of source code from repository, hence improving efficiency.
@@ -49,9 +49,7 @@ function DisplayFileContents($File, $Revision = "")
 			fpassthru($fd);
 			fclose($fd);
 		}
-	}
-	else
-	{
+	} else {
 		// Connect to the CVS server.
 		if ($CVSServer->Connect() === true) {
 	
@@ -98,9 +96,7 @@ function DisplayFileContents($File, $Revision = "")
 				echo '<p class="source">';
 				echo $hlcontent;
 				echo '</p>';
-			}
-			else
-			{
+			} else {
 				$search = array('<', '>', '\n', '\t');
 				$replace = array('&lt;', '&gt;', '', ' ');
 				$content = str_replace($search, $replace, $CVSServer->FILECONTENTS);
@@ -112,9 +108,7 @@ function DisplayFileContents($File, $Revision = "")
 					if ($fd !== false) {
 						fwrite($fd, "<pre>\n");
 					}
-				}
-				else
-				{
+				} else {
 					$fd = false;
 				}
 

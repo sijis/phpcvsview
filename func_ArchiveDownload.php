@@ -8,7 +8,7 @@
  *
  * @author Brian A Cheeseman <bcheesem@users.sourceforge.net>
  * @version $Id$
- * @copyright 2003-2005 Brian A Cheeseman
+ * @copyright 2003-2006 Brian A Cheeseman
  **/
  
 require_once("Archive/Tar.php");
@@ -37,16 +37,14 @@ function DAProcessDirectory($ReposLoc, $BasePath)
 		$Folders = $CVSServer->FOLDERS;
 		$Files = $CVSServer->FILES;
 		
-		foreach ($Folders as $folder)
-		{
+		foreach ($Folders as $folder) {
 			if ($folder["Name"] != "Attic") {
 			    DAProcessDirectory($ReposLoc.$folder["Name"]."/", $BasePath."/".$folder["Name"]);
 				set_time_limit(30);
 			}
 		}
 		
-		foreach ($Files as $file)
-		{
+		foreach ($Files as $file) {
 			$CVSServer->ExportFile($ReposLoc.$file["Name"], time());
 			$filehandle = fopen($BasePath."/".$file["Name"], "wb");
 			fwrite($filehandle, $CVSServer->FILECONTENTS);

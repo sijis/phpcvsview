@@ -8,7 +8,7 @@
  *
  * @author Brian A Cheeseman <bcheesem@users.sourceforge.net>
  * @version $Id$
- * @copyright 2003-2005 Brian A Cheeseman
+ * @copyright 2003-2006 Brian A Cheeseman
  **/
 
 function DisplayFileHistory()
@@ -43,14 +43,15 @@ function DisplayFileHistory()
 		foreach ($CVSServer->FILES[0]["Revisions"] as $Revision) {
 			$HREF = str_replace('//', '/', $env['script_name'].'?mp='.$env['mod_path']);
 			$DateTime = strtotime($Revision["date"]);
+
 			echo '<hr />'."\n";
 			//echo '<a name="rd'.$DateTime.'" />&nbsp;</a>'."\n";
 			echo '<div class="filerevision">'."\n";
 			echo '	<p><b>'.$lang['revision'].'</b> '.$Revision["Revision"].' -';
 			echo ' (<a href="'.$HREF.'&amp;fv&amp;dt='.$DateTime.'">'.$lang['view'].'</a>)';
 			echo ' (<a href="'.$HREF.'&amp;fd&amp;dt='.$DateTime.'">'.$lang['download'].'</a>)';
-			if (isset($Revision["PrevRevision"]))
-			{
+
+			if (isset($Revision["PrevRevision"])){
 				if ($Revision["PrevRevision"] != '') {
 					echo ' (<a href="'.$HREF.'&amp;df&amp;r1='.$Revision["PrevRevision"].'&amp;r2=';
 					echo $Revision["Revision"].'">'.$lang['diff'].'</a>)';
@@ -63,6 +64,7 @@ function DisplayFileHistory()
 			echo '	<p><b>'.$lang['time'].'</b> '.strftime("%H:%M:%S", $DateTime).'</p>'."\n";
 			echo '	<p><b>'.$lang['author'].'</b> '.$Revision["author"].'</p>'."\n";
 			echo '	<p><b>'.$lang['state'].'</b> '.$Revision["state"].'</p>'."\n";
+
 			if (isset($Revision["PrevRevision"]))
                         {
 				if ($Revision["PrevRevision"] != '') {

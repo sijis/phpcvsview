@@ -8,7 +8,7 @@
  *
  * @author Brian A Cheeseman <bcheesem@users.sourceforge.net>
  * @version $Id$
- * @copyright 2003-2005 Brian A Cheeseman
+ * @copyright 2003-2006 Brian A Cheeseman
  **/
 
 function microtime_diff($a, $b)
@@ -22,13 +22,13 @@ function CalculateDateDiff($DateEarlier, $DateLater)
 {
 	global $lang;
 
-	$date['date_diff'] = $DateLater - $DateEarlier;
-	$date['seconds'] = $date['date_diff'];
-	$date['minutes'] = floor($date['seconds']/60);
-	$date['hours'] = floor($date['minutes']/60);
-	$date['days'] = floor($date['hours']/24);
-	$date['weeks'] = floor($date['days']/7);
-	$date['years'] = floor($date['days']/365);
+	$date['date_diff']	= $DateLater - $DateEarlier;
+	$date['seconds']	= $date['date_diff'];
+	$date['minutes']	= floor($date['seconds']/60);
+	$date['hours']		= floor($date['minutes']/60);
+	$date['days']		= floor($date['hours']/24);
+	$date['weeks']		= floor($date['days']/7);
+	$date['years']		= floor($date['days']/365);
 
 	// displays seconds
 	if ($date['seconds'] > 0) {
@@ -91,8 +91,7 @@ function CalculateDateDiff($DateEarlier, $DateLater)
 function ImplodeToPath($Dirs, $Seperator, $Number)
 {
 	$RetVal = "";
-	for ($Counter = 0; $Counter <= $Number; $Counter++)
-	{
+	for ($Counter = 0; $Counter <= $Number; $Counter++){
 		if ($Dirs[$Counter] != "") {
 			$RetVal .= $Seperator . $Dirs[$Counter];
 		}
@@ -161,10 +160,12 @@ function SetDefaultLanguage()
 
 function InsertIntoArray($Array, $Value, $Position)
 {
-	if (!is_array($Array)) {return $Array;}
-	$Last = array_splice($Array, $Position);
-	$Array[] = $Value;
-	$Array = array_merge($Array, $Last);
+	if (!is_array($Array)) { return $Array; }
+
+	$Last		= array_splice($Array, $Position);
+	$Array[]	= $Value;
+	$Array		= array_merge($Array, $Last);
+
 	return $Array;
 }
 

@@ -8,7 +8,7 @@
  *
  * @author Brian A Cheeseman <bcheesem@users.sourceforge.net>
  * @version $Id$
- * @copyright 2003-2005 Brian A Cheeseman
+ * @copyright 2003-2006 Brian A Cheeseman
  */
 
 require_once 'config.php';
@@ -19,9 +19,7 @@ global $config, $env;
 if (phpversion() <= "4.1.0") { 
 	global $HTTP_ENV_VARS;
 	$_ENVIRON = $HTTP_ENV_VARS;
-}
-else
-{
+} else {
 	$_ENVIRON = $_ENV;
 }
 
@@ -34,8 +32,8 @@ $env['script_path'] = (empty($env['script_path']))? '/' : $env['script_path'];
 $env['mod_path'] = (isset($_GET["mp"])) ? $_GET["mp"] : "/";
 $env['mod_path'] = str_replace("//", "/", $env['mod_path']);
 
-$env['language_path'] = 'languages/';
-$env['theme_path'] = 'Themes/';
+$env['language_path']	= 'languages/';
+$env['theme_path']		= 'Themes/';
 
 // check if cookie exist, if so use cookie, otherwise use config value
 // then verify that config value is a valid entry
@@ -50,11 +48,11 @@ $env['CVSROOT'] = (empty($_COOKIE['config']['CVSROOT'])) ? $config['default_cvs'
 if (isset($_GET["cr"])) {
 	$env['mod_path'] = "/";
 	unset($_GET["fh"]);
-        unset($_GET["fa"]);
-        unset($_GET["fv"]);
-        unset($_GET["fd"]);
-        unset($_GET["df"]);
-        unset($_GET["dp"]);
+	unset($_GET["fa"]);
+	unset($_GET["fv"]);
+	unset($_GET["fd"]);
+	unset($_GET["df"]);
+	unset($_GET["dp"]);
 	$env['CVSROOT'] = $_GET["cr"];
 	// Set cookie with theme info. This cookie is set to expire 1 year from today.
 	setcookie("config[CVSROOT]", $env['CVSROOT'], time()+31536000, "/");

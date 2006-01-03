@@ -8,7 +8,7 @@
  *
  * @author Brian A Cheeseman <bcheesem@users.sourceforge.net>
  * @version $Id$
- * @copyright 2003-2005 Brian A Cheeseman
+ * @copyright 2003-2006 Brian A Cheeseman
  **/
 
 function DisplayDirListing()
@@ -27,7 +27,6 @@ function DisplayDirListing()
 		// Authenticate against the server.
 		$Response = $CVSServer->Authenticate();
 		if ($Response !== true) {
-
 			echo "<h3>ERROR: ".$Response."</h3>";
 			return;
 		}
@@ -38,9 +37,7 @@ function DisplayDirListing()
 		// If we are in the Root of the CVS Repository then lets get the Module list.
 		if (strlen($env['mod_path']) < 2) {
 			$Modules = $CVSServer->getModuleList();
-		}
-		else
-		{
+		} else {
 			$Modules = false;
 		}
 
