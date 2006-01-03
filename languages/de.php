@@ -8,7 +8,7 @@
  *
  * @author Sijis Aviles <sijis@users.sourceforge.net>
  * @version $Id$
- * @copyright 2003-2005 Brian A Cheeseman
+ * @copyright 2003-2006 Brian A Cheeseman
  **/
 
 $lang['encoding']                = 'iso-8859-16'; //needed for german umlauts, otherwise ä has to be ae, ö has to be oe, ü has to be ue

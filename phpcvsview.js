@@ -6,7 +6,7 @@
  *
  * @author Brian A Cheeseman <bcheesem@users.sourceforge.net>
  * @version $Id$
- * @copyright 2003-2005 Brian A Cheeseman
+ * @copyright 2003-2006 Brian A Cheeseman
  **/
 
 function postBackThemeChange(form)

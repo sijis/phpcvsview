@@ -8,7 +8,7 @@
  *
  * @author Sijis Aviles <sijis@users.sourceforge.net>
  * @version $Id$
- * @copyright 2003-2005 Brian A Cheeseman
+ * @copyright 2003-2006 Brian A Cheeseman
  * 
  * Translation completed Giuliano Camarini de Oliveira <gcoliveira@rocketmail.com> 
  * Translation copyright 2005 Karlos Giuliano Camarini de Oliveira
